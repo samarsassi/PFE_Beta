@@ -1,0 +1,86 @@
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<div class="dashboard">
+  <!-- Enhanced Sidebar -->
+  <div [ngClass]="{'sidebar': true, 'collapsed': isCollapsed}" class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2><i class="fas fa-chart-line me-2"></i>Recrutement</h2>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li>
+        <a routerLink="/home" routerLinkActive="router-link-active">
+          <i class="fas fa-home"></i>
+          <span class="nav-text">Tableau de bord</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/main" routerLinkActive="router-link-active">
+          <i class="fas fa-briefcase"></i>
+          <span class="nav-text">Page principale</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/offreEmploi" routerLinkActive="router-link-active">
+          <i class="fas fa-file-alt"></i>
+          <span class="nav-text">Offres d'emploi</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/candidatures" routerLinkActive="router-link-active">
+          <i class="fas fa-users"></i>
+          <span class="nav-text">Candidatures</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/challenge" routerLinkActive="router-link-active">
+          <i class="fas fa-code"></i>
+          <span class="nav-text">Défis techniques</span>
+        </a>
+      </li>
+    </ul>
+
+    <button (click)="toggleSidebar()" class="collapse-btn" id="collapseBtn" title="Réduire/Étendre">
+      <i class="fas fa-bars"></i>
+    </button>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content" [ngClass]="{'collapsed': isCollapsed}">
+    <!-- Enhanced Header -->
+    <div class="header d-flex align-items-center justify-content-between">
+      <div class="user-info d-flex align-items-center gap-2">
+        <img src="../assets/img/user_avatar.png" alt="Avatar utilisateur" class="user-avatar">
+        <span class="user-name">{{ userName }}</span>
+      </div>
+      <div class="header-actions d-flex align-items-center gap-2">
+        <div class="dropdown">
+          <button class="dropdown-btn">
+            <i class="fas fa-user-circle"></i>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="#" (click)="ViewProfile()">
+              <i class="fas fa-user"></i>
+              Mon profil
+            </a>
+            <a href="#">
+              <i class="fas fa-cog"></i>
+              Paramètres
+            </a>
+            <a href="#" (click)="logout()">
+              <i class="fas fa-sign-out-alt"></i>
+              Déconnexion
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic Content -->
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+    <app-scroll-top></app-scroll-top>
+  </div>
+</div>

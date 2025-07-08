@@ -1,0 +1,103 @@
+<nav class="breadcrumb-container">
+  <ol class="breadcrumb">
+    <li><a href="/home" class="breadcrumb-link"><i class="fas fa-home"></i> Accueil</a></li>
+    <li class="breadcrumb-separator">/</li>
+    <li><a href="/offreEmploi/offres" class="breadcrumb-link">Offres</a></li>
+    <li class="breadcrumb-separator">/</li>
+    <li class="breadcrumb-current">Ajouter</li>
+  </ol>
+</nav>
+
+<form [formGroup]="offreForm">
+  <mat-horizontal-stepper [orientation]="(stepperOrientation | async)!">
+    <!-- Step 1 -->
+    <mat-step>
+      <ng-template matStepLabel>Basic Info</ng-template>
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Titre</mat-label>
+          <input matInput formControlName="titre" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description"></textarea>
+        </mat-form-field>
+      </div>
+      <mat-form-field appearance="outline">
+        <mat-label>Date début</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="dateDebut" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <div class="archived-checkbox-container">
+        <mat-checkbox formControlName="archive">Archivé</mat-checkbox>
+      </div>
+
+      <div>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </mat-step>
+
+
+    <!-- Step 2 -->
+    <mat-step>
+      <ng-template matStepLabel>Job Details</ng-template>
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Catégories</mat-label>
+          <mat-select formControlName="categories" multiple>
+            <mat-option *ngFor="let cat of categoriesList" [value]="cat">{{ cat }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Niveau d'expérience</mat-label>
+          <mat-select formControlName="niveauExperience">
+            <mat-option *ngFor="let exp of experienceLevels" [value]="exp">{{ exp }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Salaire</mat-label>
+          <input matInput formControlName="salaire" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Contrat</mat-label>
+          <mat-select formControlName="contrat">
+            <mat-option *ngFor="let c of contractOptions" [value]="c">{{ c }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+
+    </mat-step>
+
+    <!-- Step 3 -->
+    <mat-step>
+      <ng-template matStepLabel>Location</ng-template>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Localisation</mat-label>
+        <input matInput formControlName="localisation" readonly />
+      </mat-form-field>
+
+      <button mat-raised-button type="button" (click)="openMap()">📍 Select Location</button>
+      <div *ngIf="showMap" id="map" class="map-container"></div>
+
+
+
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button type="submit" (click)="onSubmit()">Submit</button>
+      </div>
+
+    </mat-step>
+
+  </mat-horizontal-stepper>
+</form>

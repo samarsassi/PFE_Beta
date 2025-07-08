@@ -1,0 +1,116 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  background: #ffffff;
+}
+
+.st0 {
+  font-family: 'FootlightMTLight';
+}
+
+.st1 {
+  font-size: 83.0285px;
+}
+
+.st2 {
+  fill: #7f8c8d; /* Dark gray for neutral text */
+}
+
+svg {
+  width: 500px;
+  height: 400px;
+  text-align: center;
+  fill: #2980b9; /* Accent Blue */
+}
+
+path#XMLID_5_ {
+  fill: #2980b9; /* Accent Blue */
+  filter: url(#blurFilter4);
+}
+
+path#XMLID_11_, path#XMLID_2_ {
+  fill: #2980b9; /* Accent Blue */
+}
+
+.circle {
+  animation: out 2s infinite ease-out;
+  fill: #2980b9; /* Accent Blue */
+}
+
+#container {
+  text-align: center;
+}
+
+.message {
+  color: #2980b9; /* Accent Blue */
+}
+
+.message:after {
+  content: "]";
+}
+
+.message:before {
+  content: "[";
+}
+
+.message:after,
+.message:before {
+  color: #2980b9; /* Teal accent for animated brackets */
+  font-size: 20px;
+  animation: opacity 2s infinite;
+  margin: 0 50px;
+}
+
+@keyframes opacity {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes out {
+  0% {
+    r: 1;
+    opacity: 0.9;
+  }
+  25% {
+    r: 5;
+    opacity: 0.3;
+  }
+  50% {
+    r: 10;
+    opacity: 0.2;
+  }
+  75% {
+    r: 15;
+    opacity: 0.1;
+  }
+  100% {
+    r: 20;
+    opacity: 0;
+  }
+}
+
+/* Go Back Button */
+.go-back-btn {
+  background-color: #2980b9; /* Accent Blue */
+  color: white;
+  font-size: 18px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 25px;
+  margin-top: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.go-back-btn:hover {
+  background-color:#0a5180; /* Teal on hover */
+}

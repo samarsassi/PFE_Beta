@@ -1,0 +1,155 @@
+<div class="mes-candidatures-container">
+    <h1 class="dashboard-title">Mon tableau de bord</h1>
+    <p class="dashboard-subtitle">Suivez vos candidatures et votre progression de carrière</p>
+  
+    <!-- KPI Cards Row -->
+    <div class="kpi-cards-row">
+      <div class="kpi-card kpi-apps">
+        <div class="kpi-label">Candidatures totales</div>
+        <div class="kpi-value">{{ candidatures.length }}</div>
+        <span class="kpi-icon kpi-icon-apps">🗂️</span>
+      </div>
+      <div class="kpi-card kpi-review">
+        <div class="kpi-label">En cours d'examen</div>
+        <div class="kpi-value">{{ enAttenteCount }}</div>
+        <span class="kpi-icon kpi-icon-review">📊</span>
+      </div>
+      <div class="kpi-card kpi-interview">
+        <div class="kpi-label">Entretiens</div>
+        <div class="kpi-value"> </div>
+        <span class="kpi-icon kpi-icon-interview">🗓️</span>
+      </div>
+      <div class="kpi-card kpi-success">
+        <div class="kpi-label">Taux de réussite</div>
+        <div class="kpi-value">{{ acceptedPercentage | number:'1.0-0' }}%</div>
+        <span class="kpi-icon kpi-icon-success">📈</span>
+      </div>
+    </div>
+  
+    <!-- Applications Card -->
+    <div class="applications-card">
+      <h2 class="section-title">Mes candidatures</h2>
+  
+      <div *ngIf="loading" class="loading">Chargement...</div>
+  
+      <div *ngIf="!loading && candidatures.length === 0" class="empty-state">
+        <p>Vous n'avez pas encore de candidatures.</p>
+      </div>
+  
+      <div *ngIf="!loading && !selectedCandidature && candidatures.length > 0">
+        <div *ngFor="let c of candidatures" class="application-card" (click)="selectCandidature(c)">
+          <div class="application-header pro" style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <div class="application-offer-title pro highlight">{{ c.offreEmploi?.titre || 'Offre inconnue' }}</div>
+              <div class="application-company pro">{{ c.email }}</div>
+            </div>
+            <div class="application-status pro">
+              <span class="status-badge pro" [ngClass]="{
+                'status-inreview': c.statut === 'EN ATTENTE',
+                'status-accepted': c.statut === 'ACCEPTÉ',
+                'status-rejected': c.statut === 'REJETÉ'
+              }">
+                <ng-container [ngSwitch]="c.statut">
+                  <span *ngSwitchCase="'EN ATTENTE'">En cours</span>
+                  <span *ngSwitchCase="'ACCEPTÉ'">Acceptée</span>
+                  <span *ngSwitchCase="'REJETÉ'">Rejetée</span>
+                  <span *ngSwitchDefault>{{ c.statut }}</span>
+                </ng-container>
+              </span>
+            </div>
+          </div>
+  
+          <div class="application-footer pro" style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.2rem;">
+            <span class="application-dates pro">Déposée le : {{ c.dateCreation ? (c.dateCreation | date:'mediumDate') : 'N/A' }}</span>
+            <span class="application-update pro">Dernière mise à jour : {{ c.dateModification ? (c.dateModification | date:'mediumDate') : (c.dateCreation ? (c.dateCreation | date:'mediumDate') : 'N/A') }}</span>
+          </div>
+  
+          <div class="application-actions pro" style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+            <button class="btn btn-primary btn-small" (click)="$event.stopPropagation(); selectCandidature(c)">Voir la timeline</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Detail View (Timeline) -->
+    <div *ngIf="!loading && selectedCandidature">
+      <div class="timeline-modal">
+        <button class="btn btn-secondary btn-small" (click)="clearSelected()">&larr; Retour</button>
+        <button class="btn btn-danger btn-small" style="float:right" (click)="confirmAndDeleteCandidature(selectedCandidature.id)">
+          Supprimer
+        </button>
+  
+        <div class="candidature-card">
+          <div class="candidature-header">
+            <div>
+              <h3>{{ selectedCandidature.nom }}</h3>
+              <span class="badge" [ngClass]="{
+                'badge-pending': selectedCandidature.statut === 'EN ATTENTE',
+                'badge-accepted': selectedCandidature.statut === 'ACCEPTÉ',
+                'badge-rejected': selectedCandidature.statut === 'REJETÉ'
+              }">{{ selectedCandidature.statut }}</span>
+            </div>
+            <div class="candidature-date">
+              Déposée le : {{ selectedCandidature.dateCreation | date:'mediumDate' }}
+            </div>
+          </div>
+  
+          <div class="timeline">
+            <div class="timeline-step active">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <strong>Candidature déposée</strong>
+                <div class="timeline-date">{{ selectedCandidature.dateCreation | date:'short' }}</div>
+              </div>
+            </div>
+  
+            <div class="timeline-step" [class.active]="selectedCandidature.statut === 'EN ATTENTE'">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <strong>En cours d'examen</strong>
+                <div class="timeline-date" *ngIf="selectedCandidature.statut === 'EN ATTENTE'">En cours</div>
+              </div>
+            </div>
+  
+            <div class="timeline-step" [class.active]="selectedCandidature.defiEnvoyeLe">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <strong>Défi envoyé</strong>
+                <div class="timeline-date" *ngIf="selectedCandidature.defiEnvoyeLe">
+                  {{ selectedCandidature.defiEnvoyeLe | date:'short' }}
+                </div>
+              </div>
+            </div>
+  
+            <div class="timeline-step" [class.active]="selectedCandidature.defiTermineLe">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <strong>Défi terminé</strong>
+                <div class="timeline-date" *ngIf="selectedCandidature.defiTermineLe">
+                  {{ selectedCandidature.defiTermineLe | date:'short' }}
+                </div>
+              </div>
+            </div>
+  
+            <div class="timeline-step" [class.active]="selectedCandidature.statutDefi === 'EVALUE'">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <strong>Défi évalué</strong>
+                <div class="timeline-date" *ngIf="selectedCandidature.statutDefi === 'EVALUE'">Évalué</div>
+              </div>
+            </div>
+  
+            <div class="timeline-step" [class.active]="selectedCandidature.statut === 'ACCEPTÉ' || selectedCandidature.statut === 'REJETÉ'">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <strong>Décision finale</strong>
+                <div class="timeline-date" *ngIf="selectedCandidature.statut === 'ACCEPTÉ'">Acceptée</div>
+                <div class="timeline-date" *ngIf="selectedCandidature.statut === 'REJETÉ'">Rejetée</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

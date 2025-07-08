@@ -1,0 +1,22 @@
+
+
+<div mat-dialog-actions style="display: flex; justify-content: space-between; align-items: center;">
+  <h1 mat-dialog-title>{{ data.titre }}</h1>
+  <button mat-raised-button style="align-self: flex-start;" color="warn" (click)="closeDialog()">X</button>
+</div>
+
+<div mat-dialog-content>
+  <div class="offer-details">
+    
+    <p><strong>Description:</strong> {{ data.description }}</p>
+    <p><strong>Date Début:</strong> {{ data.dateDebut | date: 'dd/MM/yyyy' }}</p>
+    <p><strong>Archivé:</strong> {{ data.archive ? 'Oui' : 'Non' }}</p>
+    <p><strong>Localisation:</strong> {{ data.localisation }}</p>
+  </div>
+
+  <div class="map-container" style="height: 300px; width: 100%; margin-top: 20px;">
+    <div id="map"></div>
+  </div>
+</div>
+
+

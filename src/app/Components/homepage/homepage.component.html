@@ -1,0 +1,140 @@
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<div class="dashboard-container">
+ 
+  <div class="styled-span">
+    <i class="fas fa-hand-paper"></i>
+    Bienvenue {{ userName }}
+  </div>
+
+  <div class="kpi-cards">
+    <div class="card green">
+      <h4><i class="fas fa-user-check"></i> Utilisateurs actifs</h4>
+      <p>{{ activeUserCount }}</p>
+    </div>
+
+    <div class="card yellow">
+      <h4><i class="fas fa-user-shield"></i> Admins & Responsables</h4>
+      <p>{{ rolesCountValue }}</p>
+    </div>
+
+    <div class="card blue">
+      <h4><i class="fas fa-users"></i> Total utilisateurs</h4>
+      <p>{{ users.length }}</p>
+    </div>
+
+    <div class="card purple">
+      <h4><i class="fas fa-clock"></i> Connectés aujourd'hui</h4>
+      <p>{{ usersConnectedToday }}</p>
+    </div>
+  </div>
+
+  <div class="dashboard-wrapper">
+    <div class="stats-sidebar">
+        <div class="stats-item">
+          <h4>Offres d'emploi</h4>
+          <p>{{ offres.length }}</p>
+        </div>
+        <div class="stats-item">
+          <h4>Candidatures</h4>
+          <p>{{ candidatures.length }}</p>
+        </div>
+        <div class="stats-item">
+          <h4>Défis</h4>
+          <p>{{ defis.length }}</p>
+        </div>
+        
+    </div>
+
+    <!-- Charts  -->
+    <div class="charts-area">
+      <div class="chart-card">
+        <h3><i class="fas fa-chart-pie"></i> Répartition des offres</h3>
+        <ngx-charts-pie-chart [results]="chartDataOffres" [legend]="true" [labels]="true" [doughnut]="false"
+          [scheme]="colorScheme" [explodeSlices]="false" [view]="[350, 250]">
+        </ngx-charts-pie-chart>
+      </div>
+
+      <div class="chart-card">
+        <h3><i class="fas fa-chart-bar"></i> Candidatures par offre</h3>
+        <ngx-charts-bar-vertical [results]="chartDataCandidaturesPerOffre" [xAxis]="true" [yAxis]="true"
+          [legend]="false" [showDataLabel]="true" [scheme]="colorScheme" [customColors]="colorScheme"
+          [view]="[400, 300]">
+        </ngx-charts-bar-vertical>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="user-list-container" [class.selected]="selectedUser">
+    <h3><i class="fas fa-users"></i> Gestion des utilisateurs</h3>
+
+    <input type="text" [(ngModel)]="searchQuery" placeholder="Rechercher un utilisateur..." class="search-input" />
+
+    <ul>
+      <li *ngFor="let user of filteredUsers()">
+        <div class="user-info">
+          <span class="status-indicator" [ngClass]="{
+              'active': onlineUserIds.includes(user.id),
+              'inactive': !onlineUserIds.includes(user.id)
+            }" [title]="onlineUserIds.includes(user.id) ? 'En ligne' : 'Hors ligne'"></span>
+          <img src="../assets/img/user_avatar.png" alt="Avatar utilisateur" class="user-avatar">
+          <div>
+            <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+            <br>
+            <span>{{ user.email }}</span>
+          </div>
+        </div>
+        <button (click)="onSelectUser(user)">
+          <i class="fas fa-cog"></i>
+          Gérer les rôles
+        </button>
+      </li>
+    </ul>
+
+    <!-- Selected User Role Management -->
+    <div *ngIf="selectedUser" class="selected-user-section">
+      <h4 class="role-section-title">
+        <i class="fas fa-user-cog"></i>
+        Rôles pour {{ selectedUser.firstName }} {{ selectedUser.lastName }}
+        <button class="close-btn" title="Fermer" (click)="selectedUser = null">
+          <i class="fas fa-times"></i>
+        </button>
+      </h4>
+      <div class="role-sections">
+        <div class="current-roles">
+          <h5 class="role-section-title"><i class="fas fa-check-circle"></i> Rôles actuels</h5>
+          <div *ngFor="let role of userRoles" class="role-card">
+            <span class="role-header"><i class="fas fa-user-tag"></i> {{ role.name }}</span>
+            <button (click)="confirmRemoveRole(role)" class="role-btn-delete" title="Supprimer le rôle">
+              <i class="fas fa-trash"></i> Supprimer
+            </button>
+          </div>
+        </div>
+        <div class="available-roles">
+          <h5 class="role-section-title"><i class="fas fa-plus-circle"></i> Attribuer un rôle</h5>
+          <div *ngFor="let role of availableRoles" class="role-card">
+            <span class="role-header"><i class="fas fa-user-plus"></i> {{ role.name }}</span>
+            <button (click)="confirmAssignRole(role)" class="role-btn-assign">
+              <i class="fas fa-plus"></i> Attribuer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="powerbi-container">
+    <div class="loading" id="loading-spinner">
+      <div class="spinner"></div>
+    </div>
+
+    <iframe class="powerbi-iframe" style="display: none;"
+      onload="document.getElementById('loading-spinner').style.display='none'; this.style.display='block';"
+      title="Tableau de bord recrutement"
+      src="https://app.powerbi.com/reportEmbed?reportId=cebdd0a2-dd06-49a2-92c4-2c3e355616af&autoAuth=true&ctid=604f1a96-cbe8-43f8-abbf-f8eaf5d85730"
+      allowFullScreen="true"></iframe>
+  </div>
+</div>

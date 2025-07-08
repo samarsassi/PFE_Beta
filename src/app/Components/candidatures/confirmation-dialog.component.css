@@ -1,0 +1,61 @@
+/* Dialog container styling */
+.dialog-container {
+  padding: 20px;
+  text-align: center;
+  background-color: #fff; /* White background */
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px; /* Optional: set a max-width */
+  margin: 0 auto; /* Center the dialog */
+}
+
+/* Dialog title styling */
+.dialog-title {
+  color: black;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Dialog actions container */
+.dialog-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Common button styles */
+.dialog-actions button {
+  padding: 10px 20px;
+  font-size: 1em;
+  width: 45%; /* Equal button widths */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Cancel button: Red */
+.cancel-button {
+  background-color: #f44336;
+  color: white;
+}
+
+/* Ok button: Green */
+.ok-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Button hover effect */
+.cancel-button:hover {
+  background-color: #d32f2f; /* Darker red */
+}
+
+.ok-button:hover {
+  background-color: #388e3c; /* Darker green */
+}
+
+/* Overlay background styling */
+.dialog-overlay {
+  background-color: rgba(0, 0, 0, 0.3); /* Darker background */
+}

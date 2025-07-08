@@ -1,0 +1,36 @@
+<section class="hero">
+  <div class="container hero-content">
+    <div class="hero-text">
+      <h2>Votre avenir commence ici</h2>
+      <p>Découvrez des milliers d'opportunités et postulez dès maintenant à l'emploi de vos rêves !</p>
+      <a routerLink="/main" fragment="jobs" class="btn">Voir les offres</a>
+    </div>
+    <div class="hero-image">
+      <img src="assets/img/rec.png" alt="Opportunités d'emploi">
+    </div>
+  </div>
+</section>
+
+<section class="jobs" id="jobs">
+  <div class="container job-container" *ngIf="offresEmploi.length > 0">
+    <h2 class="section-title">Dernières offres d'emploi</h2>
+    <div class="arrow left" (click)="scrollLeft()">&#10094;</div>
+    <div class="arrow right" (click)="scrollRight()">&#10095;</div>
+
+    <div class="job-list" #jobList>
+      <div class="job-card" *ngFor="let offre of offresEmploi">
+        <h3>{{ offre.titre }}</h3>
+        <p>{{ offre.description }}</p>
+        <div *ngIf="offre.niveauExperience">
+          <mat-chip style="margin-bottom: 15px;" primary selected>
+            {{ offre.niveauExperience }}
+          </mat-chip>
+        </div>
+        <span class="location">📍 {{ offre.localisation | slice:0:50 }}{{ offre.localisation.length > 50 ? '...' : '' }}</span>
+
+        
+        <a [routerLink]="['/main/offre', offre.id]" class="apply-btn">Postuler</a>
+      </div>
+    </div>
+  </div>
+</section>

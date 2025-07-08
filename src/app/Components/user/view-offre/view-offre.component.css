@@ -1,0 +1,357 @@
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Selected Job Offer */
+.selected-job {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 30px;
+    max-width: 1200px;
+    margin: 30px auto;
+  }
+  
+  .job-details {
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1; /* Make sure this container takes up available space */
+  }
+  
+  .job-info {
+    width: 70%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .job-info h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .job-info p {
+    font-size: 1rem;
+    margin-bottom: 15px;
+    color: #555;
+  }
+  
+  .job-info p strong {
+    font-weight: 600;
+  }
+  
+  .job-sidebar {
+    width: 40%;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-left: 1px solid #eee;
+    margin-left: 30px;
+    align-self: stretch;
+    padding: 20px;
+  }
+  
+  
+  .search-section {
+    display: flex;
+    flex-wrap: wrap; /* allow wrapping on small screens */
+    gap: 10px; /* Adds space between the input and the button */
+    margin-bottom: 30px;
+  }
+  
+  .search-section input {
+    flex-grow: 1; /* Makes input take the remaining space */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .search-section button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .search-section button:hover {
+    background-color: #0056b3;
+  }
+  /* Optional: extra small screen tweaks */
+@media (max-width: 640px) {
+  .search-section input,
+  .search-section button {
+    width: 100%;
+  }
+}
+  
+  /* Position the Apply button at the bottom */
+  .apply-btn {
+    padding: 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+    margin-top: auto; /* This pushes the button to the bottom */
+  }
+  
+  .apply-btn:hover {
+    background-color: #218838;
+  }
+  
+  
+  /* Modal Styling */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal.show {
+    display: flex;
+  }
+  
+    .modal-content {
+    background-color: #fff;
+    padding: 30px;
+    width: 90%;
+    max-width: 800px; /* updated */
+    border-radius: 10px;
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .form-columns {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .form-column {
+    flex: 1;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 25px;
+    cursor: pointer;
+    color: #aaa;
+  }
+  
+  .close:hover {
+    color: #000;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (max-width: 600px) {
+    .form-columns {
+      flex-direction: column;
+    }
+  }
+   /* fin Modal Styling */
+
+  /* Form Styles */
+  .apply-form input,
+  .apply-form textarea {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .jobs {
+    padding: 60px 0;
+  }
+  
+  .section-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 40px;
+  }
+
+
+  /* map */
+  .map-container {
+    height: 300px;
+    width: 100%;
+    margin-top: 20px;
+  }
+  #map {
+    height: 100%;
+    background-color: lightgray; /* Temporarily check if it's being rendered */
+  }
+  /* map */
+
+  /* job offers */
+  .other-offres {
+    margin-top: 10px;
+    padding: 0px 80px;
+  }
+  .job-container {
+    position: relative;
+    max-width: 1560px; /* 3 x 500px cards + 2 x 30px gaps */
+    margin: 0 auto;
+    overflow: hidden;
+    padding: 0 40px; 
+  }
+  .job-list {
+    display: flex;
+    gap: 30px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    /* padding: 20px; */
+    flex-wrap: nowrap; /* Prevent wrapping of the job cards */
+    justify-content: flex-start; /* Ensure the list starts from the left */
+  }
+  
+  
+  .job-list::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for a cleaner look */
+  }
+  
+  .job-card {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    width: 400px ; /* Set the width explicitly */
+    flex-shrink: 0; /* Prevent shrinking of the job cards */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    z-index: 1;
+  }
+  
+  .job-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .job-card h3 {
+    margin: -20px -20px 10px -20px; /* Negative margin to cancel out the card's padding */
+    padding: 10px;
+    font-size: 1.1rem;
+    color: #fff;
+    background-color: #007bff;
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+  }
+  
+  
+  
+  .job-card p {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
+  
+  .location {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 25px;
+    color: #555;
+  }
+  
+  .job-card p {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .job-card .location {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .job-list-wrapper {
+    position: relative;
+  }
+
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 2;
+    color: #007bff;
+    user-select: none;
+    
+    width: 40px;
+    height: 40px;
+    background-color: #efefef;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  }
+  
+  .arrow.left {
+    left: 2px;
+  }
+  
+  .arrow.right {
+    right: 2px;
+  }
+  .arrow.right:hover {
+    color: #333;
+  }
+  
+  .arrow.left:hover {
+    color: #333;
+  }
+  
+
+  /* search */
+  .search-results {
+    margin: 10px 0;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    max-height: 400px;
+    overflow-y: auto;
+    border-radius: 6px;
+    height: fit-content;
+  }
+  
+  .result {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+  }
+  
+  .result:hover {
+    background-color: #efefef;
+  }
+  /* search */
+  

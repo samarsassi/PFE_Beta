@@ -1,0 +1,84 @@
+<nav class="breadcrumb-container">
+  <ol class="breadcrumb">
+    <li><a href="/home" class="breadcrumb-link"><i class="fas fa-home"></i> Accueil</a></li>
+    <li class="breadcrumb-separator">/</li>
+    <li class="breadcrumb-current">Offres</li>
+  </ol>
+</nav>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<ng-container *ngIf="offresEmploi.length > 0">
+  <section id="offreemploi-section" class="container">
+    <!-- Enhanced Section Title with Toggle on Right -->
+    <div class="row justify-content-between align-items-center mb-4 section-header-row">
+      <div class="col-auto d-flex align-items-center">
+        <h2 class="section-title"><i class="fas fa-briefcase me-2"></i>Offres d'emploi</h2>
+      </div>
+      <div class="col-auto d-flex align-items-center">
+        <div class="toggle-container">
+          <i *ngIf="!showArchived" class="lock-icon fas fa-unlock"></i>
+          <i *ngIf="showArchived" class="lock-icon fas fa-lock"></i>
+          <label class="switch">
+            <input type="checkbox" [(ngModel)]="showArchived" (change)="filterOffres()">
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label ms-2">
+            {{ showArchived ? 'Offres archivées' : 'Offres actives' }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <!-- Offers Cards Grid -->
+    <div class="row">
+      <div class="col-md-4 mb-4" *ngFor="let offre of filteredOffres; trackBy: trackByOffreId">
+        <mat-card class="offer-card">
+          <div class="card-header">
+            <mat-card-title>{{ offre.titre }}</mat-card-title>
+            <span *ngIf="isOfferEnded(offre)" class="badge ended-badge">
+              <i class="fas fa-clock me-1"></i>Terminée
+            </span>
+            <span *ngIf="isOfferDelayed(offre)" class="badge delayed-badge">
+              <i class="fas fa-check-circle me-1"></i>Disponible
+            </span>
+          </div>
+          <p><i class="fas fa-calendar-alt me-2"></i>Date de début: {{ offre.dateDebut | date:'dd/MM/yyyy' }}</p>
+          <mat-card-subtitle>
+            <i class="fas fa-map-marker-alt me-2"></i>{{ offre.localisation }}
+          </mat-card-subtitle>
+          <mat-card-content>
+            <p>{{ offre.description }}</p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-icon-button color="primary" (click)="openEditDialog(offre)" title="Modifier l'offre">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="onDelete(offre.id)" title="Supprimer l'offre">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-icon-button (click)="onArchive(offre.id)"
+              [ngClass]="offre.archive ? 'btn-unarchive' : 'btn-archive'"
+              [title]="offre.archive ? 'Désarchiver l\'offre' : 'Archiver l\'offre'">
+              <mat-icon class="icon-archive">
+                {{ offre.archive ? 'unarchive' : 'archive' }}
+              </mat-icon>
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  </section>
+</ng-container>
+
+<!-- Empty State -->
+<div *ngIf="offresEmploi.length === 0" class="empty-state">
+  <i class="fas fa-briefcase"></i>
+  <h3>Aucune offre d'emploi disponible</h3>
+  <p>Il n'y a actuellement aucune offre d'emploi dans le système.</p>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-offers">
+  <div class="spinner"></div>
+  <p>Chargement des offres...</p>
+</div>

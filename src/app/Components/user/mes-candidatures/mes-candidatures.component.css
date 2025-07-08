@@ -1,0 +1,416 @@
+/* Container */
+.mes-candidatures-container {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 2.5rem 6vw;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #1e293b;
+}
+
+.loading {
+    text-align: center;
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+.empty-state {
+    text-align: center;
+    color: #64748b;
+    font-size: 1.1rem;
+    margin-top: 2rem;
+}
+
+.candidature-card {
+    background: #f8fafc;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(30, 41, 59, 0.04);
+    padding: 1.5rem 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.candidature-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+}
+
+.candidature-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.candidature-date {
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.3rem 1.1rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-left: 0.7rem;
+}
+
+.badge-pending {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.badge-accepted {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.badge-rejected {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    margin-left: 1.5rem;
+    padding-left: 1.5rem;
+    border-left: 3px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.timeline-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.1rem;
+    position: relative;
+    opacity: 0.6;
+}
+
+.timeline-step.active {
+    opacity: 1;
+}
+
+.timeline-dot {
+    width: 1.1rem;
+    height: 1.1rem;
+    background: #2563eb;
+    border-radius: 50%;
+    margin-top: 0.2rem;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+}
+
+.timeline-step:not(.active) .timeline-dot {
+    background: #e5e7eb;
+    box-shadow: none;
+}
+
+.timeline-content {
+    flex: 1;
+}
+
+.timeline-content strong {
+    color: #1e293b;
+    font-size: 1.05rem;
+}
+
+.timeline-date {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-top: 0.1rem;
+}
+
+/* --- KPI Cards Row --- */
+.kpi-cards-row {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.kpi-card {
+    flex: 1 1 120px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e9effd 100%);
+    border-radius: 1.1rem;
+    box-shadow: 0 2px 12px rgba(30, 41, 59, 0.07);
+    padding: 0.8rem 0.8rem 0.7rem 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-width: 120px;
+    position: relative;
+    transition: box-shadow 0.2s;
+    justify-content: space-between;
+    z-index: 1001;
+}
+
+.kpi-card:hover {
+    box-shadow: 0 4px 24px rgba(30, 41, 59, 0.13);
+}
+
+.kpi-card.kpi-apps {
+    background: linear-gradient(135deg, #e3f0ff 0%, #b6d0ff 100%);
+}
+
+.kpi-card.kpi-review {
+    background: linear-gradient(135deg, #fff7e3 0%, #ffe0b2 100%);
+}
+
+.kpi-card.kpi-interview {
+    background: linear-gradient(135deg, #f3e8ff 0%, #d1c4e9 100%);
+}
+
+.kpi-card.kpi-success {
+    background: linear-gradient(135deg, #e0f7fa 0%, #b2f2e9 100%);
+}
+
+.kpi-label {
+    color: #64748b;
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.1rem;
+}
+
+.kpi-icon {
+    font-size: 2.2rem;
+    margin-left: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kpi-icon-apps {
+    color: #2563eb;
+}
+
+.kpi-icon-review {
+    color: #d97706;
+}
+
+.kpi-icon-interview {
+    color: #a21caf;
+}
+
+.kpi-icon-success {
+    color: #059669;
+}
+
+/* --- Applications Card --- */
+.applications-card {
+    background: #fff;
+    border-radius: 1.1rem;
+    box-shadow: 0 2px 12px rgba(30, 41, 59, 0.07);
+    padding: 2rem 2rem 1.5rem 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.section-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+}
+
+/* --- Application Card --- */
+.application-card {
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+    padding: 1.5rem 2rem 1.2rem 2rem;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+}
+
+.application-card:hover {
+    border-color: #1d4ed8;
+    box-shadow: 0 2px 8px rgba(30, 41, 59, 0.10);
+    transform: none;
+}
+
+.application-header.pro {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.7rem;
+}
+
+.application-title.pro {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.1rem;
+}
+
+.application-offer-title.pro {
+    display: inline-block;
+    margin-bottom: 0.2rem;
+    margin-top: 0.1rem;
+}
+
+.application-offer-title.pro.highlight {
+    background: rgba(37, 99, 235, 0.08);
+    color: #1d4ed8;
+    padding: 0.18rem 1.2rem;
+    border-radius: 0.7rem;
+    font-size: 1.18rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    margin-bottom: 0.2rem;
+}
+
+.application-company.pro {
+    color: #64748b;
+    font-size: 0.97rem;
+    margin-bottom: 0.1rem;
+}
+
+.application-dates.pro {
+    color: #94a3b8;
+    font-size: 0.95rem;
+}
+
+.application-footer.pro {
+    margin-top: 0.7rem;
+    color: #64748b;
+    font-size: 0.97rem;
+}
+
+.highlight {
+    background: #1d4ed8;
+    color: #fff;
+    padding: 0.18rem 1.1rem;
+    border-radius: 0.7rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    margin-bottom: 0.2rem;
+}
+
+.status-badge.pro {
+    display: inline-block;
+    padding: 0.18rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    background: #f3f4f6;
+    color: #334155;
+    border: 1px solid #e5e7eb;
+    min-width: 80px;
+    text-align: center;
+}
+
+.status-inreview {
+    background: #f3f4f6 !important;
+    color: #6366f1 !important;
+    border-color: #c7d2fe !important;
+}
+
+.status-accepted {
+    background: #e0f2fe !important;
+    color: #0284c7 !important;
+    border-color: #bae6fd !important;
+}
+
+.status-rejected {
+    background: #fef2f2 !important;
+    color: #b91c1c !important;
+    border-color: #fecaca !important;
+}
+
+.application-actions.pro {
+    margin-top: 1rem !important;
+}
+
+
+
+/* confirm dialog */
+/* Dialog container styling */
+.dialog-container {
+    padding: 20px;
+    text-align: center;
+    background-color: #fff;
+    /* White background */
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    /* Optional: set a max-width */
+    margin: 0 auto;
+    /* Center the dialog */
+}
+
+/* Dialog title styling */
+.dialog-title {
+    color: black;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Dialog actions container */
+.dialog-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Common button styles */
+.dialog-actions button {
+    padding: 10px 20px;
+    font-size: 1em;
+    width: 45%;
+    /* Equal button widths */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Cancel button: Red */
+.cancel-button {
+    background-color: #f44336;
+    color: white;
+}
+
+/* Ok button: Green */
+.ok-button {
+    background-color: #4caf50;
+    color: white;
+}
+
+/* Button hover effect */
+.cancel-button:hover {
+    background-color: #d32f2f;
+    /* Darker red */
+}
+
+.ok-button:hover {
+    background-color: #388e3c;
+    /* Darker green */
+}
+
+/* Overlay background styling */
+.dialog-overlay {
+    background-color: rgba(0, 0, 0, 0.3);
+    /* Darker background */
+}

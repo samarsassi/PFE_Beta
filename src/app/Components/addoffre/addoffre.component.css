@@ -1,0 +1,205 @@
+.form-group {
+  margin-bottom: 20px;
+  /* Space between each form group */
+}
+
+label {
+  font-weight: 600;
+  margin: 10px;
+}
+
+.text-danger {
+  color: #c82333;
+}
+
+.map-container {
+  width: 100%;
+  max-width: 800px;
+  height: 400px;
+  margin: 20px auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+input,
+textarea {
+  margin-top: 10px;
+  background-color: #eae9e9;
+  width: 100%;
+  /* Ensure full width of the parent container */
+  height: auto;
+  /* Auto height for better text wrapping */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  padding: 10px;
+  /* Add padding inside the input and textarea for better readability */
+  transition: all 0.3s ease-in-out;
+  box-sizing: border-box;
+  /* Ensures padding is included in the element's total width and height */
+}
+
+input:focus,
+textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+  outline: none;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+button {
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+}
+
+button[type="submit"]:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button.logout-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+button.logout-btn:hover {
+  background-color: #c82333;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+
+/* stepper */
+
+mat-horizontal-stepper {
+  background-color: #505050;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  max-width: 1000px;
+  width: 100%;
+  margin: 30px auto;
+}
+
+mat-label {
+  margin-bottom: 10px;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 5px 20px;
+  /* background: white;  */
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  gap: 15px;
+}
+
+
+button[mat-button] {
+  margin: 10px 5px 0 0;
+}
+
+button[mat-raised-button] {
+  margin-top: 10px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-row mat-form-field {
+  flex: 1;
+}
+
+.map-container {
+  width: 100%;
+  height: 300px;
+  margin: 20px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+@media (max-width: 600px) {
+  mat-horizontal-stepper {
+    padding: 15px;
+  }
+
+  button[mat-button] {
+    width: 100%;
+  }
+
+  button[mat-raised-button] {
+    width: 100%;
+  }
+}
+
+.breadcrumb-container {
+  margin-bottom: 1.5rem;
+  background: transparent;
+  border-radius: var(--radius-lg);
+  box-shadow: none;
+  padding: 0.75rem 1.5rem;
+  border: none;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.breadcrumb-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.18s;
+}
+
+.breadcrumb-link:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+.breadcrumb-separator {
+  color: var(--gray-400);
+  font-size: 1.1em;
+  margin: 0 0.25rem;
+}
+
+.breadcrumb-current {
+  color: var(--text-primary);
+  font-weight: 600;
+}

@@ -1,0 +1,101 @@
+<div class="editor-container">
+  <div class="editor-card">
+    <h1 class="editor-title">Online Code Editor</h1>
+
+    <!-- API Connection Status -->
+    <div [ngClass]="{
+      'status-testing': connectionStatus === 'testing',
+      'status-connected': connectionStatus === 'connected',
+      'status-failed': connectionStatus === 'failed'
+    }" class="status-box">
+      <div class="status-message">
+        <span *ngIf="connectionStatus === 'testing'">🔄 Testing API connection...</span>
+        <span *ngIf="connectionStatus === 'connected'">✅ Connected to Judge0 API</span>
+        <span *ngIf="connectionStatus === 'failed'">❌ API connection failed</span>
+      </div>
+      <div *ngIf="connectionStatus === 'failed'" class="status-instructions">
+        <p><strong>Setup Instructions:</strong></p>
+        <ol>
+          <li>Go to <a href="https://rapidapi.com/judge0-official/api/judge0-ce" target="_blank">RapidAPI Judge0 CE</a></li>
+          <li>Sign up and subscribe to the free plan</li>
+          <li>Copy your API key from the dashboard</li>
+          <li>Replace 'YOUR_RAPIDAPI_KEY_HERE' in judge0.service.ts</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Language Selector -->
+    <div class="form-group">
+      <label for="language">Programming Language</label>
+      <select id="language" [(ngModel)]="selectedLanguageId" (change)="onLanguageChange()" class="form-control">
+        <option *ngFor="let lang of (languages.length > 0 ? languages : commonLanguages)" [value]="lang.id">
+          {{ lang.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Code Editor -->
+    <div class="form-group">
+      <label for="code">Source Code</label>
+      <textarea id="code"[(ngModel)]="sourceCode"(ngModelChange)="onCodeChange()"rows="5"class="code-area"></textarea>
+
+    </div>
+
+    <!-- Input (stdin) -->
+    <!-- Input (stdin) -->
+    <div class="form-group" *ngIf="showStdin">
+      <label for="stdin">Input (stdin) - Optional</label>
+      <textarea id="stdin" [(ngModel)]="stdin" rows="3" class="code-area"></textarea>
+    </div>
+
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button (click)="executeCode()" [disabled]="isExecuting" class="btn run">
+        <span *ngIf="isExecuting" class="loading-icon">⟳</span>
+        {{ isExecuting ? 'Executing...' : 'Run Code' }}
+      </button>
+      <button (click)="clearOutput()" class="btn clear">Clear Output</button>
+      <button (click)="runQuickTest()" class="btn test">🧪 Quick Test</button>
+    </div>
+
+    <!-- Error Display -->
+    <div *ngIf="error" class="error-box">
+      <strong>Error:</strong> {{ error }}
+    </div>
+
+    <!-- Result Section -->
+    <div *ngIf="executionResult" class="result-section">
+      <h3 class="result-title">Execution Results</h3>
+
+      <div class="result-status">
+        <strong>Status:</strong>
+        <span [class]="getStatusColor(executionResult.status.id)">
+          {{ executionResult.status.description }}
+        </span>
+        <div *ngIf="executionResult.time"><strong>Execution Time:</strong> {{ executionResult.time }}s</div>
+        <div *ngIf="executionResult.memory"><strong>Memory Used:</strong> {{ executionResult.memory }} KB</div>
+      </div>
+
+      <div *ngIf="executionResult.stdout" class="output-box success">
+        <strong>Output:</strong>
+        <pre>{{ executionResult.stdout }}</pre>
+      </div>
+
+      <div *ngIf="executionResult.compile_output" class="output-box warning">
+        <strong>Compilation Output:</strong>
+        <pre>{{ executionResult.compile_output }}</pre>
+      </div>
+
+      <div *ngIf="executionResult.stderr" class="output-box error">
+        <strong>Error Output:</strong>
+        <pre>{{ executionResult.stderr }}</pre>
+      </div>
+
+      <div *ngIf="executionResult.message" class="output-box info">
+        <strong>Message:</strong>
+        <pre>{{ executionResult.message }}</pre>
+      </div>
+    </div>
+  </div>
+</div>

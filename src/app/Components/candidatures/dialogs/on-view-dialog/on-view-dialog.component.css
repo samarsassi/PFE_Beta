@@ -1,0 +1,181 @@
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+/* Modal Container */
+.modal-container {
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 700px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Modal Header */
+.modal-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 24px 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  background-color: #f3f4f6;
+}
+
+.close-btn mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  color: #6b7280;
+}
+
+/* Modal Body */
+.modal-body {
+  padding: 24px 32px;
+}
+
+/* Modal Footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 32px 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.modal-footer button {
+  min-width: 110px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+/* Title */
+.dialog-title {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+/* Dialog container */
+.dialog {
+  background-color: #fff;
+  padding: 28px 36px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(37, 99, 235, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 12px auto;
+  max-width: 600px;
+}
+
+/* Each row (label + value or field) */
+.dialog-row {
+  display: flex;
+  align-items: center;
+  margin: 14px 0;
+  font-size: 1.08rem;
+  flex-wrap: wrap;
+}
+
+/* Labels */
+.dialog-row strong {
+  color: #2563eb;
+  width: 140px;
+  font-weight: 600;
+}
+
+/* Values next to labels */
+.dialog-row span {
+  color: #22223b;
+}
+
+/* Link (CV) */
+.dialog-row a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.dialog-row a:hover {
+  text-decoration: underline;
+}
+
+/* Status select field */
+.status-field {
+  width: 100%;
+  margin-left: 8px;
+}
+
+/* Dialog action buttons */
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 14px 0 0;
+}
+
+mat-dialog-actions button {
+  min-width: 110px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+/* OK Button */
+mat-dialog-actions button.mat-raised-button {
+  background-color: #2563eb;
+  color: #fff;
+}
+
+/* Cancel Button */
+mat-dialog-actions button.mat-stroked-button {
+  border-color: #2563eb;
+  color: #2563eb;
+}

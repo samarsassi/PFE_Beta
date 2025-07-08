@@ -1,0 +1,241 @@
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<nav class="breadcrumb-container">
+  <ol class="breadcrumb">
+    <li><a href="/home" class="breadcrumb-link"><i class="fas fa-home"></i> Accueil</a></li>
+    <li class="breadcrumb-separator">/</li>
+    <li class="breadcrumb-current">Candidatures</li>
+    <li class="breadcrumb-separator">/</li>
+    <li class="breadcrumb-current">Page {{ currentPage + 1 }}</li>
+  </ol>
+</nav>
+
+<!-- Enhanced Header Section -->
+<div class="button-container">
+  <h2><i class="fas fa-users me-2"></i>Gestion des candidatures</h2>
+  <div class="header-actions">
+    <button mat-raised-button color="accent" class="download-button" (click)="downloadAllCandidatures()">
+      <i class="fas fa-download"></i>
+      Télécharger les candidatures
+    </button>
+  </div>
+</div>
+
+
+<!-- Modern Search/Filter Bar -->
+<div class="search-filter-bar custom-search-bar">
+  <div class="custom-search-field">
+    <label for="search-input">
+      <i class="fas fa-search search-icon"></i>
+      <input id="search-input" type="text" (input)="applyFilter($event)" placeholder="Nom, email, offre...">
+    </label>
+  </div>
+  <button class="filter-toggle-btn" (click)="showCandidatureFilterBar = !showCandidatureFilterBar">
+    <i class="fas fa-filter"></i>
+    Filtres avancés
+  </button>
+
+  <!-- Advanced Filter Bar -->
+  <div class="chip-filter-bar-full" *ngIf="showCandidatureFilterBar">
+    <div class="chip-filter-bar-full-header">
+      <span class="chip-filter-bar-title">Filtrer les candidatures</span>
+      <button class="chip-filter-bar-close" (click)="showCandidatureFilterBar = false">&times;</button>
+    </div>
+    <div class="chip-filter-bar-full-content">
+      <div class="chip-group">
+        <span class="chip-group-label">Statut de candidature</span>
+        <ng-container *ngFor="let stat of ['all', 'EN ATTENTE', 'ACCEPTÉ', 'REJETÉ']">
+          <button type="button" class="chip-alt" [class.chip-alt-active]="candidatureFilters.applicationStatus === stat"
+            (click)="setCandidatureFilter('applicationStatus', stat)">
+            {{ stat === 'all' ? 'Tous' : stat }}
+          </button>
+        </ng-container>
+      </div>
+      <div class="chip-group">
+        <span class="chip-group-label">Statut du défi</span>
+        <ng-container *ngFor="let stat of ['all', 'AUCUN', 'ENVOYE', 'TERMINE', 'EVALUE']">
+          <button type="button" class="chip-alt" [class.chip-alt-active]="candidatureFilters.challengeStatus === stat"
+            (click)="setCandidatureFilter('challengeStatus', stat)">
+            {{ stat === 'all' ? 'Tous' : stat }}
+          </button>
+        </ng-container>
+      </div>
+      <div class="chip-group">
+        <span class="chip-group-label">Score CV</span>
+        <ng-container *ngFor="let range of ['all', '0-30', '31-60', '61-80', '81-100']">
+          <button type="button" class="chip-alt" [class.chip-alt-active]="candidatureFilters.scoreRange === range"
+            (click)="setCandidatureFilter('scoreRange', range)">
+            {{ range === 'all' ? 'Tous' : range }}
+          </button>
+        </ng-container>
+      </div>
+      <button class="btn btn-secondary btn-small" (click)="clearCandidatureFilters()">Effacer</button>
+    </div>
+  </div>
+
+  <!-- Filter Summary -->
+  <div class="filter-summary" *ngIf="getFilteredCandidatures().length !== allCandidatures.length">
+    Affichage de {{ getFilteredCandidatures().length }} sur {{ allCandidatures.length }} candidatures
+  </div>
+
+  <div class="view-toggle">
+    <button (click)="toggleViewMode()"
+      [title]="viewMode === 'table' ? 'Passer à la vue Cartes' : 'Passer à la vue Table'">
+      <i class="fas" [ngClass]="viewMode === 'table' ? 'fa-th-large' : 'fa-table'"></i>
+    </button>
+  </div>
+</div>
+
+<div *ngIf="viewMode === 'table'">
+  <!-- Custom Table -->
+  <table class="custom-candidatures-table">
+    <thead>
+      <tr>
+        <th><i class="fas fa-user"></i> Nom du candidat</th>
+        <th><i class="fas fa-envelope"></i> Email</th>
+        <th><i class="fas fa-briefcase"></i> Titre de l'offre</th>
+        <th><i class="fas fa-cogs"></i> Actions</th>
+        <th><i class="fas fa-info-circle"></i> Statut</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of pagedCandidatures; trackBy: trackByCandidature">
+        <td>{{ c.nom || 'N/A' }}</td>
+        <td><a href="mailto:{{ c.email }}" class="email-link">{{ c.email || 'N/A' }}</a></td>
+        <td>{{ c.offreEmploi?.titre || 'N/A' }}</td>
+        <td>
+          <button class="icon-btn view-btn" (click)="onView(c)" title="Voir les détails">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button class="icon-btn delete-btn" (click)="onDelete(c.id)" title="Supprimer">
+            <i class="fas fa-trash"></i>
+          </button>
+        </td>
+        <td>
+          <span class="status-badge" [ngClass]="{
+            'status-badge--pending': c.statut === 'EN ATTENTE',
+            'status-badge--accepted': c.statut === 'ACCEPTÉ',
+            'status-badge--rejected': c.statut === 'REJETÉ'
+          }">
+            <i class="fas" [ngClass]="{
+              'fa-hourglass-half': c.statut === 'EN ATTENTE',
+              'fa-check-circle': c.statut === 'ACCEPTÉ',
+              'fa-times-circle': c.statut === 'REJETÉ'
+            }"></i>
+            {{ c.statut || 'N/A' }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="viewMode === 'card'">
+  <div class="candidature-card-list">
+    <div *ngFor="let c of pagedCandidatures; trackBy: trackByCandidature" class="item-card"
+      [ngClass]="getCardStatusClass(c)">
+      <div class="item-header">
+        <div class="item-content">
+          <h3 class="item-title">{{ c.nom || 'N/A' }}</h3>
+          <p class="item-description">{{ c.email || 'N/A' }}</p>
+          <div class="item-tags">
+            <span class="badge" [ngClass]="getScoreBadgeClass(c.scoreCV)">
+              Score CV: {{ c.scoreCV || 0 }}/100
+            </span>
+            <span class="chip-label"><i class="fas fa-id-badge"></i> Statut Candidature:</span>
+            <span class="chip" [ngClass]="getStatutClass(c.statut)">{{ c.statut || 'N/A' }}</span>
+            <span class="chip-label"><i class="fas fa-laptop"></i> Statut Défi:</span>
+            <span class="chip" [ngClass]="getChallengeStatutClass(c.statutDefi || 'AUCUN')">{{ c.statutDefi || 'AUCUN'
+              }}</span>
+          </div>
+          <div class="item-details">
+            <p><strong>Téléphone:</strong> {{ c.telephone || 'N/A' }}</p>
+            <p><strong>Expérience:</strong> {{ c.experience || 'N/A' }}</p>
+          </div>
+        </div>
+        <div class="item-actions">
+          <button *ngIf="!c.statutDefi || c.statutDefi === 'AUCUN'"
+          (click)="openSendChallengeModal(c)" class="btn btn-success">
+          📤 Send Challenge
+        </button>
+          <button class="btn btn-primary" (click)="onView(c)"><i class="fas fa-eye"></i> View Details</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Send Challenge Modal -->
+  <div *ngIf="showSendChallengeModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3 class="modal-title">Send Challenge</h3>
+      <p class="modal-text">
+        Send a coding challenge to <strong>{{ selectedCandidature?.nom }}</strong>
+        ({{ selectedCandidature?.email }})
+      </p>
+
+      <div class="modal-list">
+        <div *ngFor="let challenge of challenges" class="modal-item" (click)="sendChallengeToApplicant(challenge.id!)">
+          <div class="modal-item-header">
+            <div>
+              <h4 class="modal-item-title">{{ challenge.titre }}</h4>
+              <p class="modal-item-subtitle">{{ challenge.languageName }} • {{ challenge.difficulte }}</p>
+            </div>
+            <span class="modal-item-time">{{ challenge.tempslimite }}min</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button (click)="closeSendChallengeModal()" class="btn btn-secondary btn-full">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Empty State -->
+<div *ngIf="pagedCandidatures.length === 0 && !loading" class="empty-state">
+  <i class="fas fa-users"></i>
+  <h3>Aucune candidature trouvée</h3>
+  <p>Aucune candidature ne correspond à vos critères de recherche.</p>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-container">
+  <div class="spinner"></div>
+  <br>
+  <p>Chargement des candidatures...</p>
+</div>
+
+<!-- Pagination controls -->
+<div class="pagination-controls">
+  <button (click)="previousPage()" [disabled]="currentPage === 0">
+    Previous
+  </button>
+
+  <span class="page-info">
+    Page {{ currentPage + 1 }} of {{ totalPages }}
+  </span>
+
+  <button (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">
+    Next
+  </button>
+</div>
+
+<!-- Page size selector -->
+<div class="page-size-selector">
+  <label>Items per page:</label>
+  <select (change)="changePageSize($event)" [value]="pageSize">
+    <option value="5">5</option>
+    <option value="10">10</option>
+    <option value="20">20</option>
+    <option value="50">50</option>
+  </select>
+</div>
+
+<!-- Custom Modal -->
+<app-on-view-dialog *ngIf="selectedCandidature" [data]="selectedCandidature" [show]="showModal"
+  (close)="closeModal()"></app-on-view-dialog>

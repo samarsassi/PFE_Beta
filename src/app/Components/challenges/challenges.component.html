@@ -1,0 +1,42 @@
+<div class="filter-area-modern">
+    <div class="filter-header">
+        <span class="filter-title"><i class="fa fa-search"></i> Filter Challenges</span>
+    </div>
+    <div class="filter-chips-row">
+        <div class="filter-group">
+            <span class="filter-label">Difficulty</span>
+            <div class="chip-group">
+                <span class="chip" [class.selected]="selectedDifficulty === ''"
+                    (click)="selectedDifficulty = ''">All</span>
+                <span class="chip" [class.selected]="selectedDifficulty === 'Facile'"
+                    (click)="selectedDifficulty = 'Facile'">Facile</span>
+                <span class="chip" [class.selected]="selectedDifficulty === 'Moyen'"
+                    (click)="selectedDifficulty = 'Moyen'">Moyen</span>
+                <span class="chip" [class.selected]="selectedDifficulty === 'Difficile'"
+                    (click)="selectedDifficulty = 'Difficile'">Difficile</span>
+            </div>
+        </div>
+        <div class="filter-group">
+            <span class="filter-label">Status</span>
+            <div class="chip-group">
+                <span class="chip" [class.selected]="selectedStatus === ''" (click)="selectedStatus = ''">All</span>
+                <span class="chip" [class.selected]="selectedStatus === 'Active'"
+                    (click)="selectedStatus = 'Active'">Active</span>
+                <span class="chip" [class.selected]="selectedStatus === 'Inactive'"
+                    (click)="selectedStatus = 'Inactive'">Inactive</span>
+            </div>
+        </div>
+        <div class="filter-group">
+            <span class="filter-label">Language</span>
+            <div class="chip-group">
+                <span class="chip" [class.selected]="selectedLanguage === ''" (click)="selectedLanguage = ''">All</span>
+                <span class="chip" [class.selected]="selectedLanguage === 'JavaScript'"
+                    (click)="selectedLanguage = 'JavaScript'">JavaScript</span>
+                <span class="chip" [class.selected]="selectedLanguage === 'Python'"
+                    (click)="selectedLanguage = 'Python'">Python</span>
+                <span class="chip" [class.selected]="selectedLanguage === 'Java'"
+                    (click)="selectedLanguage = 'Java'">Java</span>
+            </div>
+        </div>
+    </div>
+</div>

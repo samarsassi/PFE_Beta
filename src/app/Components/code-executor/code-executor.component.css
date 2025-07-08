@@ -1,0 +1,189 @@
+.editor-container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.editor-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+}
+
+.editor-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+}
+
+/* API Status */
+.status-box {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.status-box.status-testing {
+  background-color: #fef9c3;
+  border: 1px solid #fcd34d;
+  color: #b45309;
+}
+
+.status-box.status-connected {
+  background-color: #ecfdf5;
+  border: 1px solid #34d399;
+  color: #065f46;
+}
+
+.status-box.status-failed {
+  background-color: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+}
+
+.status-instructions {
+  margin-top: 0.75rem;
+}
+
+.status-instructions ol {
+  margin-left: 1rem;
+  padding-left: 1rem;
+  list-style: decimal;
+}
+
+/* Form Styling */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.code-area {
+  width: 100%;
+  padding: 0.75rem;
+  font-family: monospace;
+  font-size: 0.9rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  resize: vertical;
+}
+
+/* Buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.btn {
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn.run {
+  background-color: #2563eb;
+}
+
+.btn.run:hover {
+  background-color: #1d4ed8;
+}
+
+.btn.clear {
+  background-color: #6b7280;
+}
+
+.btn.clear:hover {
+  background-color: #4b5563;
+}
+
+.btn.test {
+  background-color: #059669;
+}
+
+.btn.test:hover {
+  background-color: #047857;
+}
+
+.loading-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Output Boxes */
+.result-section {
+  margin-top: 2rem;
+}
+
+.result-title {
+  font-size: 1.25rem;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.result-status {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.output-box {
+  padding: 1rem;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.output-box.success {
+  background-color: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+}
+
+.output-box.warning {
+  background-color: #fef3c7;
+  border: 1px solid #facc15;
+  color: #92400e;
+}
+
+.output-box.error {
+  background-color: #fee2e2;
+  border: 1px solid #f87171;
+  color: #991b1b;
+}
+
+.output-box.info {
+  background-color: #e0f2fe;
+  border: 1px solid #60a5fa;
+  color: #1e40af;
+}
+
+/* Error */
+.error-box {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  padding: 1rem;
+  border-radius: 8px;
+}

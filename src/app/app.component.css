@@ -1,0 +1,189 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    /*box-sizing: border-box;*/
+  }
+  
+  /* Dashboard Layout */
+  .dashboard {
+    display: flex;
+    height: 100vh;
+  }
+  
+  /* Sidebar */
+
+.sidebar {
+    width: 250px;
+    height: 100vh; /* Full viewport height */
+    position: fixed; /* Keeps it fixed on the screen */
+    top: 0;
+    left: 0;
+    background: #2c3e50; /* Sidebar background */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    overflow-y: auto; /* Allows scrolling inside the sidebar if content overflows */
+}
+
+.sidebar-menu {
+    flex-grow: 1; /* Makes it stretch */
+    overflow-y: auto; /* Enables scrolling if content overflows */
+}
+  
+  .sidebar-header {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  
+  
+  .sidebar-menu li {
+    margin: 15px 0;
+  }
+  
+  .sidebar-menu li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+  }
+  
+  .sidebar-menu li a:hover {
+    background-color: #575757;
+  }
+  
+  /* Collapsible Sidebar */
+  .sidebar.collapsed {
+    width: 50px;
+  }
+  
+  .sidebar.collapsed .sidebar-menu li a {
+    font-size: 0px;
+    text-align: center;
+  }
+  .sidebar.collapsed .sidebar-header {
+    font-size: 0px;
+  }
+  
+  /* Collapsing Button */
+  .collapse-btn {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+  }
+  
+  /* Main Content Area */
+  .main-content {
+    size: 100vh;
+    margin-left: 250px;
+    flex-grow: 1;
+    background-color: #f4f4f4;
+    padding: 20px;
+    
+  }
+  
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-avatar {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .user-name {
+    margin-right: 20px;
+    font-size: 16px;
+  }
+  
+  .dropdown {
+    position: relative;
+  }
+  
+  .dropdown-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dropdown-content a {
+    color: #333;
+    padding: 10px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+  /* Content Section */
+  .content {
+    padding: 20px;
+  }
+  
+  .content h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  /* Default styles for navigation items */
+.nav a {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.nav i {
+    font-size: 24px;
+    margin-right: 10px; /* Add some spacing between icon and text */
+}
+
+.nav-text {
+    display: inline; /* Ensure text is visible on larger screens */
+}
+
+/* Hide text on smaller screens */
+@media (max-width: 768px) {
+    .nav-text {
+        display: none; /* Hide text when screen size is small */
+    }
+}
