@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { OffreEmploiService } from 'src/app/Services/fn/offreemploi/OffreEmploiService';
 import { KeycloakService } from 'src/app/Services/keycloak/keycloak.service';
 import { CandidatureService } from 'src/app/Services/fn/candidature/candidature.service';
@@ -85,11 +85,24 @@ export class MainpageComponent implements OnInit {
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    console.log('Scroll Y:', window.pageYOffset);
+
     this.showScrollTop = window.pageYOffset > 300;
   }
 
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  @ViewChild('dropdownRef', { static: false }) dropdownRef!: ElementRef;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (this.dropdownOpen) {
+      const target = event.target as HTMLElement;
+      // Check if the click is inside the dropdown or trigger
+      if (this.dropdownRef && !this.dropdownRef.nativeElement.contains(target)) {
+        this.dropdownOpen = false;
+      }
+    }
   }
 }

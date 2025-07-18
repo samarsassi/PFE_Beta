@@ -8,13 +8,15 @@
           [class]="activeTab === 'challenges' ? 'tab tab-active' : 'tab tab-inactive'">
           📋 Challenges ({{ getFilteredChallenges().length }})
         </button>
-        
+
         <button (click)="setActiveTab('ajouter')"
           [class]="activeTab === 'ajouter' ? 'tab tab-active' : 'tab tab-inactive'">
           ➕ Ajouter Challenge
         </button>
       </nav>
     </div>
+
+
 
     <!-- Challenges Tab -->
     <div *ngIf="activeTab === 'challenges'" class="tab-content">
@@ -73,7 +75,7 @@
               </div>
             </div>
             <div class="item-actions">
-              <button class="btn btn-primary">Edit</button>
+              <button class="btn btn-primary" (click)="startEditChallenge(challenge)">Edit</button>
               <button class="btn btn-danger" (click)="onDelete(challenge.id!)">Delete</button>
             </div>
           </div>
@@ -94,272 +96,256 @@
         </div>
       </div>
     </div>
-
-    <!-- Candidatures Tab -->
-    <div *ngIf="activeTab === 'candidatures'" class="tab-content">
-      <!-- Filter Icon Button for Candidatures -->
-      <button class="btn btn-secondary btn-small filter-btn" (click)="showCandidatureFilterBar = true"
-        *ngIf="!showCandidatureFilterBar">
-        <span class="material-icons filter-icon">filter_list</span>
-      </button>
-      <!-- Candidatures Filter Bar (Modern Full-Width Style) -->
-      <div class="chip-filter-bar-full" *ngIf="showCandidatureFilterBar">
-        <div class="chip-filter-bar-full-header">
-          <span class="chip-filter-bar-title">Filter Candidatures</span>
-          <button class="chip-filter-bar-close" (click)="showCandidatureFilterBar = false">&times;</button>
-        </div>
-        <div class="chip-filter-bar-full-content">
-          <div class="chip-group">
-            <span class="chip-group-label">Application Status</span>
-            <ng-container *ngFor="let stat of ['all', 'EN ATTENTE', 'ACCEPTÉ', 'REJETÉ']">
-              <button type="button" class="chip-alt"
-                [class.chip-alt-active]="candidatureFilters.applicationStatus === stat"
-                (click)="setCandidatureFilter('applicationStatus', stat)">
-                {{ stat === 'all' ? 'All' : stat }}
-              </button>
-            </ng-container>
-          </div>
-          <div class="chip-group">
-            <span class="chip-group-label">Challenge Status</span>
-            <ng-container *ngFor="let stat of ['all', 'AUCUN', 'ENVOYE', 'TERMINE', 'EVALUE']">
-              <button type="button" class="chip-alt"
-                [class.chip-alt-active]="candidatureFilters.challengeStatus === stat"
-                (click)="setCandidatureFilter('challengeStatus', stat)">
-                {{ stat === 'all' ? 'All' : stat }}
-              </button>
-            </ng-container>
-          </div>
-          <div class="chip-group">
-            <span class="chip-group-label">CV Score</span>
-            <ng-container *ngFor="let range of ['all', '0-30', '31-60', '61-80', '81-100']">
-              <button type="button" class="chip-alt" [class.chip-alt-active]="candidatureFilters.scoreRange === range"
-                (click)="setCandidatureFilter('scoreRange', range)">
-                {{ range === 'all' ? 'All' : range }}
-              </button>
-            </ng-container>
-          </div>
-          <button class="btn btn-secondary btn-small" (click)="clearCandidatureFilters()">Clear</button>
-        </div>
-      </div>
-      <!-- Always show the candidatures list/cards below the filter bar -->
-      <div class="filter-summary" *ngIf="getFilteredCandidatures().length !== candidatures.length">
-        Showing {{ getFilteredCandidatures().length }} of {{ candidatures.length }} candidatures
-      </div>
-      <div class="content-spacing">
-        <div *ngFor="let application of getFilteredCandidatures()" class="item-card"
-          [ngClass]="getCardStatusClass(application)">
-          <div class="item-header">
-            <div class="item-content">
-              <h3 class="item-title">{{ application.nom }}</h3>
-              <p class="item-description">{{ application.email }}</p>
-              <div class="item-tags">
-                <span class="badge" [ngClass]="getScoreBadgeClass(application.scoreCV)">
-                  Score CV: {{ application.scoreCV }}/100
-                </span>
-                <!-- Application Status with Label -->
-                <span class="chip-label">📝 Statut Candidature:</span>
-                <span class="chip" [ngClass]="getStatutClass(application.statut)">
-                  {{ application.statut }}
-                </span>
-                <!-- Challenge Status with Label -->
-                <span class="chip-label">💻 Statut Défi:</span>
-                <span class="chip" [ngClass]="getChallengeStatutClass(application.statutDefi || 'AUCUN')">
-                  {{ application.statutDefi || 'AUCUN' }}
-                </span>
-              </div>
-              <div class="item-details">
-                <p><strong>Téléphone:</strong> {{ application.telephone }}</p>
-                <p><strong>Expérience:</strong> {{ application.experience }}</p>
-                <p *ngIf="application.remarquesRH"><strong>Remarques RH:</strong> {{ application.remarquesRH }}</p>
-              </div>
-              <div *ngIf="application.defiEnvoyeLe" class="item-meta">
-                Défi envoyé: {{ application.defiEnvoyeLe | date:'short' }}
-              </div>
+    <ng-template #editFormOnly>
+      <div class="edit-form-only">
+        <button class="close-edit-btn" (click)="cancelEditChallenge()" title="Close">&times;</button>
+        <form (ngSubmit)="submitEditChallenge()" class="form-spacing">
+          <h2>Edit Challenge</h2>
+          <!-- Basic Information -->
+          <div class="form-grid-2">
+            <div>
+              <label class="form-label">Challenge Title</label>
+              <input type="text" [(ngModel)]="editChallengeForm.titre" name="editTitre" class="form-input" required>
             </div>
-            <div class="item-actions">
-              <button *ngIf="!application.statutDefi || application.statutDefi === 'AUCUN'"
-                (click)="openSendChallengeModal(application)" class="btn btn-success">
-                📤 Send Challenge
-              </button>
-              <button class="btn btn-primary">View Details</button>
+            <div>
+              <label class="form-label">Programming Language</label>
+              <select [(ngModel)]="editChallengeForm.languageId" name="editLanguageId" (change)="onEditLanguageChange()"
+                class="form-select">
+                <option *ngFor="let lang of availableLanguages" [ngValue]="lang.id">{{ lang.name }}</option>
+              </select>
             </div>
           </div>
-        </div>
-        <!-- Empty State for Filtered Candidatures -->
-        <div *ngIf="getFilteredCandidatures().length === 0" class="empty-state">
-          <div class="empty-icon">🔍</div>
-          <h3 class="empty-title">No candidatures found</h3>
-          <p class="empty-description">
-            No candidatures match your current filters. Try adjusting your search criteria.
-          </p>
-          <button class="btn btn-primary" (click)="clearCandidatureFilters()">
-            Clear Filters
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Create Challenge Tab -->
-    <div *ngIf="activeTab === 'ajouter'" class="tab-content">
-      <form (ngSubmit)="createChallenge()" class="form-spacing">
-        <!-- Basic Information -->
-        <div class="form-grid-2">
+          <!-- Description -->
           <div>
-            <label class="form-label">Challenge Title</label>
-            <input type="text" [(ngModel)]="newChallenge.titre" name="titre" class="form-input"
-              placeholder="e.g., Two Sum Problem" required>
+            <label class="form-label">Problem Description</label>
+            <textarea [(ngModel)]="editChallengeForm.description" name="editDescription" rows="4" class="form-textarea"
+              required></textarea>
           </div>
-
+          <!-- Settings -->
+          <div class="form-grid-3">
+            <div>
+              <label class="form-label">Difficulty</label>
+              <select [(ngModel)]="editChallengeForm.difficulte" name="editDifficulte" class="form-select">
+                <option value="Facile">Facile</option>
+                <option value="Moyen">Moyen</option>
+                <option value="Difficile">Difficile</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Time Limit (minutes)</label>
+              <input type="number" [(ngModel)]="editChallengeForm.tempslimite" name="editTempslimite" min="15" max="180"
+                class="form-input">
+            </div>
+            <div>
+              <label class="form-label">Memory Limit (KB)</label>
+              <input type="number" [(ngModel)]="editChallengeForm.memoirelimite" name="editMemoirelimite" min="64000"
+                max="512000" step="1000" class="form-input">
+            </div>
+          </div>
+          <!-- Starter Code -->
           <div>
-            <label class="form-label">Programming Language</label>
-            <select [(ngModel)]="newChallenge.languageId" name="languageId" (change)="onLanguageChange()"
-              class="form-select">
-              <option *ngFor="let lang of availableLanguages" [value]="lang.id">{{ lang.name }}</option>
-            </select>
+            <label class="form-label">Starter Code (Optional)</label>
+            <textarea [(ngModel)]="editChallengeForm.codeDepart" name="editCodeDepart" rows="8"
+              class="form-textarea code-textarea"></textarea>
           </div>
-        </div>
-
-        <!-- Description -->
-        <div>
-          <label class="form-label">Problem Description</label>
-          <textarea [(ngModel)]="newChallenge.description" name="description" rows="4" class="form-textarea"
-            placeholder="Describe the problem, requirements, and constraints..." required></textarea>
-        </div>
-
-        <!-- Settings -->
-        <div class="form-grid-3">
+          <!-- Test Cases -->
           <div>
-            <label class="form-label">Difficulty</label>
-            <select [(ngModel)]="newChallenge.difficulte" name="difficulte" class="form-select">
-              <option value="Facile">Facile</option>
-              <option value="Moyen">Moyen</option>
-              <option value="Difficile">Difficile</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="form-label">Time Limit (minutes)</label>
-            <input type="number" [(ngModel)]="newChallenge.tempslimite" name="tempslimite" min="15" max="180"
-              class="form-input">
-          </div>
-
-          <div>
-            <label class="form-label">Memory Limit (KB)</label>
-            <input type="number" [(ngModel)]="newChallenge.memoirelimite" name="memoirelimite" min="64000" max="512000"
-              step="1000" class="form-input">
-          </div>
-        </div>
-
-        <!-- Starter Code -->
-        <div>
-          <label class="form-label">Starter Code (Optional)</label>
-          <textarea [(ngModel)]="newChallenge.codeDepart" name="codeDepart" rows="8" class="form-textarea code-textarea"
-            placeholder="Provide starter code template..."></textarea>
-        </div>
-
-        <!-- Test Cases -->
-        <div>
-          <h3 class="section-title">Test Cases</h3>
-
-          <!-- Existing Test Cases -->
-          <div *ngIf="newChallenge.testCases && newChallenge.testCases.length > 0" class="test-cases-list">
-            <div *ngFor="let testCase of newChallenge.testCases; let i = index" class="test-case-item">
-              <div class="test-case-header">
-                <div class="test-case-content">
-                  <div>
-                    <label class="test-case-label">Input</label>
-                    <pre class="test-case-pre">{{ testCase.entree }}</pre>
+            <h3 class="section-title">Test Cases</h3>
+            <div *ngIf="editChallengeForm.testCases && editChallengeForm.testCases.length > 0" class="test-cases-list">
+              <div *ngFor="let testCase of editChallengeForm.testCases; let i = index" class="test-case-item">
+                <div class="test-case-header">
+                  <div class="test-case-content">
+                    <div>
+                      <label class="test-case-label">Input</label>
+                      <pre class="test-case-pre">{{ testCase.entree }}</pre>
+                    </div>
+                    <div>
+                      <label class="test-case-label">Expected Output</label>
+                      <pre class="test-case-pre">{{ testCase.sortieAttendue }}</pre>
+                    </div>
                   </div>
-                  <div>
-                    <label class="test-case-label">Expected Output</label>
-                    <pre class="test-case-pre">{{ testCase.sortieAttendue }}</pre>
+                  <div class="test-case-actions">
+                    <span class="test-case-points">{{ testCase.points }} pts</span>
+                    <span *ngIf="testCase.estCache" class="badge badge-yellow">Hidden</span>
+                    <button type="button" (click)="removeEditTestCase(i)" class="delete-btn">🗑️</button>
                   </div>
                 </div>
-                <div class="test-case-actions">
-                  <span class="test-case-points">{{ testCase.points }} pts</span>
-                  <span *ngIf="testCase.estCache" class="badge badge-yellow">Hidden</span>
-                  <button type="button" (click)="removeTestCase(i)" class="delete-btn">
-                    🗑️
-                  </button>
+              </div>
+            </div>
+            <!-- Add New Test Case -->
+            <div class="test-case-form">
+              <h4 class="test-case-form-title">Add Test Case</h4>
+              <div class="form-grid-2">
+                <div>
+                  <label class="test-case-label">Input</label>
+                  <textarea [(ngModel)]="editNewTestCase.entree" name="editTestEntree" rows="3"
+                    class="form-textarea code-textarea"></textarea>
+                </div>
+                <div>
+                  <label class="test-case-label">Expected Output</label>
+                  <textarea [(ngModel)]="editNewTestCase.sortieAttendue" name="editTestSortieAttendue" rows="3"
+                    class="form-textarea code-textarea"></textarea>
                 </div>
               </div>
+              <div class="test-case-options">
+                <div>
+                  <label class="test-case-label">Points</label>
+                  <input type="number" [(ngModel)]="editNewTestCase.points" name="editTestPoints" min="1" max="100"
+                    class="points-input">
+                </div>
+                <div class="checkbox-group">
+                  <input type="checkbox" [(ngModel)]="editNewTestCase.estCache" name="editTestEstCache"
+                    id="editTestEstCache" class="checkbox">
+                  <label for="editTestEstCache" class="checkbox-label">Hidden test case</label>
+                </div>
+              </div>
+              <button type="button" (click)="addEditTestCase()" class="btn btn-success">➕ Add Test Case</button>
             </div>
           </div>
-
-          <!-- Add New Test Case -->
-          <div class="test-case-form">
-            <h4 class="test-case-form-title">Add Test Case</h4>
-            <div class="form-grid-2">
-              <div>
-                <label class="test-case-label">Input</label>
-                <textarea [(ngModel)]="newTestCase.entree" name="testEntree" rows="3"
-                  class="form-textarea code-textarea" placeholder="Test input..."></textarea>
-              </div>
-              <div>
-                <label class="test-case-label">Expected Output</label>
-                <textarea [(ngModel)]="newTestCase.sortieAttendue" name="testSortieAttendue" rows="3"
-                  class="form-textarea code-textarea" placeholder="Expected output..."></textarea>
-              </div>
-            </div>
-            <div class="test-case-options">
-              <div>
-                <label class="test-case-label">Points</label>
-                <input type="number" [(ngModel)]="newTestCase.points" name="testPoints" min="1" max="100"
-                  class="points-input">
-              </div>
-              <div class="checkbox-group">
-                <input type="checkbox" [(ngModel)]="newTestCase.estCache" name="testEstCache" id="testEstCache"
-                  class="checkbox">
-                <label for="testEstCache" class="checkbox-label">Hidden test case</label>
-              </div>
-            </div>
-            <button type="button" (click)="addTestCase()" class="btn btn-success">
-              ➕ Add Test Case
-            </button>
+          <!-- Submit Buttons -->
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-submit">Save Changes</button>
+            <button type="button" (click)="cancelEditChallenge()" class="btn btn-secondary">Cancel</button>
           </div>
-        </div>
-
-        <!-- Submit Buttons -->
-        <div class="form-actions">
-          <button type="submit" [disabled]="isCreatingChallenge || !validateChallenge()"
-            class="btn btn-primary btn-submit" [class.btn-disabled]="isCreatingChallenge || !validateChallenge()">
-            <span *ngIf="isCreatingChallenge" class="spinner">⟳</span>
-            {{ isCreatingChallenge ? 'Creating...' : 'Create Challenge' }}
-          </button>
-          <button type="button" (click)="resetChallengeForm()" class="btn btn-secondary">
-            Reset Form
-          </button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </ng-template>
   </div>
 
-  <!-- Send Challenge Modal -->
-  <div *ngIf="showSendChallengeModal" class="modal-overlay">
-    <div class="modal-content">
-      <h3 class="modal-title">Send Challenge</h3>
-      <p class="modal-text">
-        Send a coding challenge to <strong>{{ selectedApplication?.nom }}</strong>
-        ({{ selectedApplication?.email }})
-      </p>
+  <!-- Create Challenge Tab -->
+  <div *ngIf="activeTab === 'ajouter'" class="tab-content">
+    <form (ngSubmit)="createChallenge()" class="form-spacing">
+      <!-- Basic Information -->
+      <div class="form-grid-2">
+        <div>
+          <label class="form-label">Challenge Title</label>
+          <input type="text" [(ngModel)]="newChallenge.titre" name="titre" class="form-input"
+            placeholder="e.g., Two Sum Problem" required>
+        </div>
 
-      <div class="modal-list">
-        <div *ngFor="let challenge of challenges" class="modal-item" (click)="sendChallengeToApplicant(challenge.id!)">
-          <div class="modal-item-header">
-            <div>
-              <h4 class="modal-item-title">{{ challenge.titre }}</h4>
-              <p class="modal-item-subtitle">{{ challenge.languageName }} • {{ challenge.difficulte }}</p>
-            </div>
-            <span class="modal-item-time">{{ challenge.tempslimite }}min</span>
-          </div>
+        <div>
+          <label class="form-label">Programming Language</label>
+          <select [(ngModel)]="newChallenge.languageId" name="languageId" (change)="onLanguageChange()"
+            class="form-select">
+            <option *ngFor="let lang of availableLanguages" [ngValue]="lang.id">{{ lang.name }}</option>
+
+          </select>
         </div>
       </div>
 
-      <div class="modal-actions">
-        <button (click)="closeSendChallengeModal()" class="btn btn-secondary btn-full">
-          Cancel
+      <!-- Description -->
+      <div>
+        <label class="form-label">Problem Description</label>
+        <textarea [(ngModel)]="newChallenge.description" name="description" rows="4" class="form-textarea"
+          placeholder="Describe the problem, requirements, and constraints..." required></textarea>
+      </div>
+
+      <!-- Settings -->
+      <div class="form-grid-3">
+        <div>
+          <label class="form-label">Difficulty</label>
+          <select [(ngModel)]="newChallenge.difficulte" name="difficulte" class="form-select">
+            <option value="Facile">Facile</option>
+            <option value="Moyen">Moyen</option>
+            <option value="Difficile">Difficile</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Time Limit (minutes)</label>
+          <input type="number" [(ngModel)]="newChallenge.tempslimite" name="tempslimite" min="15" max="180"
+            class="form-input">
+        </div>
+
+        <div>
+          <label class="form-label">Memory Limit (KB)</label>
+          <input type="number" [(ngModel)]="newChallenge.memoirelimite" name="memoirelimite" min="64000" max="512000"
+            step="1000" class="form-input">
+        </div>
+      </div>
+
+      <!-- Starter Code -->
+      <div>
+        <label class="form-label">Starter Code (Optional)</label>
+        <textarea [(ngModel)]="newChallenge.codeDepart" name="codeDepart" rows="8" class="form-textarea code-textarea"
+          placeholder="Provide starter code template..."></textarea>
+      </div>
+
+      <!-- Test Cases -->
+      <div>
+        <h3 class="section-title">Test Cases</h3>
+
+        <!-- Existing Test Cases -->
+        <div *ngIf="newChallenge.testCases && newChallenge.testCases.length > 0" class="test-cases-list">
+          <div *ngFor="let testCase of newChallenge.testCases; let i = index" class="test-case-item">
+            <div class="test-case-header">
+              <div class="test-case-content">
+                <div>
+                  <label class="test-case-label">Input</label>
+                  <pre class="test-case-pre">{{ testCase.entree }}</pre>
+                </div>
+                <div>
+                  <label class="test-case-label">Expected Output</label>
+                  <pre class="test-case-pre">{{ testCase.sortieAttendue }}</pre>
+                </div>
+              </div>
+              <div class="test-case-actions">
+                <span class="test-case-points">{{ testCase.points }} pts</span>
+                <span *ngIf="testCase.estCache" class="badge badge-yellow">Hidden</span>
+                <button type="button" (click)="removeTestCase(i)" class="delete-btn">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add New Test Case -->
+        <div class="test-case-form">
+          <h4 class="test-case-form-title">Add Test Case</h4>
+          <div class="form-grid-2">
+            <div>
+              <label class="test-case-label">Input</label>
+              <textarea [(ngModel)]="newTestCase.entree" name="testEntree" rows="3" class="form-textarea code-textarea"
+                placeholder="Test input..."></textarea>
+            </div>
+            <div>
+              <label class="test-case-label">Expected Output</label>
+              <textarea [(ngModel)]="newTestCase.sortieAttendue" name="testSortieAttendue" rows="3"
+                class="form-textarea code-textarea" placeholder="Expected output..."></textarea>
+            </div>
+          </div>
+          <div class="test-case-options">
+            <div>
+              <label class="test-case-label">Points</label>
+              <input type="number" [(ngModel)]="newTestCase.points" name="testPoints" min="1" max="100"
+                class="points-input">
+            </div>
+            <div class="checkbox-group">
+              <input type="checkbox" [(ngModel)]="newTestCase.estCache" name="testEstCache" id="testEstCache"
+                class="checkbox">
+              <label for="testEstCache" class="checkbox-label">Hidden test case</label>
+            </div>
+          </div>
+          <button type="button" (click)="addTestCase()" class="btn btn-success">
+            ➕ Add Test Case
+          </button>
+        </div>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div class="form-actions">
+        <button type="submit" [disabled]="isCreatingChallenge || !validateChallenge()"
+          class="btn btn-primary btn-submit" [class.btn-disabled]="isCreatingChallenge || !validateChallenge()">
+          <span *ngIf="isCreatingChallenge" class="spinner">⟳</span>
+          {{ isCreatingChallenge ? 'Creating...' : 'Create Challenge' }}
+        </button>
+        <button type="button" (click)="resetChallengeForm()" class="btn btn-secondary">
+          Reset Form
         </button>
       </div>
-    </div>
+    </form>
   </div>
 </div>
+
+<!-- End container -->

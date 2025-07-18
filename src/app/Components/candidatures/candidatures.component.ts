@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core"
+import { Component, inject, Inject } from "@angular/core"
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog"
 import { MatTableDataSource } from "@angular/material/table"
 import { ActivatedRoute } from "@angular/router"
@@ -7,6 +7,9 @@ import { CandidatureService } from "src/app/Services/fn/candidature/candidature.
 import { ExportToCsv } from "export-to-csv"
 import { ChallengeService } from "src/app/Services/fn/challenge/challenge-service.service"
 import { CodingChallenge } from "src/app/Data/coding-challenge.model"
+import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
+import { SnackBarAnnotatedComponent } from '../user/view-offre/view-offre.component';
+
 
 @Component({
   selector: "app-candidatures",
@@ -15,7 +18,7 @@ import { CodingChallenge } from "src/app/Data/coding-challenge.model"
 })
 export class CandidaturesComponent {
   candidatures: Candidature[] = []
-  pagedCandidatures: Candidature[] = [] // This is what your template uses
+  pagedCandidatures: Candidature[] = []
   allCandidatures: Candidature[] = []
   challenges: CodingChallenge[] = []
 
@@ -30,6 +33,7 @@ export class CandidaturesComponent {
   isModalOpen = false
   fullUrl: string | null = null
   selectedStatus = ""
+  sendingChallenge: boolean = false;
 
   datatableColumns = [
     { name: "Nom du candidat", prop: "nom", sortable: true },
@@ -55,11 +59,15 @@ export class CandidaturesComponent {
     scoreRange: "all",
   }
 
+  private _snackBar = inject(MatSnackBar);
+  durationInSeconds = 5;
+
   constructor(
     public candidatureService: CandidatureService,
     public route: ActivatedRoute,
     private dialog: MatDialog,
     private challengeService: ChallengeService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -128,20 +136,26 @@ export class CandidaturesComponent {
 
   sendChallengeToApplicant(challengeId: number) {
     if (this.selectedCandidature) {
+      this.sendingChallenge = true;
       this.challengeService.envoyerDefiAuCandidat(this.selectedCandidature.id, challengeId).subscribe({
         next: (responseMessage) => {
-          // The backend returns a success message string, so just proceed
-          console.log("Défi envoyé avec succès!", responseMessage);
-          alert("Challenge sent successfully!");
+          this._snackBar.openFromComponent(SnackBarComponent, {
+            duration: this.durationInSeconds * 1000,
+            horizontalPosition: 'right',
+            verticalPosition: 'top',
+          });
+          this.sendingChallenge = false;
           this.showSendChallengeModal = false;
           this.selectedCandidature = null;
-
-          // Refresh candidatures to show updated status
           this.LoadChallenges();
         },
         error: (error) => {
-          console.error("Erreur lors de l'envoi du défi:", error);
-          alert("Failed to send challenge. Please try again.");
+          this.snackBar.open('Échec de l\'envoi du défi.', 'X', {
+            duration: 4000,
+            horizontalPosition: 'end',
+            verticalPosition: 'bottom',
+          });
+          this.sendingChallenge = false;
         },
       });
     }
@@ -414,17 +428,63 @@ export class CandidaturesComponent {
   }
 }
 
+export interface DialogData {
+  message: string;
+  title: string;
+}
+
+@Component({
+  template: `
+    <div class="dialog-container">
+      <h1 class="dialog-title">{{ data.title }}</h1>
+      <div class="dialog-actions">
+        <button class="cancel-button" (click)="onNoClick()">Cancel</button>
+        <button class="ok-button" (click)="onYesClick()">Ok</button>
+      </div>
+    </div>
+  `,
+  styleUrls: ['./confirmation-dialog.component.css']
+})
 export class ConfirmCandidatureDialog {
   constructor(
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    public dialogRef: MatDialogRef<ConfirmCandidatureDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) { }
 
   onNoClick(): void {
-    this.dialogRef.close(false)
+    this.dialogRef.close(false);
   }
 
   onYesClick(): void {
-    this.dialogRef.close(true)
+    this.dialogRef.close(true);
   }
+}
+
+
+@Component({
+  templateUrl: `snack-bar.html`,
+  styles: [`
+      .snack-bar-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background-color: green;
+    }
+
+    .candidature {
+      flex: 1;
+      color: white;
+      font-weight: bold;
+    }
+
+    [matSnackBarActions] button {
+      font-weight: bold;
+      color: red;
+    }
+
+  `]
+})
+export class SnackBarComponent {
+  snackBarRef = inject(MatSnackBarRef);
 }

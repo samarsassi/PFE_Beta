@@ -187,3 +187,248 @@
   padding: 1rem;
   border-radius: 8px;
 }
+
+.split-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  min-height: 70vh;
+}
+
+.challenge-info {
+  flex: 1 1 35%;
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 280px;
+  max-width: 420px;
+}
+
+.challenge-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.3rem;
+  margin-top: 1.2rem;
+  letter-spacing: 0.5px;
+}
+
+.editor-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.7rem;
+}
+
+.challenge-description {
+  font-size: 1.08rem;
+  color: #333;
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.status-label {
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.2rem 0.7rem;
+  border-radius: 12px;
+  margin-top: 0.3rem;
+  background: #e9ecef;
+  color: #495057;
+}
+
+.status-label.expired {
+  background: #ffeaea;
+  color: #c0392b;
+}
+
+.left-timer {
+  margin-top: auto;
+  padding-top: 2rem;
+  border-top: 1px solid #e0e0e0;
+  text-align: left;
+}
+
+.timer-label {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-right: 0.5rem;
+}
+
+.timer-value {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.2rem;
+  color: #2980b9;
+  background: #eaf6fb;
+  padding: 0.2rem 0.7rem;
+  border-radius: 8px;
+}
+
+.expired-message {
+  color: #c0392b;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.editor-card.code-exec-area {
+  flex: 2 1 60%;
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem 2rem 1.5rem 2rem;
+  box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 900px) {
+  .split-layout {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .challenge-info,
+  .editor-card.code-exec-area {
+    max-width: 100%;
+    min-width: 0;
+    padding: 1.2rem 0.7rem;
+  }
+}
+
+/* Optional: style buttons for consistency */
+.btn.start {
+  background: #2980b9;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.3rem;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn.start:hover {
+  background: #1c5d8c;
+}
+
+.testcase-box {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  margin-bottom: 1.1rem;
+  padding: 0.7rem 1rem;
+}
+
+.testcase-label {
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: #2980b9;
+  margin-bottom: 0.2rem;
+  margin-top: 0.3rem;
+}
+
+.testcase-input,
+.testcase-output {
+  background: #f4f8fb;
+  color: #222;
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.98rem;
+  margin-bottom: 0.5rem;
+  white-space: pre-wrap;
+}
+
+.no-testcases {
+  color: #888;
+  font-style: italic;
+  margin: 1rem 0;
+  text-align: left;
+}
+
+/* Annuler button styles */
+.btn.cancel {
+  background: #ff5252;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 22px;
+  font-weight: 500;
+  font-size: 1em;
+  margin-left: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(255, 82, 82, 0.08);
+}
+
+.btn.cancel:hover {
+  background: #e53935;
+  box-shadow: 0 4px 16px rgba(255, 82, 82, 0.18);
+}
+
+/* Confirmation modal styles */
+.annuler-modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(33, 33, 33, 0.18);
+  padding: 32px 28px 24px 28px;
+  max-width: 380px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.annuler-modal h2 {
+  margin-top: 0;
+  color: #c62828;
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+.annuler-modal p {
+  color: #333;
+  font-size: 1.08em;
+  margin-bottom: 2em;
+}
+
+.annuler-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.annuler-modal-actions button {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.annuler-modal-actions .cancel-btn {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.annuler-modal-actions .cancel-btn:hover {
+  background: #e0e0e0;
+}
+
+.annuler-modal-actions .confirm-btn {
+  background: #e53935;
+  color: #fff;
+}
+
+.annuler-modal-actions .confirm-btn:hover {
+  background: #b71c1c;
+}

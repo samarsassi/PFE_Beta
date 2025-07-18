@@ -143,23 +143,20 @@ footer .container {
 /* dropdown */
 .user-dropdown {
   position: relative;
-  cursor: pointer;
-}
-
-.user-dropdown span {
-  font-weight: bold;
-  color: #1f1f1f;
 }
 
 .dropdown-menu {
   position: absolute;
-  z-index: 1000;
+  z-index: 9999;
   background: #fff;
-  min-width: 180px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  padding: 0.5rem 0;
-  margin-top: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  min-width: 160px;
+  right: 0;
+  top: 100%;
+  margin-top: 8px;
+  padding: 8px 0;
+  list-style: none;
 }
 
 .dropdown-menu li {

@@ -17,6 +17,17 @@
       <div class="dialog-row"><strong>Email:</strong> <span>{{ data.email }}</span></div>
       <div class="dialog-row"><strong>Phone:</strong> <span>{{ data.telephone }}</span></div>
       <div class="dialog-row"><strong>Cover Letter:</strong> <span>{{ data.coverLetter }}</span></div>
+      <!-- Défi info as chips -->
+      <div class="dialog-row" *ngIf="defiTitre || defiStatut">
+        <strong>Défi:</strong>
+        <mat-chip *ngIf="defiTitre" color="primary" selected style="margin-right: 8px;">
+          {{ defiTitre }}
+        </mat-chip>
+        <mat-chip *ngIf="defiStatut"
+          [ngStyle]="{'background-color': getChallengeStatutColor(defiStatut), 'color': 'white'}">
+          {{ defiStatut }}
+        </mat-chip>
+      </div>
       <div *ngIf="!settings; else elseBlock" class="dialog-row status-view">
         <strong>Status:</strong>
         <mat-chip style="cursor: pointer;" [ngStyle]="{
@@ -50,10 +61,10 @@
           <!-- <h2>View CV</h2> -->
           <div *ngIf="cvUrl">
             <iframe [src]="cvUrl" width="80%" height="300px"></iframe>
-          <button mat-icon-button class="settings-btn" (click)="onOpen(data)">
-            <mat-icon>description</mat-icon>
-          </button>
-        </div>
+            <button mat-icon-button class="settings-btn" (click)="onOpen(data)">
+              <mat-icon>description</mat-icon>
+            </button>
+          </div>
           <div *ngIf="!cvUrl">
             <p>No CV available.</p>
           </div>

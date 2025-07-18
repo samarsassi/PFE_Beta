@@ -110,6 +110,10 @@
           <button class="icon-btn delete-btn" (click)="onDelete(c.id)" title="Supprimer">
             <i class="fas fa-trash"></i>
           </button>
+          <button *ngIf="!c.statutDefi || c.statutDefi === 'AUCUN'" class="icon-btn send-btn"
+            (click)="openSendChallengeModal(c)" title="Envoyer un défi">
+            <i class="fas fa-paper-plane"></i>
+          </button>
         </td>
         <td>
           <span class="status-badge" [ngClass]="{
@@ -154,47 +158,52 @@
           </div>
         </div>
         <div class="item-actions">
-          <button *ngIf="!c.statutDefi || c.statutDefi === 'AUCUN'"
-          (click)="openSendChallengeModal(c)" class="btn btn-success">
-          📤 Send Challenge
-        </button>
+          <button *ngIf="!c.statutDefi || c.statutDefi === 'AUCUN'" (click)="openSendChallengeModal(c)"
+            class="btn btn-success">
+            📤 Send Challenge
+          </button>
           <button class="btn btn-primary" (click)="onView(c)"><i class="fas fa-eye"></i> View Details</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Send Challenge Modal -->
-  <div *ngIf="showSendChallengeModal" class="modal-overlay">
-    <div class="modal-content">
-      <h3 class="modal-title">Send Challenge</h3>
-      <p class="modal-text">
-        Send a coding challenge to <strong>{{ selectedCandidature?.nom }}</strong>
-        ({{ selectedCandidature?.email }})
-      </p>
+</div>
 
-      <div class="modal-list">
-        <div *ngFor="let challenge of challenges" class="modal-item" (click)="sendChallengeToApplicant(challenge.id!)">
-          <div class="modal-item-header">
-            <div>
-              <h4 class="modal-item-title">{{ challenge.titre }}</h4>
-              <p class="modal-item-subtitle">{{ challenge.languageName }} • {{ challenge.difficulte }}</p>
-            </div>
-            <span class="modal-item-time">{{ challenge.tempslimite }}min</span>
+<!-- Send Challenge Modal -->
+<div *ngIf="showSendChallengeModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3 class="modal-title">Send Challenge</h3>
+    <p class="modal-text">
+      Send a coding challenge to <strong>{{ selectedCandidature?.nom }}</strong>
+      ({{ selectedCandidature?.email }})
+    </p>
+
+    <div class="modal-list">
+      <div *ngFor="let challenge of challenges" class="modal-item" (click)="sendChallengeToApplicant(challenge.id!)">
+        <div class="modal-item-header">
+          <div>
+            <h4 class="modal-item-title">{{ challenge.titre }}</h4>
+            <p class="modal-item-subtitle">{{ challenge.languageName }} • {{ challenge.difficulte }}</p>
           </div>
+          <span class="modal-item-time">{{ challenge.tempslimite }}min</span>
         </div>
       </div>
+    </div>
 
-      <div class="modal-actions">
-        <button (click)="closeSendChallengeModal()" class="btn btn-secondary btn-full">
-          Cancel
-        </button>
-      </div>
+    <div class="modal-actions">
+      <button (click)="closeSendChallengeModal()" class="btn btn-secondary btn-full">
+        Cancel
+      </button>
     </div>
   </div>
 </div>
 
-
+<!-- Loader overlay for sending challenge -->
+<div *ngIf="sendingChallenge" class="challenge-loader-overlay">
+  <div class="challenge-loader-spinner"></div>
+  <p>Envoi du défi...</p>
+</div>
 
 <!-- Empty State -->
 <div *ngIf="pagedCandidatures.length === 0 && !loading" class="empty-state">
@@ -239,3 +248,5 @@
 <!-- Custom Modal -->
 <app-on-view-dialog *ngIf="selectedCandidature" [data]="selectedCandidature" [show]="showModal"
   (close)="closeModal()"></app-on-view-dialog>
+
+<app-scroll-top></app-scroll-top>

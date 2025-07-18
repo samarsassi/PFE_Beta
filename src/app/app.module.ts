@@ -26,7 +26,7 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { MainpageComponent } from './Components/user/mainpage/mainpage.component';
 import { SnackBarAnnotatedComponent, ViewOffreComponent } from './Components/user/view-offre/view-offre.component';
 import { MaincontentComponent } from './Components/user/maincontent/maincontent.component';
-import { ScrollTopComponent } from './Components/user/scroll-top/scroll-top.component';
+import { ScrollTopComponent } from './Components/scroll-top/scroll-top.component';
 import { UnauthorizedComponent } from './Components/user/unauthorized/unauthorized.component';
 import { ChipModule } from 'primeng/chip';
 import { StepsModule } from 'primeng/steps';
@@ -36,11 +36,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatCheckboxModule } from '@angular/material/checkbox'; 
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatStepperModule } from '@angular/material/stepper';
-import {AsyncPipe} from '@angular/common';
-import {MatChipsModule} from '@angular/material/chips';
-import { CandidaturesComponent } from './Components/candidatures/candidatures.component';
+import { AsyncPipe } from '@angular/common';
+import { MatChipsModule } from '@angular/material/chips';
+import { CandidaturesComponent, SnackBarComponent } from './Components/candidatures/candidatures.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';  // Optional, for pagination
 import { MatSortModule } from '@angular/material/sort';  // Optional, for sorting
@@ -48,7 +48,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { OnViewDialogComponent } from './Components/candidatures/dialogs/on-view-dialog/on-view-dialog.component';
 import { OnDeleteDialogComponent } from './Components/candidatures/dialogs/on-Delete-dialog/on-delete-dialog.component';
 //import { PowerBIEmbedModule } from 'powerbi-client-angular';
-import {MatCardModule} from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
 import { EditOffreDialogComponent } from './Components/offreemploi/edit-offre-dialog/edit-offre-dialog.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { CodeExecutorComponent } from './Components/code-executor/code-executor.component';
@@ -56,6 +56,8 @@ import { KeycloakBypassInterceptor } from './Services/interceptor/keycloak-bypas
 import { AdminDashboardComponent } from './Components/admin-dashboard/admin-dashboard.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MesCandidaturesComponent } from './Components/user/mes-candidatures/mes-candidatures.component';
+import { AdminSnackBarComponent } from './Components/admin-dashboard/admin-dashboard.component';
+
 
 export function kcFactory(kcService: KeycloakService) {
   return () => kcService.init();
@@ -85,6 +87,8 @@ export function kcFactory(kcService: KeycloakService) {
     CodeExecutorComponent,
     AdminDashboardComponent,
     MesCandidaturesComponent,
+    AdminSnackBarComponent,
+    SnackBarComponent
   ],
   imports: [
     BrowserModule,
@@ -123,10 +127,10 @@ export function kcFactory(kcService: KeycloakService) {
     MatPaginatorModule,
     MatSortModule,
     MatIconModule,
-     //PowerBIEmbedModule,
-     MatCardModule,
-     NgxChartsModule,
-     NgxDatatableModule
+    //PowerBIEmbedModule,
+    MatCardModule,
+    NgxChartsModule,
+    NgxDatatableModule
   ],
   providers: [
     HttpClient,
@@ -141,7 +145,7 @@ export function kcFactory(kcService: KeycloakService) {
       useFactory: kcFactory,
       multi: true
     },
-     {
+    {
       provide: HTTP_INTERCEPTORS,
       useClass: KeycloakBypassInterceptor,
       multi: true,

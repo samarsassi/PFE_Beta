@@ -3,6 +3,8 @@ import { Component, Input, Output, EventEmitter, ViewEncapsulation, OnInit, OnCh
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Candidature } from 'src/app/Data/Candidature';
 import { ExportToCsv } from 'export-to-csv';
+import { CodingChallenge } from 'src/app/Data/coding-challenge.model';
+import { ChallengeService } from 'src/app/Services/fn/challenge/challenge-service.service';
 
 @Component({
   selector: 'app-on-view-dialog',
@@ -18,8 +20,9 @@ export class OnViewDialogComponent implements OnInit, OnChanges {
   settings = false;
   selectedStatus: Candidature["statut"] = 'EN ATTENTE';
   cvUrl: SafeResourceUrl | null = null;
+  defiTitre: string | null = null;
 
-  constructor(private sanitizer: DomSanitizer, private http: HttpClient) { }
+  constructor(private sanitizer: DomSanitizer, private http: HttpClient, private challengeService: ChallengeService) { }
 
   ngOnInit() {
     // No logic here that depends on @Input() data
@@ -33,6 +36,21 @@ export class OnViewDialogComponent implements OnInit, OnChanges {
       } else {
         this.cvUrl = null;
       }
+
+      if (this.data.defi && this.data.defi.id) {
+        this.challengeService.getChallengeById(this.data.defi.id).subscribe({
+          next: (ch) => {
+            this.defiTitre = ch.titre;
+            console.log(this.data.defi);  
+          },
+          error: (err) => {
+            console.error('Erreur défi:', err);
+          }
+        });
+      }
+      
+
+      
     }
   }
 
@@ -76,6 +94,21 @@ export class OnViewDialogComponent implements OnInit, OnChanges {
     }
   }
 
+  getChallengeStatutColor(statut: string): string {
+    switch (statut) {
+      case 'AUCUN':
+        return '#9e9e9e'; // gray
+      case 'ENVOYE':
+        return '#2196f3'; // blue
+      case 'TERMINE':
+        return '#4caf50'; // green
+      case 'EVALUE':
+        return '#ff9800'; // orange
+      default:
+        return '#bdbdbd'; // light gray
+    }
+  }
+
   updateStatus(): void {
     this.data.statut = this.selectedStatus;
   }
@@ -91,6 +124,8 @@ export class OnViewDialogComponent implements OnInit, OnChanges {
       Téléphone: this.data.telephone,
       Lettre_de_motivation: this.data.coverLetter,
       Statut: this.data.statut,
+      DefiId: this.data.defiId,
+      Datedefi: this.data.defiEnvoyeLe,
       CV: `http://localhost:8089/uploads/${this.data.cv}`
     }];
 
@@ -106,5 +141,9 @@ export class OnViewDialogComponent implements OnInit, OnChanges {
 
     const csvExporter = new ExportToCsv(options);
     csvExporter.generateCsv(candidatureData);
+  }
+
+  get defiStatut(): string | null {
+    return this.data && this.data.statutDefi ? this.data.statutDefi : null;
   }
 }

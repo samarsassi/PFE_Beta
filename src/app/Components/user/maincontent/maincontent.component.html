@@ -14,11 +14,40 @@
 <section class="jobs" id="jobs">
   <div class="container job-container" *ngIf="offresEmploi.length > 0">
     <h2 class="section-title">Dernières offres d'emploi</h2>
+    <div class="search-bar-row">
+      <input type="text" class="main-search-bar" placeholder="Rechercher un poste, une ville..."
+        [(ngModel)]="searchQuery" (input)="searchJobs()">
+      <button class="btn btn-secondary btn-small filter-btn" (click)="showFilters = !showFilters" title="Filtres">
+        <span class="material-icons filter-icon">filter_list</span>
+      </button>
+    </div>
+    <div class="filters-bar" *ngIf="showFilters">
+      <div class="filter-group">
+        <span class="filter-label">Contrat:</span>
+        <span *ngFor="let c of contrats" (click)="toggleFilter('contrat', c)" [class.active]="selectedContrat === c"
+          class="filter-chip">{{ c }}</span>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Niveau:</span>
+        <span *ngFor="let n of niveaux" (click)="toggleFilter('niveau', n)" [class.active]="selectedNiveau === n"
+          class="filter-chip">{{ n }}</span>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Salaire:</span>
+        <input type="range" min="0" max="5000" step="100" [(ngModel)]="salaireSlider" (change)="applyFilters()"
+          class="salary-slider">
+        <span class="salary-value">{{ salaireSlider }} TND+</span>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Date début:</span>
+        <input type="date" [(ngModel)]="selectedDate" (change)="applyFilters()" class="date-picker">
+      </div>
+      <button class="clear-filters-btn" (click)="clearAllFilters()">Tout effacer</button>
+    </div>
     <div class="arrow left" (click)="scrollLeft()">&#10094;</div>
     <div class="arrow right" (click)="scrollRight()">&#10095;</div>
-
     <div class="job-list" #jobList>
-      <div class="job-card" *ngFor="let offre of offresEmploi">
+      <div class="job-card" *ngFor="let offre of filteredOffres">
         <h3>{{ offre.titre }}</h3>
         <p>{{ offre.description }}</p>
         <div *ngIf="offre.niveauExperience">
@@ -26,9 +55,12 @@
             {{ offre.niveauExperience }}
           </mat-chip>
         </div>
-        <span class="location">📍 {{ offre.localisation | slice:0:50 }}{{ offre.localisation.length > 50 ? '...' : '' }}</span>
-
-        
+        <span class="location">📍 {{ offre.localisation | slice:0:50 }}{{ offre.localisation.length > 50 ? '...' : ''
+          }}</span>
+        <div *ngIf="offre.salaire" class="salary-attractive"
+          style="font-weight: bold; color: #007bff; margin-bottom: 8px; font-size: 15px;">
+          Salaire: {{ offre.salaire }} <span style="color: inherit; font-weight: bold;">TND</span>
+        </div>
         <a [routerLink]="['/main/offre', offre.id]" class="apply-btn">Postuler</a>
       </div>
     </div>

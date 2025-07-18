@@ -1,5 +1,5 @@
 export interface OffreEmploi {
-    
+
     id: number;
     titre: string;
     description: string;
@@ -7,5 +7,6 @@ export interface OffreEmploi {
     localisation: string;
     dateDebut: Date;
     niveauExperience: string;
+    salaire: String;
     //  rh: User; RH (Human Resources)
 }

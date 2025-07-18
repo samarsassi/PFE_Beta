@@ -25,6 +25,7 @@ export class EditOffreDialogComponent {
       titre: [data.offre.titre, Validators.required],
       localisation: [data.offre.localisation, Validators.required],
       description: [data.offre.description, Validators.required],
+      salaire: [data.offre.salaire, Validators.required],
       dateDebut: [data.offre.dateDebut, Validators.required],
       archive: [data.offre.archive]
     });

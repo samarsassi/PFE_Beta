@@ -33,6 +33,15 @@ export class ViewOffreComponent implements OnInit {
   filteredResults: any[] = [];
   search = false;
 
+  // Filters
+  showFilters: boolean = false;
+  contrats: string[] = [];
+  niveaux: string[] = [];
+  selectedContrat: string = '';
+  selectedNiveau: string = '';
+  salaireSlider: number = 0;
+  selectedDate: string = '';
+
   applyForm!: FormGroup;
   file!: File;
   shortLink: string = "";
@@ -104,13 +113,15 @@ export class ViewOffreComponent implements OnInit {
     }
   }
 
-  
+
 
   loadJobOffers() {
     this.jobService.getAllOffres().subscribe(
       (data) => {
-        // Filter out archived offers (assuming each offer has an "archive" property which is truthy when archived)
         this.offresEmploi = data.filter(offre => !offre.archive);
+        // Populate contrats and niveaux from data
+        this.contrats = Array.from(new Set(this.offresEmploi.map(o => o.contrat).filter(Boolean)));
+        this.niveaux = Array.from(new Set(this.offresEmploi.map(o => o.niveauExperience).filter(Boolean)));
         console.log(this.offresEmploi);
       },
       (error) => {
@@ -122,16 +133,63 @@ export class ViewOffreComponent implements OnInit {
   searchJobs() {
     const query = this.searchQuery.toLowerCase().trim();
     if (!query) {
-      this.filteredResults = [];
+      this.applyFilters();
       return;
     }
-
     this.filteredResults = this.offresEmploi.filter(offre =>
       (offre.titre && offre.titre.toLowerCase().includes(query)) ||
+      (offre.localisation && offre.localisation.toLowerCase().includes(query)) ||
       (offre.description && offre.description.toLowerCase().includes(query))
     );
-    this.search = true;
-    console.log('Filtered Results:', this.filteredResults); // Check what's being returned
+    this.applyFilters(true);
+  }
+
+  toggleFilter(type: string, value: string) {
+    if (type === 'contrat') {
+      this.selectedContrat = this.selectedContrat === value ? '' : value;
+    }
+    if (type === 'niveau') {
+      this.selectedNiveau = this.selectedNiveau === value ? '' : value;
+    }
+    this.applyFilters();
+  }
+
+  clearAllFilters() {
+    this.selectedContrat = '';
+    this.selectedNiveau = '';
+    this.salaireSlider = 0;
+    this.selectedDate = '';
+    this.applyFilters();
+  }
+
+  applyFilters(fromSearch: boolean = false) {
+    let filtered = this.offresEmploi;
+    // Contrat
+    if (this.selectedContrat) {
+      filtered = filtered.filter(o => o.contrat === this.selectedContrat);
+    }
+    // Niveau d'expérience
+    if (this.selectedNiveau) {
+      filtered = filtered.filter(o => o.niveauExperience === this.selectedNiveau);
+    }
+    // Salaire slider
+    if (this.salaireSlider) {
+      filtered = filtered.filter(o => parseFloat(o.salaire) >= this.salaireSlider);
+    }
+    // Date début
+    if (this.selectedDate) {
+      filtered = filtered.filter(o => o.dateDebut && o.dateDebut >= this.selectedDate);
+    }
+    // If called from search, intersect with search results
+    if (fromSearch && this.searchQuery) {
+      const query = this.searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(offre =>
+        (offre.titre && offre.titre.toLowerCase().includes(query)) ||
+        (offre.localisation && offre.localisation.toLowerCase().includes(query)) ||
+        (offre.description && offre.description.toLowerCase().includes(query))
+      );
+    }
+    this.filteredResults = filtered;
   }
 
 
@@ -152,69 +210,69 @@ export class ViewOffreComponent implements OnInit {
       this.applyForm.get('cv')?.updateValueAndValidity();
     }
   }
-submitApplication(): void {
-  const selectedId = this.route.snapshot.paramMap.get('id');
-  const id = selectedId ? +selectedId : null;
+  submitApplication(): void {
+    const selectedId = this.route.snapshot.paramMap.get('id');
+    const id = selectedId ? +selectedId : null;
 
-  if (this.applyForm.valid && id !== null) {
-    // Upload CV file to Firebase (test)
-    const cvFile = this.applyForm.value.cv;
-    if (cvFile instanceof File) {
-      this.uploadCvFile(cvFile);
-    } else {
-      console.warn('No valid CV file to upload');
-    }
-
-    // Keep old logic
-    const formData = new FormData();
-
-    formData.append('nom', this.applyForm.value.nom);
-    formData.append('email', this.applyForm.value.email);
-    formData.append('phone', this.applyForm.value.phone);
-    formData.append('experience', this.applyForm.value.experience);
-    formData.append('portfolioURL', this.applyForm.value.portfolioURL || '');
-    formData.append('linkedInProfile', this.applyForm.value.linkedInProfile || '');
-    formData.append('coverLetter', this.applyForm.value.coverLetter || '');
-    formData.append('statut', this.applyForm.value.statut);
-    formData.append('cv', this.applyForm.value.cv);
-    formData.append('offreEmploiId', id.toString());
-
-    this.candidatureService.createCandidature(formData).subscribe(
-      response => {
-        console.log('Response from Backend:', response);
-        this._snackBar.openFromComponent(SnackBarAnnotatedComponent, {
-          duration: this.durationInSeconds * 1000,
-          horizontalPosition: 'right',
-          verticalPosition: 'top',
-        });
-        this.router.navigate(['/main']);
-      },
-      error => {
-        console.error('Error submitting candidature:', error);
-        alert('Failed to submit application.');
+    if (this.applyForm.valid && id !== null) {
+      // Upload CV file to Firebase (test)
+      const cvFile = this.applyForm.value.cv;
+      if (cvFile instanceof File) {
+        this.uploadCvFile(cvFile);
+      } else {
+        console.warn('No valid CV file to upload');
       }
-    );
-  } else {
-    alert('Please fill all required fields.');
+
+      // Keep old logic
+      const formData = new FormData();
+
+      formData.append('nom', this.applyForm.value.nom);
+      formData.append('email', this.applyForm.value.email);
+      formData.append('phone', this.applyForm.value.phone);
+      formData.append('experience', this.applyForm.value.experience);
+      formData.append('portfolioURL', this.applyForm.value.portfolioURL || '');
+      formData.append('linkedInProfile', this.applyForm.value.linkedInProfile || '');
+      formData.append('coverLetter', this.applyForm.value.coverLetter || '');
+      formData.append('statut', this.applyForm.value.statut);
+      formData.append('cv', this.applyForm.value.cv);
+      formData.append('offreEmploiId', id.toString());
+
+      this.candidatureService.createCandidature(formData).subscribe(
+        response => {
+          console.log('Response from Backend:', response);
+          this._snackBar.openFromComponent(SnackBarAnnotatedComponent, {
+            duration: this.durationInSeconds * 1000,
+            horizontalPosition: 'right',
+            verticalPosition: 'top',
+          });
+          this.router.navigate(['/main']);
+        },
+        error => {
+          console.error('Error submitting candidature:', error);
+          alert('Failed to submit application.');
+        }
+      );
+    } else {
+      alert('Please fill all required fields.');
+    }
   }
-}
 
-uploadCvFile(file: File): void {
-  const filePath = `CVs/${this.applyForm.value.nom}_${Date.now()}.${file.name.split('.').pop()}`;
+  uploadCvFile(file: File): void {
+    const filePath = `CVs/${this.applyForm.value.nom}_${Date.now()}.${file.name.split('.').pop()}`;
 
-  const storageRef = ref(this.storage, `cvs/${filePath}`);
+    const storageRef = ref(this.storage, `cvs/${filePath}`);
 
-  uploadBytes(storageRef, file).then((snapshot) => {
-    console.log('Uploaded a file!', snapshot);
+    uploadBytes(storageRef, file).then((snapshot) => {
+      console.log('Uploaded a file!', snapshot);
 
-    // Optional: get download URL
-    getDownloadURL(storageRef).then((url) => {
-      console.log('File available at', url);
+      // Optional: get download URL
+      getDownloadURL(storageRef).then((url) => {
+        console.log('File available at', url);
+      });
+    }).catch(error => {
+      console.error('Upload failed:', error);
     });
-  }).catch(error => {
-    console.error('Upload failed:', error);
-  });
-}
+  }
 
   closeModal() {
     this.isModalOpen = false;
@@ -272,30 +330,6 @@ uploadCvFile(file: File): void {
       console.error("Error fetching coordinates:", error);
       throw new Error("Failed to fetch coordinates");
     }
-  }
-
-  windowScrolled: boolean | undefined;
-  @HostListener("window:scroll", [])
-  onWindowScroll() {
-    if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 100) {
-      this.windowScrolled = true;
-    }
-    else if (this.windowScrolled && window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop < 10) {
-      this.windowScrolled = false;
-    }
-  }
-
-  scrollToTop() {
-    (function smoothscroll() {
-
-      var currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
-
-      if (currentScroll > 0) {
-        window.requestAnimationFrame(smoothscroll);
-        window.scrollTo(0, currentScroll - (currentScroll / 8));
-      }
-
-    })();
   }
 }
 

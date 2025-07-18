@@ -1,4 +1,3 @@
-
 <div class="main-container">
   <!-- Selected Job Offer Details -->
   <section class="selected-job" id="selected-job" *ngIf="selectedOffre">
@@ -7,129 +6,157 @@
         <h2>{{ selectedOffre.titre }}</h2>
         <p><strong>Date debut:</strong> {{ selectedOffre.dateDebut | date: 'shortDate' }}</p>
         <p><strong>Description:</strong> {{ selectedOffre.description }}</p>
+        <div *ngIf="selectedOffre.salaire" class="salary-attractive"
+          style="font-weight: bold; color: #007bff; margin-bottom: 8px; font-size: 1.05rem;">
+          Salaire: {{ selectedOffre.salaire }}<span style="color: inherit; font-weight: bold;">TND </span>
+        </div>
         <p><strong>Localisation:</strong> 📍 {{ selectedOffre.localisation }}</p>
         <div style="display: block;  margin-bottom: 10px;" *ngIf="selectedOffre.niveauExperience">
           <p><strong style="margin-right: 10px;">Niveau d'expérience:</strong></p>
-          
-            <mat-chip color="primary" selected>
-              {{ selectedOffre.niveauExperience }}
-            </mat-chip>
+
+          <mat-chip color="primary" selected>
+            {{ selectedOffre.niveauExperience }}
+          </mat-chip>
         </div>
-        
-           
+
+
         <div class="map-container" style="height: 300px; width: 100%; margin-top: 20px;">
           <div id="map"></div>
         </div>
       </div>
-  
-      <div class="job-sidebar">
+
+      <div *ngIf="showFilters" class="filter-overlay-bg" (click)="showFilters = false"></div>
+      <div class="job-sidebar" [ngClass]="{'sidebar-wide': showFilters}">
         <!-- Search Section -->
-        <div class="search-section">
-          <input
-            type="text"
-            placeholder="Search for jobs..."
-            [(ngModel)]="searchQuery"
-            (keydown.enter)="searchJobs()"
-          />
-          <button class="search-btn" (click)="searchJobs()">Search</button>
+        <div class="search-section" [ngClass]="{'filters-open': showFilters}">
+          <div class="search-bar-row">
+            <input type="text" class="main-search-bar" placeholder="Rechercher une offre..." [(ngModel)]="searchQuery"
+              (input)="searchJobs()">
+            <button class="btn btn-secondary btn-small filter-btn" (click)="showFilters = !showFilters" title="Filtres">
+              <span class="material-icons filter-icon">filter_list</span>
+            </button>
+          </div>
+          <div class="filters-bar" *ngIf="showFilters">
+            <div class="filter-group">
+              <span class="filter-label">Contrat:</span>
+              <span *ngFor="let c of contrats" (click)="toggleFilter('contrat', c)"
+                [class.active]="selectedContrat === c" class="filter-chip">{{ c }}</span>
+            </div>
+            <div class="filter-group">
+              <span class="filter-label">Niveau:</span>
+              <span *ngFor="let n of niveaux" (click)="toggleFilter('niveau', n)" [class.active]="selectedNiveau === n"
+                class="filter-chip">{{ n }}</span>
+            </div>
+            <div class="filter-group">
+              <span class="filter-label">Salaire:</span>
+              <input type="range" min="0" max="5000" step="100" [(ngModel)]="salaireSlider" (change)="applyFilters()"
+                class="salary-slider">
+              <span class="salary-value">{{ salaireSlider }} TND+</span>
+            </div>
+            <div class="filter-group">
+              <span class="filter-label">Date début:</span>
+              <input type="date" [(ngModel)]="selectedDate" (change)="applyFilters()" class="date-picker">
+            </div>
+            <button class="clear-filters-btn" (click)="clearAllFilters()">Tout effacer</button>
+          </div>
         </div>
-  <h1 *ngIf="search">{{filteredResults.length}} offres trouvés</h1>
+        <h1 *ngIf="search">{{filteredResults.length}} offres trouvés</h1>
         <!-- Filtered Results Section -->
         <div class="search-results" *ngIf="filteredResults.length > 0">
-          
-          <div
-            class="result"
-            *ngFor="let result of filteredResults"
-            (click)="viewOffre(result.id)"
-            style="cursor: pointer; margin-bottom: 10px;"
-          >
+
+          <div class="result" *ngFor="let result of filteredResults" (click)="viewOffre(result.id)"
+            style="cursor: pointer; margin-bottom: 10px;">
             <h4>{{ result.titre }}</h4>
             <p>{{ result.description }}</p>
           </div>
         </div>
-  
+
         <!-- Apply Button -->
         <button class="apply-btn" (click)="openModal()">Apply Now</button>
       </div>
     </div>
   </section>
-  
-    
-    
-    <!-- Modal Dialog Form -->
-      <div id="applyModal" class="modal" [ngClass]="{ 'show': isModalOpen }">
-        <div class="modal-content">
-          <span class="close" (click)="closeModal()">&times;</span>
-          <h3>Apply for: {{ selectedOffre?.titre }}</h3>
-          <form [formGroup]="applyForm" (ngSubmit)="submitApplication()" class="apply-form">
-            <div class="form-columns">
-              <!-- LEFT COLUMN -->
-              <div class="form-column">
-                <label>Full Name</label>
-                <input type="text" formControlName="nom" required />
 
-                <label>Email Address</label>
-                <input type="email" formControlName="email" required />
 
-                <label>Phone Number</label>
-                <input type="tel" formControlName="phone" required />
 
-                <label>Years of Experience</label>
-                <input type="number" formControlName="experience" min="0" required />
-              </div>
+  <!-- Modal Dialog Form -->
+  <div id="applyModal" class="modal" [ngClass]="{ 'show': isModalOpen }">
+    <div class="modal-content">
+      <span class="close" (click)="closeModal()">&times;</span>
+      <h3>Apply for: {{ selectedOffre?.titre }}</h3>
+      <form [formGroup]="applyForm" (ngSubmit)="submitApplication()" class="apply-form">
+        <div class="form-columns">
+          <!-- LEFT COLUMN -->
+          <div class="form-column">
+            <label>Full Name</label>
+            <input type="text" formControlName="nom" required />
 
-              <!-- RIGHT COLUMN -->
-              <div class="form-column">
-                <label>Portfolio URL</label>
-                <input type="url" formControlName="portfolioURL" placeholder="https://yourportfolio.com" />
+            <label>Email Address</label>
+            <input type="email" formControlName="email" required />
 
-                <label>LinkedIn Profile</label>
-                <input type="url" formControlName="linkedInProfile" placeholder="https://linkedin.com/in/yourname" />
+            <label>Phone Number</label>
+            <input type="tel" formControlName="phone" required />
 
-                <label>CV Upload</label>
-                <input class="form-control" type="file" (change)="onChange($event)" />
+            <label>Years of Experience</label>
+            <input type="number" formControlName="experience" min="0" required />
+          </div>
 
-                <label>Cover Letter</label>
-                <textarea formControlName="coverLetter" rows="5"></textarea>
-              </div>
-            </div>
+          <!-- RIGHT COLUMN -->
+          <div class="form-column">
+            <label>Portfolio URL</label>
+            <input type="url" formControlName="portfolioURL" placeholder="https://yourportfolio.com" />
 
-            <div class="text-center">
-              <button type="submit" class="apply-btn" [disabled]="applyForm.invalid">
-                Submit Application
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    
-    <!-- Other Offers Below -->
-    <section class="other-offres" *ngIf="offresEmploi.length > 0">
-      <h2>Autre offres à découvrir:</h2>
-    
-      <div class="job-list-wrapper">
-        <div class="arrow left" (click)="scrollLeft()">&#10094;</div>
-        
-    
-        <div class="job-list">
-          <div class="job-card" *ngFor="let offre of offresEmploi" (click)="selectOffre(offre)">
-            <h3>{{ offre.titre }}</h3>
-            <p>{{ offre.description }}</p>
-    
-            <div style="display: block; margin-bottom: 10px;" *ngIf="offre.niveauExperience">
-              <mat-chip color="primary" selected>
-                {{ offre.niveauExperience }}
-              </mat-chip>
-            </div>
-    
-            <span class="location">📍 {{ offre.localisation }}</span>
-            <button (click)="viewOffre(offre.id)" class="apply-btn">View</button>
+            <label>LinkedIn Profile</label>
+            <input type="url" formControlName="linkedInProfile" placeholder="https://linkedin.com/in/yourname" />
+
+            <label>CV Upload</label>
+            <input class="form-control" type="file" (change)="onChange($event)" />
+
+            <label>Cover Letter</label>
+            <textarea formControlName="coverLetter" rows="5"></textarea>
           </div>
         </div>
-        <div class="arrow right" (click)="scrollRight()">&#10095;</div>
-      </div>
-    
-      <app-scroll-top></app-scroll-top>
-    </section>
 
-</div>  
+        <div class="text-center">
+          <button type="submit" class="apply-btn" [disabled]="applyForm.invalid">
+            Submit Application
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Other Offers Below -->
+  <section class="other-offres" *ngIf="offresEmploi.length > 0">
+    <h2>Autre offres à découvrir:</h2>
+
+    <div class="job-list-wrapper">
+      <div class="arrow left" (click)="scrollLeft()">&#10094;</div>
+
+
+      <div class="job-list">
+        <div class="job-card" *ngFor="let offre of offresEmploi" (click)="selectOffre(offre)">
+          <h3>{{ offre.titre }}</h3>
+          <p>{{ offre.description }}</p>
+          <div *ngIf="offre.salaire" class="salary-attractive"
+            style="font-weight: bold; color: #007bff; margin-bottom: 8px; font-size: 1.05rem;">
+            Salaire: {{ offre.salaire }}<span style="color: inherit; font-weight: bold;">TND </span>
+          </div>
+
+          <div style="display: block; margin-bottom: 10px;" *ngIf="offre.niveauExperience">
+            <mat-chip color="primary" selected>
+              {{ offre.niveauExperience }}
+            </mat-chip>
+          </div>
+
+          <span class="location">📍 {{ offre.localisation }}</span>
+          <button (click)="viewOffre(offre.id)" class="apply-btn">View</button>
+        </div>
+      </div>
+      <div class="arrow right" (click)="scrollRight()">&#10095;</div>
+    </div>
+
+    <app-scroll-top></app-scroll-top>
+  </section>
+
+</div>

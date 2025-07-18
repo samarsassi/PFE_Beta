@@ -48,6 +48,10 @@
           </mat-card-subtitle>
           <mat-card-content>
             <p>{{ offre.description }}</p>
+            <div *ngIf="offre.salaire" class="salary-attractive"
+              style="font-weight: bold; color: #007bff; margin-bottom: 8px; font-size: 1.05rem;">
+              Salaire: {{ offre.salaire }} <span style="color: inherit; font-weight: bold;">TND </span>
+            </div>
           </mat-card-content>
           <mat-card-actions>
             <button mat-icon-button color="primary" (click)="openEditDialog(offre)" title="Modifier l'offre">

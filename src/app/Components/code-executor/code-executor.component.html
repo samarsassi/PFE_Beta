@@ -1,7 +1,43 @@
-<div class="editor-container">
-  <div class="editor-card">
-    <h1 class="editor-title">Online Code Editor</h1>
+<div class="editor-container split-layout">
 
+  <!-- Left: Challenge Info -->
+  <div class="challenge-info">
+    <div class="challenge-label">Titre du défi</div>
+    <h1 class="editor-title" *ngIf="challengeTitle">{{ challengeTitle }}</h1>
+    <div class="challenge-label">Temps du défi : {{ tempsLimite }} minutes</div>
+    <div class="challenge-label">Description</div>
+    <div class="challenge-description" *ngIf="challengeDescription">{{ challengeDescription }}</div>
+    <div class="challenge-label" style="margin-top: 2rem;">Exemple de cas de test:</div>
+    <div *ngIf="challengeTestCases && challengeTestCases.length > 0; else noTestCases">
+      <div *ngFor="let tc of challengeTestCases" class="testcase-box">
+        <div class="testcase-label">Entrée :</div>
+        <pre class="testcase-input">{{ tc.entree }}</pre>
+        <div class="testcase-label">Sortie attendue :</div>
+        <pre class="testcase-output">{{ tc.sortieAttendue }}</pre>
+      </div>
+    </div>
+    <ng-template #noTestCases>
+      <div class="no-testcases">Aucun cas de test visible pour ce défi.</div>
+    </ng-template>
+    <!-- Timer at the bottom -->
+    <div class="timer-section left-timer">
+      <div *ngIf="!challengeStarted && !challengeExpired">
+        <button (click)="startChallenge()" class="btn start">Démarrer le défi</button>
+      </div>
+      <div *ngIf="challengeStarted && !challengeExpired">
+        <span class="timer-label">Temps restant :</span>
+        <span class="timer-value">{{ formatTime(remainingTime) }}</span>
+        <button class="btn cancel" style="margin-left: 1rem;" (click)="onCancelChallenge()">Annuler</button>
+      </div>
+      <div *ngIf="challengeExpired" class="expired-message">
+        <strong>Défi expiré.</strong> Vous ne pouvez plus accéder à ce défi. Votre candidature a été mise à REJETÉ.<br>
+        <a routerLink="/main" class="apply-more-link">Postuler à d'autres offres</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Code Editor & Execution -->
+  <div class="editor-card code-exec-area" *ngIf="challengeStarted && !challengeExpired">
     <!-- API Connection Status -->
     <div [ngClass]="{
       'status-testing': connectionStatus === 'testing',
@@ -16,7 +52,8 @@
       <div *ngIf="connectionStatus === 'failed'" class="status-instructions">
         <p><strong>Setup Instructions:</strong></p>
         <ol>
-          <li>Go to <a href="https://rapidapi.com/judge0-official/api/judge0-ce" target="_blank">RapidAPI Judge0 CE</a></li>
+          <li>Go to <a href="https://rapidapi.com/judge0-official/api/judge0-ce" target="_blank">RapidAPI Judge0 CE</a>
+          </li>
           <li>Sign up and subscribe to the free plan</li>
           <li>Copy your API key from the dashboard</li>
           <li>Replace 'YOUR_RAPIDAPI_KEY_HERE' in judge0.service.ts</li>
@@ -28,7 +65,7 @@
     <div class="form-group">
       <label for="language">Programming Language</label>
       <select id="language" [(ngModel)]="selectedLanguageId" (change)="onLanguageChange()" class="form-control">
-        <option *ngFor="let lang of (languages.length > 0 ? languages : commonLanguages)" [value]="lang.id">
+        <option *ngFor="let lang of (languages.length > 0 ? languages : commonLanguages)" [ngValue]="lang.id">
           {{ lang.name }}
         </option>
       </select>
@@ -37,17 +74,15 @@
     <!-- Code Editor -->
     <div class="form-group">
       <label for="code">Source Code</label>
-      <textarea id="code"[(ngModel)]="sourceCode"(ngModelChange)="onCodeChange()"rows="5"class="code-area"></textarea>
-
+      <textarea id="code" [(ngModel)]="sourceCode" (ngModelChange)="onCodeChange()" rows="5"
+        class="code-area"></textarea>
     </div>
 
-    <!-- Input (stdin) -->
     <!-- Input (stdin) -->
     <div class="form-group" *ngIf="showStdin">
       <label for="stdin">Input (stdin) - Optional</label>
       <textarea id="stdin" [(ngModel)]="stdin" rows="3" class="code-area"></textarea>
     </div>
-
 
     <!-- Action Buttons -->
     <div class="action-buttons">
@@ -56,7 +91,7 @@
         {{ isExecuting ? 'Executing...' : 'Run Code' }}
       </button>
       <button (click)="clearOutput()" class="btn clear">Clear Output</button>
-      <button (click)="runQuickTest()" class="btn test">🧪 Quick Test</button>
+      <button (click)="runQuickTest()" class="btn test" *ngIf="isAdmin()">🧪 Quick Test</button>
     </div>
 
     <!-- Error Display -->

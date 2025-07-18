@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap, throwError } from 'rxjs';
 import { Candidature } from 'src/app/Data/Candidature';
 import { KeycloakService } from '../../keycloak/keycloak.service';
+import { CodingChallenge } from 'src/app/Data/coding-challenge.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,9 +43,15 @@ export class CandidatureService {
   }
 
 
-  // Get a single candidature by ID
   getCandidatureById(id: number): Observable<Candidature> {
+    if (!id || isNaN(id)) {
+      return throwError(() => new Error('Invalid candidature ID'));
+    }
     return this.http.get<Candidature>(`${this.apiUrl}/${id}`);
+  }
+
+  getChallenge(id: string): Observable<CodingChallenge> {
+    return this.http.get<CodingChallenge>(`${this.apiUrl}/${id}/challenge`);
   }
 
   // Create a new candidature
@@ -64,27 +71,20 @@ export class CandidatureService {
     return this.http.post<Candidature>(this.apiUrl, formData, { headers });
   }
   
-  
-  
   // Update an existing candidature
   updateCandidature(id: number, candidature: Candidature): Observable<Candidature> {
     return this.http.put<Candidature>(`${this.apiUrl}/${id}`, candidature);
   }
+
+  update(candidature: Candidature): Observable<Candidature> {
+    return this.http.put<Candidature>(`${this.apiUrl}`, candidature);
+  }
+  
   
   // Delete a candidature
-  deleteCandidature(id: number): Observable<{ message: string }> {
-    const token = this.keycloakService.keycloak.token;
-    if (!token) {
-      return throwError(() => new Error('User is not authenticated!'));
+    deleteCandidature(id: number): Observable<String> {
+      return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
     }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`, { headers }).pipe(
-      tap(() => {
-        const updatedCandidatures = this.candidaturesSubject.getValue().filter(c => c.id !== id);
-        this.candidaturesSubject.next(updatedCandidatures);
-      })
-    );
-  }
 
 
    // method to get current candidatures value safely (optional)

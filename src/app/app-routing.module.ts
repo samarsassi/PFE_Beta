@@ -25,7 +25,8 @@ const routes: Routes = [
       { path: '', component: MaincontentComponent },
       { path: 'TechnicalTest', component: CodeExecutorComponent },
       { path: 'offre/:id', component: ViewOffreComponent },
-      { path: 'mes-candidatures', component: MesCandidaturesComponent }
+      { path: 'mes-candidatures', component: MesCandidaturesComponent },
+      {path: 'code-executor/:id', component: CodeExecutorComponent}
     ]
   },
   {
