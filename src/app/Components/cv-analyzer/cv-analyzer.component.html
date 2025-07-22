@@ -1,0 +1,58 @@
+<!-- Floating Chat Button (always visible, styled like scroll-to-top) -->
+<button class="chat-fab match-scroll-top" (click)="showChat = true" aria-label="Ouvrir le chat">
+    <span class="chat-fab-icon material-icons">chat_bubble</span>
+  </button>
+  
+  <!-- Chat Modal -->
+  <div class="chat-modal-root" *ngIf="showChat">
+    <div class="chat-modal-overlay" (click)="showChat = false"></div>
+    <div class="chat-modal chat-modern">
+      <div class="chat-header">
+        <img class="chat-avatar" src="assets/img/user_avatar.png" alt="Avatar" />
+        <div class="chat-title-group">
+          <div class="chat-title">Chat with Jessica Smith</div>
+          <div class="chat-status">We are online!</div>
+        </div>
+        <button class="chat-modal-close" (click)="showChat = false">&times;</button>
+      </div>
+      <div class="chat-container">
+        <div class="chat-box" #chatBox>
+          <div *ngFor="let msg of messages" [ngClass]="['message', msg.sender]">
+  
+            <!-- User message -->
+            <div class="bubble"  *ngIf="msg.sender === 'user'">
+              <p>{{ msg.content }}</p>
+            </div>
+  
+            <!-- AI message with offers and text combined -->
+            <div class="bubble" *ngIf="msg.sender === 'ai'">
+              <p>{{ msg.content }}</p>
+              <ul *ngIf="msg.isOffers" class="offer-list">
+                <li *ngFor="let offer of msg.offers">
+                  <span class="offer-title">{{ offer.title }}</span> —
+                  <span class="offer-short-desc">{{ offer.shortDescription }}</span>
+                  <button class="btn-consulter" (click)="openOfferDetails(offer)">Consulter</button>
+                </li>
+              </ul>
+            </div>
+  
+          </div>
+  
+          <div *ngIf="loading" class="message ai loading">
+            <div class="bubble">AI is typing...</div>
+          </div>
+        </div>
+  
+        <div class="input-area-modern">
+          <input [(ngModel)]="inputMessage" (keydown)="handleKey($event)"
+                 [placeholder]="hasAdminRole() ? 'Send a message as Admin...' : 'Enter your message...'"
+                 autocomplete="off" />
+  
+          <button class="send-btn" (click)="handleSend()" [disabled]="loading || !inputMessage.trim()">
+            <span class="material-icons">send</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

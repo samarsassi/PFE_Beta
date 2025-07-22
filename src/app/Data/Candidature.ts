@@ -6,6 +6,7 @@ export interface Candidature {
     email: string;
     statut: 'EN ATTENTE' | 'ACCEPTÉ' | 'REJETÉ';
     cv: string;
+    cvUrl: string; //lien l supabase
     coverLetter: string;
     telephone: string;
     portfolioURL: string; linkedInProfile: string;

@@ -1,72 +1,69 @@
-<!DOCTYPE html>
-<html lang="fr">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JobPortal - Trouvez l'emploi de vos rêves</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-</head>
-
-<body>
-  <div class="page-wrapper">
-
-
-    <!-- Proper Header and Navigation -->
-    <header>
-      <div class="container">
-        <h1 class="logo">JobPortal</h1>
-        <button class="menu-toggle" (click)="toggleMenu()">☰</button>
-        <nav [class.menu-open]="menuOpen">
-          <ul class="nav-links">
-            <li class="nav-names"><a routerLink="/main">Accueil</a></li>
-            <!-- Candidature Tracker Link (only if user has candidatures) -->
-            <li class="nav-names" *ngIf="hasCandidatures">
-              <a routerLink="/main/mes-candidatures">Mes Candidatures</a>
-            </li>
-            <li class="nav-names"><a routerLink="/main" fragment="jobs">Offres</a></li>
-            <li class="nav-names"><a routerLink="/main/test">Postuler</a></li>
-            <li class="nav-names"><a href="#">À propos</a></li>
-            <li class="nav-names"><a href="#">Contact</a></li>
-
-            <!-- Login/Logout Links -->
-            <li class="nav-names" *ngIf="!isLoggedIn">
-              <a routerLink="/login">Login</a>
-            </li>
-
-            <li class="nav-names user-dropdown" *ngIf="isLoggedIn" #dropdownRef>
-              <span style="font-size: large; cursor:pointer;" (click)="dropdownOpen = !dropdownOpen">{{ userName
-                }}</span>
-              <span class="arrow" [class.rotated]="dropdownOpen" (click)="dropdownOpen = !dropdownOpen"
-                style="cursor:pointer;">&#x25BC;</span>
-              <ul class="dropdown-menu" *ngIf="dropdownOpen">
-                <li><a (click)="ViewProfile()">Mon Profil</a></li>
-                <!-- Admin-only Dashboard link -->
-                <li *ngIf="hasAdminRole()">
-                  <a routerLink="/home">Dashboard</a>
-                </li>
-                <li><a (click)="logout()">Déconnexion</a></li>
-              </ul>
-            </li>
-          </ul>
-        </nav>
+<!-- Responsive JobPortal Main Page Layout -->
+<div class="page-wrapper">
+  <!-- Proper Header and Navigation -->
+  <header>
+    <div class="container header-container">
+      <h1 class="logo">JobPortal</h1>
+      <button class="menu-toggle" (click)="toggleMenu()" aria-label="Ouvrir le menu">☰</button>
+      <nav [class.menu-open]="menuOpen" class="desktop-nav">
+        <ul class="nav-links">
+          <li class="nav-names"><a routerLink="/main">Accueil</a></li>
+          <!-- Candidature Tracker Link (only if user has candidatures) -->
+          <li class="nav-names" *ngIf="hasCandidatures">
+            <a routerLink="/main/mes-candidatures">Mes Candidatures</a>
+          </li>
+          <li class="nav-names"><a routerLink="/main" fragment="jobs">Offres</a></li>
+          <li class="nav-names"><a routerLink="/main/test">Postuler</a></li>
+          <li class="nav-names"><a href="#">À propos</a></li>
+          <li class="nav-names"><a href="#">Contact</a></li>
+          <!-- Login/Logout Links -->
+          <li class="nav-names" *ngIf="!isLoggedIn">
+            <a routerLink="/login">Login</a>
+          </li>
+          <li class="nav-names user-dropdown" *ngIf="isLoggedIn" #dropdownRef>
+            <span style="font-size: large; cursor:pointer;" (click)="dropdownOpen = !dropdownOpen">{{ userName }}</span>
+            <span class="arrow" [class.rotated]="dropdownOpen" (click)="dropdownOpen = !dropdownOpen"
+              style="cursor:pointer;">&#x25BC;</span>
+            <ul class="dropdown-menu" *ngIf="dropdownOpen">
+              <li><a (click)="ViewProfile()">Mon Profil</a></li>
+              <!-- Admin-only Dashboard link -->
+              <li *ngIf="hasAdminRole()">
+                <a routerLink="/home">Dashboard</a>
+              </li>
+              <li><a (click)="logout()">Déconnexion</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <!-- Mobile menu overlay and panel -->
+  <div *ngIf="menuOpen" class="mobile-nav-root">
+    <div class="mobile-nav-overlay" (click)="menuOpen = false"></div>
+    <nav class="mobile-nav-panel open">
+      <button class="mobile-menu-close" (click)="menuOpen = false">&times;</button>
+      <div class="mobile-nav-links">
+        <a routerLink="/main" (click)="menuOpen = false">Accueil</a>
+        <a *ngIf="hasCandidatures" routerLink="/main/mes-candidatures" (click)="menuOpen = false">Mes Candidatures</a>
+        <a routerLink="/main" fragment="jobs" (click)="menuOpen = false">Offres</a>
+        <a routerLink="/main/test" (click)="menuOpen = false">Postuler</a>
+        <a href="#" (click)="menuOpen = false">À propos</a>
+        <a href="#" (click)="menuOpen = false">Contact</a>
+        <a *ngIf="!isLoggedIn" routerLink="/login" (click)="menuOpen = false">Login</a>
+        <!-- Add user dropdown/profile/logout as needed -->
       </div>
-    </header>
-
-    <main class="main-content">
-      <router-outlet></router-outlet>
-    </main>
-
-    <footer>
-      <div class="container">
-        <p>&copy; 2025 JobPortal. Tous droits réservés.</p>
-      </div>
-    </footer>
-
-    <!-- Scroll to Top Button -->
-
-    <app-scroll-top></app-scroll-top>
+    </nav>
   </div>
-</body>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 JobPortal. Tous droits réservés.</p>
+    </div>
+  </footer>
+  <!-- Scroll to Top Button -->
+  <app-scroll-top></app-scroll-top>
+  <app-cv-analyzer></app-cv-analyzer>
 
-</html>
+</div>

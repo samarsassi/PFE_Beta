@@ -154,7 +154,7 @@ h2 {
     position: relative;
     transition: box-shadow 0.2s;
     justify-content: space-between;
-    z-index: 1001;
+   
 }
 
 .kpi-card:hover {

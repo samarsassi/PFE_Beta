@@ -18,12 +18,17 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Salaire</mat-label>
+      <input matInput formControlName="salaire" type="number" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Date de début</mat-label>
       <input matInput [matDatepicker]="picker" formControlName="dateDebut" />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
-    
+
     <mat-checkbox formControlName="archive">Archivée</mat-checkbox>
   </mat-dialog-content>
 

@@ -7,6 +7,6 @@ export interface OffreEmploi {
     localisation: string;
     dateDebut: Date;
     niveauExperience: string;
-    salaire: String;
+    salaire?: number;
     //  rh: User; RH (Human Resources)
 }

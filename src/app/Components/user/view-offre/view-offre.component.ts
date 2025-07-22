@@ -10,6 +10,7 @@ import { OffreEmploiService } from 'src/app/Services/fn/offreemploi/OffreEmploiS
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { initializeApp } from 'firebase/app';
 import { environment } from 'src/environments/environment';
+import { SupabaseService } from 'src/app/Services/services/supabase.service';
 
 
 
@@ -53,8 +54,10 @@ export class ViewOffreComponent implements OnInit {
   firebaseApp = initializeApp(environment.firebaseConfig);
   storage = getStorage(this.firebaseApp);
 
-  constructor(private http: HttpClient, public jobService: OffreEmploiService, public candidatureService: CandidatureService, private route: ActivatedRoute, private router: Router, private fb: FormBuilder) { }
+  constructor(private http: HttpClient, public jobService: OffreEmploiService, public candidatureService: CandidatureService, private route: ActivatedRoute, private router: Router, private fb: FormBuilder, private supabaseService: SupabaseService) { }
 
+
+  
   ngOnInit(): void {
     this.loadJobOffers();
     this.loadSelectedOffre();
@@ -71,6 +74,7 @@ export class ViewOffreComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
       cv: ['', Validators.required],
+      cvUrl: [null, Validators.required], // Accepts File or null
       experience: ['', [Validators.required, Validators.min(0)]],
       portfolioURL: [''],
       linkedInProfile: [''],
@@ -210,51 +214,68 @@ export class ViewOffreComponent implements OnInit {
       this.applyForm.get('cv')?.updateValueAndValidity();
     }
   }
+
+  
   submitApplication(): void {
     const selectedId = this.route.snapshot.paramMap.get('id');
     const id = selectedId ? +selectedId : null;
-
+  
     if (this.applyForm.valid && id !== null) {
-      // Upload CV file to Firebase (test)
       const cvFile = this.applyForm.value.cv;
+  
       if (cvFile instanceof File) {
-        this.uploadCvFile(cvFile);
+        this.supabaseService.uploadCvFile(cvFile).then((publicUrl) => {
+          if (!publicUrl) {
+            alert('CV upload failed.');
+            return;
+          }
+  
+          const formData = new FormData();
+          formData.append('nom', this.applyForm.value.nom);
+          formData.append('email', this.applyForm.value.email);
+          formData.append('phone', this.applyForm.value.phone);
+          formData.append('experience', this.applyForm.value.experience);
+          formData.append('portfolioURL', this.applyForm.value.portfolioURL || '');
+          formData.append('linkedInProfile', this.applyForm.value.linkedInProfile || '');
+          formData.append('coverLetter', this.applyForm.value.coverLetter || '');
+          formData.append('statut', this.applyForm.value.statut);
+          formData.append('cv', cvFile);
+          formData.append('cvUrl', publicUrl);
+          formData.append('offreEmploiId', id.toString());
+  
+          this.candidatureService.createCandidature(formData).subscribe(
+            response => {
+              console.log('Response from Backend:', response);
+              this._snackBar.openFromComponent(SnackBarAnnotatedComponent, {
+                duration: this.durationInSeconds * 1000,
+                horizontalPosition: 'right',
+                verticalPosition: 'top',
+              });
+              this.router.navigate(['/main']);
+            },
+            error => {
+              console.error('Error submitting candidature:', error);
+              alert('Failed to submit application.');
+            }
+          );
+        });
       } else {
-        console.warn('No valid CV file to upload');
+        alert('Please select a valid CV file.');
       }
-
-      // Keep old logic
-      const formData = new FormData();
-
-      formData.append('nom', this.applyForm.value.nom);
-      formData.append('email', this.applyForm.value.email);
-      formData.append('phone', this.applyForm.value.phone);
-      formData.append('experience', this.applyForm.value.experience);
-      formData.append('portfolioURL', this.applyForm.value.portfolioURL || '');
-      formData.append('linkedInProfile', this.applyForm.value.linkedInProfile || '');
-      formData.append('coverLetter', this.applyForm.value.coverLetter || '');
-      formData.append('statut', this.applyForm.value.statut);
-      formData.append('cv', this.applyForm.value.cv);
-      formData.append('offreEmploiId', id.toString());
-
-      this.candidatureService.createCandidature(formData).subscribe(
-        response => {
-          console.log('Response from Backend:', response);
-          this._snackBar.openFromComponent(SnackBarAnnotatedComponent, {
-            duration: this.durationInSeconds * 1000,
-            horizontalPosition: 'right',
-            verticalPosition: 'top',
-          });
-          this.router.navigate(['/main']);
-        },
-        error => {
-          console.error('Error submitting candidature:', error);
-          alert('Failed to submit application.');
-        }
-      );
     } else {
       alert('Please fill all required fields.');
     }
+  }
+  
+
+  uploadToSupabase(file: File): void {
+    this.supabaseService.uploadFile(file).then(({ data, error }) => {
+      if (error) {
+        console.error('Supabase upload error:', error);
+      } else {
+        console.log('File uploaded to Supabase:', data);
+      }
+    });
   }
 
   uploadCvFile(file: File): void {

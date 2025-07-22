@@ -57,6 +57,7 @@ import { AdminDashboardComponent } from './Components/admin-dashboard/admin-dash
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MesCandidaturesComponent } from './Components/user/mes-candidatures/mes-candidatures.component';
 import { AdminSnackBarComponent } from './Components/admin-dashboard/admin-dashboard.component';
+import { CvAnalyzerComponent } from './Components/cv-analyzer/cv-analyzer.component';
 
 
 export function kcFactory(kcService: KeycloakService) {
@@ -88,7 +89,8 @@ export function kcFactory(kcService: KeycloakService) {
     AdminDashboardComponent,
     MesCandidaturesComponent,
     AdminSnackBarComponent,
-    SnackBarComponent
+    SnackBarComponent,
+    CvAnalyzerComponent
   ],
   imports: [
     BrowserModule,

@@ -73,4 +73,17 @@ export class OffreEmploiService {
   deleteOffre(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  getOffersByKeyword(keyword: string) {
+    return this.http.get<any[]>(`${this.apiUrl}/offers/search?keyword=${encodeURIComponent(keyword)}`);
+  }
+  
+  getOffersByKeyword2(keywords: string[]) {
+    const joinedKeywords = keywords.join(','); // or ' ' if your backend expects spaces
+    return this.http.get<any[]>(`${this.apiUrl}/search?keyword=${encodeURIComponent(joinedKeywords)}`);
+  }
+  
+  
+
+  
 }
