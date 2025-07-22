@@ -8,96 +8,157 @@
   </ol>
 </nav>
 
-<form [formGroup]="offreForm">
-  <mat-horizontal-stepper [orientation]="(stepperOrientation | async)!">
-    <!-- Step 1 -->
-    <mat-step>
-      <ng-template matStepLabel>Basic Info</ng-template>
-      <div class="form-row">
-        <mat-form-field appearance="outline">
-          <mat-label>Titre</mat-label>
-          <input matInput formControlName="titre" required />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Description</mat-label>
-          <textarea matInput formControlName="description"></textarea>
-        </mat-form-field>
+<div class="addoffre-card">
+  <h2 class="section-title">Ajouter une offre d'emploi</h2>
+  <form [formGroup]="offreForm" (ngSubmit)="onSubmit()" class="addoffre-form">
+    <div class="form-columns">
+      <!-- LEFT COLUMN -->
+      <div class="form-column">
+        <div class="form-group">
+          <label for="titre" class="form-label">Titre<span class="text-danger">*</span></label>
+          <input id="titre" type="text" formControlName="titre" class="form-input" required />
+          <div
+            *ngIf="offreForm.get('titre')?.invalid && (offreForm.get('titre')?.touched || offreForm.get('titre')?.dirty)"
+            class="error-message">
+            Le titre est requis.
+          </div>
+          <div
+            *ngIf="offreForm.get('titre')?.valid && (offreForm.get('titre')?.touched || offreForm.get('titre')?.dirty)"
+            class="success-message">
+            <span>&#10003; Champ valide</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="description" class="form-label">Description<span class="text-danger">*</span></label>
+          <textarea id="description" formControlName="description" class="form-textarea"></textarea>
+          <div
+            *ngIf="offreForm.get('description')?.invalid && (offreForm.get('description')?.touched || offreForm.get('description')?.dirty)"
+            class="error-message">
+            La description est requise.
+          </div>
+          <div
+            *ngIf="offreForm.get('description')?.valid && (offreForm.get('description')?.touched || offreForm.get('description')?.dirty)"
+            class="success-message">
+            <span>&#10003; Champ valide</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="dateDebut" class="form-label">Date début<span class="text-danger">*</span></label>
+          <input id="dateDebut" type="date" formControlName="dateDebut" class="form-input" />
+          <div
+            *ngIf="offreForm.get('dateDebut')?.errors && (offreForm.get('dateDebut')?.touched || offreForm.get('dateDebut')?.dirty)"
+            class="error-message">
+            <span *ngIf="offreForm.get('dateDebut')?.errors?.['required']">La date de début est requise.</span>
+            <span *ngIf="offreForm.get('dateDebut')?.errors?.['dateInThePast']">La date doit être postérieure à
+              aujourd'hui.</span>
+          </div>
+          <div
+            *ngIf="offreForm.get('dateDebut')?.valid && (offreForm.get('dateDebut')?.touched || offreForm.get('dateDebut')?.dirty)"
+            class="success-message">
+            <span>&#10003; Champ valide</span>
+          </div>
+        </div>
       </div>
-      <mat-form-field appearance="outline">
-        <mat-label>Date début</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="dateDebut" />
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      <div class="archived-checkbox-container">
-        <mat-checkbox formControlName="archive">Archivé</mat-checkbox>
+      <!-- RIGHT COLUMN -->
+      <div class="form-column">
+        <div class="form-group">
+          <label class="form-label">Catégories<span class="text-danger">*</span></label>
+          <div class="checkbox-group">
+            <label *ngFor="let cat of categoriesList" class="checkbox-label">
+              <input type="checkbox" [value]="cat" (change)="onCategoryChange($event)"
+                [checked]="offreForm.value.categories.includes(cat)" />
+              {{ cat }}
+            </label>
+          </div>
+          <div
+            *ngIf="offreForm.get('categories')?.invalid && (offreForm.get('categories')?.touched || offreForm.get('categories')?.dirty)"
+            class="error-message">
+            Veuillez sélectionner au moins une catégorie.
+          </div>
+          <div
+            *ngIf="offreForm.get('categories')?.valid && (offreForm.get('categories')?.touched || offreForm.get('categories')?.dirty)"
+            class="success-message">
+            <span>&#10003; Champ valide</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="niveauExperience" class="form-label">Niveau d'expérience<span class="text-danger">*</span></label>
+          <select id="niveauExperience" formControlName="niveauExperience" class="form-select">
+            <option *ngFor="let exp of experienceLevels" [value]="exp">{{ exp }}</option>
+          </select>
+          <div
+            *ngIf="offreForm.get('niveauExperience')?.invalid && (offreForm.get('niveauExperience')?.touched || offreForm.get('niveauExperience')?.dirty)"
+            class="error-message">
+            Le niveau d'expérience est requis.
+          </div>
+          <div
+            *ngIf="offreForm.get('niveauExperience')?.valid && (offreForm.get('niveauExperience')?.touched || offreForm.get('niveauExperience')?.dirty)"
+            class="success-message">
+            <span>&#10003; Champ valide</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="salaire" class="form-label">Salaire<span class="text-danger">*</span></label>
+          <input id="salaire" type="number" formControlName="salaire" class="form-input" />
+          <div
+            *ngIf="offreForm.get('salaire')?.errors && (offreForm.get('salaire')?.touched || offreForm.get('salaire')?.dirty)"
+            class="error-message">
+            <span *ngIf="offreForm.get('salaire')?.errors?.['required']">Le salaire est requis.</span>
+            <span *ngIf="offreForm.get('salaire')?.errors?.['notNumber']">Le salaire doit être un nombre.</span>
+          </div>
+          <div
+            *ngIf="offreForm.get('salaire')?.valid && (offreForm.get('salaire')?.touched || offreForm.get('salaire')?.dirty)"
+            class="success-message">
+            <span>&#10003; Champ valide</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="contrat" class="form-label">Contrat<span class="text-danger">*</span></label>
+          <select id="contrat" formControlName="contrat" class="form-select">
+            <option *ngFor="let c of contractOptions" [value]="c">{{ c }}</option>
+          </select>
+          <div
+            *ngIf="offreForm.get('contrat')?.invalid && (offreForm.get('contrat')?.touched || offreForm.get('contrat')?.dirty)"
+            class="error-message">
+            Le type de contrat est requis.
+          </div>
+          <div
+            *ngIf="offreForm.get('contrat')?.valid && (offreForm.get('contrat')?.touched || offreForm.get('contrat')?.dirty)"
+            class="success-message">
+            <span>&#10003; Champ valide</span>
+          </div>
+        </div>
       </div>
-
-      <div>
-        <button mat-button matStepperNext>Next</button>
+    </div>
+    <!-- Localisation full-width below columns -->
+    <div class="form-group">
+      <label for="localisation" class="form-label">Localisation<span class="text-danger">*</span></label>
+      <div class="location-row-with-archive">
+        <input id="localisation" type="text" formControlName="localisation" class="form-input" readonly />
+        <button type="button" class="btn btn-secondary" (click)="openMap()">📍 Sélectionner</button>
+        <div class="archived-checkbox-container-inline">
+          <input id="archive" type="checkbox" formControlName="archive" />
+          <label for="archive">Archivé</label>
+        </div>
+        <button *ngIf="showMap" type="button" class="close-map-btn-inline" (click)="closeMap()">&times;</button>
       </div>
-    </mat-step>
-
-
-    <!-- Step 2 -->
-    <mat-step>
-      <ng-template matStepLabel>Job Details</ng-template>
-      <div class="form-row">
-        <mat-form-field appearance="outline">
-          <mat-label>Catégories</mat-label>
-          <mat-select formControlName="categories" multiple>
-            <mat-option *ngFor="let cat of categoriesList" [value]="cat">{{ cat }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Niveau d'expérience</mat-label>
-          <mat-select formControlName="niveauExperience">
-            <mat-option *ngFor="let exp of experienceLevels" [value]="exp">{{ exp }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+      <div
+        *ngIf="offreForm.get('localisation')?.invalid && (offreForm.get('localisation')?.touched || offreForm.get('localisation')?.dirty)"
+        class="error-message">
+        La localisation est requise.
       </div>
-      <div class="form-row">
-        <mat-form-field appearance="outline">
-          <mat-label>Salaire</mat-label>
-          <input matInput formControlName="salaire" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Contrat</mat-label>
-          <mat-select formControlName="contrat">
-            <mat-option *ngFor="let c of contractOptions" [value]="c">{{ c }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+      <div
+        *ngIf="offreForm.get('localisation')?.valid && (offreForm.get('localisation')?.touched || offreForm.get('localisation')?.dirty)"
+        class="success-message">
+        <span>&#10003; Champ valide</span>
       </div>
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
+      <div *ngIf="showMap" class="map-wrapper">
+        <div id="map" class="map-container"></div>
       </div>
-
-    </mat-step>
-
-    <!-- Step 3 -->
-    <mat-step>
-      <ng-template matStepLabel>Location</ng-template>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Localisation</mat-label>
-        <input matInput formControlName="localisation" readonly />
-      </mat-form-field>
-
-      <button mat-raised-button type="button" (click)="openMap()">📍 Select Location</button>
-      <div *ngIf="showMap" id="map" class="map-container"></div>
-
-
-
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button type="submit" (click)="onSubmit()">Submit</button>
-      </div>
-
-    </mat-step>
-
-  </mat-horizontal-stepper>
-</form>
+    </div>
+    <!-- Archivé full-width below columns -->
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="offreForm.invalid">Soumettre</button>
+    </div>
+  </form>
+</div>
