@@ -479,3 +479,10 @@ select:focus {
     color: orange !important;
     border-color: orange !important;
 }
+
+::ng-deep .mat-dialog-container {
+  background-color: white !important;
+  box-shadow: none !important;
+  border-radius: 15px !important;
+  padding: 20px !important;
+}

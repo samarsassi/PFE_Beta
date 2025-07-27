@@ -1,4 +1,5 @@
 import { CodingChallenge } from './coding-challenge.model';
+import { Entretien } from './Entretien';
 
 export interface Candidature {
     id: number;
@@ -15,6 +16,7 @@ export interface Candidature {
     remarquesRH: string;
     decisionFinale: string;
     creePar: string;
+    entretien?: Entretien | null;
 
     // Nouvelles propriétés pour les défis de code
     defiId?: number
@@ -30,31 +32,4 @@ export interface Candidature {
     defi: CodingChallenge;
 }
 
-export interface CandidatureDTO {
-    id: number;
-    nom: string;
-    email: string;
-    telephone: string;
-    experience: string;
-    linkedInProfile: string;
-    portfolioURL: string;
-    statut: string;
-    cv: string;
-    coverLetter: string;
-    scoreCV: number;
-    remarquesRH: string;
-    decisionFinale: string;
-   
-    scoreDefi: number;
-    statutDefi: 'AUCUN' | 'ENVOYE' | 'TERMINE' | 'EVALUE';
-  
-    offreEmploiId: number;
-    offreEmploiTitre: string;
-    //defiId: number;
-    //defiTitre: string; 
-    //defiEnvoyeLe: string;
-    //defiTermineLe: string; 
-
-    defi: CodingChallenge;
-  }
   

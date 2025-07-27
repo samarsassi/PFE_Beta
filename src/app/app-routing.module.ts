@@ -16,6 +16,7 @@ import { CodeExecutorComponent } from './Components/code-executor/code-executor.
 import { AdminDashboardComponent } from './Components/admin-dashboard/admin-dashboard.component';
 import { MesCandidaturesComponent } from './Components/user/mes-candidatures/mes-candidatures.component';
 import { CvAnalyzerComponent } from './Components/cv-analyzer/cv-analyzer.component';
+import { InterviewComponent } from './Components/interview/interview.component';
 
 const routes: Routes = [
 
@@ -42,6 +43,7 @@ const routes: Routes = [
       { path: 'candidatures', component: CandidaturesComponent },
       { path: 'challenge', component: AdminDashboardComponent },
       { path: 'cv-analyzer', component: CvAnalyzerComponent },
+      {path: 'interview', component: InterviewComponent},
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   },

@@ -110,7 +110,8 @@
             <input type="url" formControlName="linkedInProfile" placeholder="https://linkedin.com/in/yourname" />
 
             <label>CV Upload</label>
-            <input class="form-control" type="file" (change)="onChange($event)" />
+           <input type="file" (change)="onChange($event)" />
+
 
             <label>Cover Letter</label>
             <textarea formControlName="coverLetter" rows="5"></textarea>
@@ -118,9 +119,10 @@
         </div>
 
         <div class="text-center">
-          <button type="submit" class="apply-btn" [disabled]="applyForm.invalid">
-            Submit Application
-          </button>
+          <button type="submit" class="apply-btn">
+  Submit Application
+</button>
+
         </div>
       </form>
     </div>

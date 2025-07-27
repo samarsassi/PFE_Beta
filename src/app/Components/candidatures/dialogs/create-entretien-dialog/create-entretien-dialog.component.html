@@ -1,0 +1,37 @@
+<div class="custom-dialog">
+  <h2 class="custom-title">Créer un Entretien</h2>
+  <form [formGroup]="entretienForm" (ngSubmit)="onSubmit()">
+
+    <div class="form-group">
+      <label>Date de l'entretien</label>
+      <!-- Hidden form control -->
+      <input type="hidden" formControlName="dateEntretien" />
+
+      <!-- Show selected date -->
+      <div *ngIf="selectedDate" class="selected-date">
+        Sélectionné : {{ selectedDate | date: 'fullDate' }}
+      </div>
+
+      <!-- FullCalendar -->
+      <div class="calendar-wrapper">
+        <full-calendar [options]="calendarOptions"></full-calendar>
+      </div>
+    </div>
+
+    <!-- Time picker appears only after date selected -->
+    <div class="form-group" *ngIf="selectedDate">
+      <label>Heure de l'entretien</label>
+      <input type="time" (change)="onTimeChange($event)" />
+    </div>
+
+    <div class="form-group">
+      <label>Lien</label>
+      <input nbInput placeholder="Lien d'entretien" formControlName="lien" readonly />
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="onCancel()">Annuler</button>
+      <button type="submit" [disabled]="entretienForm.invalid">Créer</button>
+    </div>
+  </form>
+</div>

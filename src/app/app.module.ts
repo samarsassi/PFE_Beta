@@ -58,6 +58,10 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MesCandidaturesComponent } from './Components/user/mes-candidatures/mes-candidatures.component';
 import { AdminSnackBarComponent } from './Components/admin-dashboard/admin-dashboard.component';
 import { CvAnalyzerComponent } from './Components/cv-analyzer/cv-analyzer.component';
+import { InterviewComponent } from './Components/interview/interview.component';
+import { InterviewUserComponent } from './Components/user/interview-user/interview-user.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { CreateEntretienDialogComponent } from './Components/candidatures/dialogs/create-entretien-dialog/create-entretien-dialog.component';
 
 
 export function kcFactory(kcService: KeycloakService) {
@@ -90,7 +94,10 @@ export function kcFactory(kcService: KeycloakService) {
     MesCandidaturesComponent,
     AdminSnackBarComponent,
     SnackBarComponent,
-    CvAnalyzerComponent
+    CvAnalyzerComponent,
+    InterviewComponent,
+    InterviewUserComponent,
+    CreateEntretienDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -132,7 +139,8 @@ export function kcFactory(kcService: KeycloakService) {
     //PowerBIEmbedModule,
     MatCardModule,
     NgxChartsModule,
-    NgxDatatableModule
+    NgxDatatableModule,
+    FullCalendarModule
   ],
   providers: [
     HttpClient,

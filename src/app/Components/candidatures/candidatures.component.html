@@ -114,6 +114,9 @@
             (click)="openSendChallengeModal(c)" title="Envoyer un défi">
             <i class="fas fa-paper-plane"></i>
           </button>
+          <button class="icon-btn add-btn" (click)="openCreateEntretienModal(c)" title="Créer un entretien">
+            <i class="fas fa-calendar-plus"></i>
+          </button>
         </td>
         <td>
           <span class="status-badge" [ngClass]="{
@@ -160,9 +163,18 @@
         <div class="item-actions">
           <button *ngIf="!c.statutDefi || c.statutDefi === 'AUCUN'" (click)="openSendChallengeModal(c)"
             class="btn btn-success">
-            📤 Send Challenge
+            📤
           </button>
-          <button class="btn btn-primary" (click)="onView(c)"><i class="fas fa-eye"></i> View Details</button>
+            <button 
+          class="icon-btn add-btn" 
+          (click)="openCreateEntretienModal(c)" 
+          title="Créer un entretien"
+          [disabled]="c.entretien != null"
+        >
+          <i class="btn btn-entretien"></i>
+        </button>
+
+          <button class="btn btn-primary" (click)="onView(c)"><i class="fas fa-eye"></i></button>
         </div>
       </div>
     </div>

@@ -1,11 +1,16 @@
-import { Candidature } from "./Candidature";
-import { User } from "./User";
 
-export interface Entretien {
+  export interface Entretien {
     id?: number;
-    dateEntretien: Date;
+    dateEntretien: string;  
     commentaireRH: string;
-    resultat: 'ACCEPTÉ' | 'REJETÉ';
-    candidature: Candidature;
-    // menePar: User; // Led by RH
-}
+    resultat: ResultatEntretien;
+    lien: string; 
+    candidatureId?: number;     
+  }
+  
+export enum ResultatEntretien {
+    ACCEPTE = 'ACCEPTE',
+    REJETE = 'REJETE',
+    EN_ATTENTE = 'EN_ATTENTE',
+  }
+  

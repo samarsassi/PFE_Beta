@@ -135,7 +135,7 @@ nav {
 /* Main Content */
 .main-content {
   flex: 1;
-  padding: 32px 0 24px 0;
+  padding: 0px 0 24px 0;
 }
 
 /* Footer */
@@ -157,11 +157,11 @@ footer {
   }
 
   .main-content {
-    padding: 18px 0 12px 0;
+    padding: 0px 0 12px 0;
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 1080px) {
   .container {
     width: 99%;
     padding: 0 2vw;

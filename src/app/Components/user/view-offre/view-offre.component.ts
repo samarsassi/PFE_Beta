@@ -74,7 +74,7 @@ export class ViewOffreComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
       cv: ['', Validators.required],
-      cvUrl: [null, Validators.required], // Accepts File or null
+      cvUrl: [null], // Accepts File or null
       experience: ['', [Validators.required, Validators.min(0)]],
       portfolioURL: [''],
       linkedInProfile: [''],
@@ -206,67 +206,80 @@ export class ViewOffreComponent implements OnInit {
   openModal() {
     this.isModalOpen = true;
   }
-  onChange(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
-      const file = target.files[0];
-      this.applyForm.patchValue({ cv: file });
-      this.applyForm.get('cv')?.updateValueAndValidity();
-    }
-  }
 
-  
-  submitApplication(): void {
-    const selectedId = this.route.snapshot.paramMap.get('id');
-    const id = selectedId ? +selectedId : null;
-  
-    if (this.applyForm.valid && id !== null) {
-      const cvFile = this.applyForm.value.cv;
-  
-      if (cvFile instanceof File) {
-        this.supabaseService.uploadCvFile(cvFile).then((publicUrl) => {
-          if (!publicUrl) {
-            alert('CV upload failed.');
-            return;
-          }
-  
-          const formData = new FormData();
-          formData.append('nom', this.applyForm.value.nom);
-          formData.append('email', this.applyForm.value.email);
-          formData.append('phone', this.applyForm.value.phone);
-          formData.append('experience', this.applyForm.value.experience);
-          formData.append('portfolioURL', this.applyForm.value.portfolioURL || '');
-          formData.append('linkedInProfile', this.applyForm.value.linkedInProfile || '');
-          formData.append('coverLetter', this.applyForm.value.coverLetter || '');
-          formData.append('statut', this.applyForm.value.statut);
-          formData.append('cv', cvFile);
-          formData.append('cvUrl', publicUrl);
-          formData.append('offreEmploiId', id.toString());
-  
-          this.candidatureService.createCandidature(formData).subscribe(
-            response => {
-              console.log('Response from Backend:', response);
-              this._snackBar.openFromComponent(SnackBarAnnotatedComponent, {
-                duration: this.durationInSeconds * 1000,
-                horizontalPosition: 'right',
-                verticalPosition: 'top',
-              });
-              this.router.navigate(['/main']);
-            },
-            error => {
-              console.error('Error submitting candidature:', error);
-              alert('Failed to submit application.');
-            }
-          );
-        });
-      } else {
-        alert('Please select a valid CV file.');
-      }
-    } else {
-      alert('Please fill all required fields.');
-    }
+onChange(event: Event): void {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    const file = target.files[0];
+    console.log('Selected file:', file);
+    this.applyForm.patchValue({ cv: file });
+    this.applyForm.get('cv')?.updateValueAndValidity();
   }
-  
+}
+
+
+ submitApplication(): void {
+  const selectedId = this.route.snapshot.paramMap.get('id');
+  const id = selectedId ? +selectedId : null;
+
+  if (this.applyForm.valid && id !== null) {
+    const cvFile = this.applyForm.value.cv;
+
+    if (!(cvFile instanceof File)) {
+      alert('Please select a valid CV file.');
+      return;
+    }
+
+    // Upload CV file to Supabase storage first
+    this.supabaseService.uploadCvFile(cvFile).then((publicUrl) => {
+      if (!publicUrl) {
+        alert('CV upload failed.');
+        return;
+      }
+
+      // Optional: patch cvUrl in form if needed
+      this.applyForm.patchValue({ cvUrl: publicUrl });
+
+      // Prepare FormData for backend submission
+      const formData = new FormData();
+      formData.append('nom', this.applyForm.value.nom);
+      formData.append('email', this.applyForm.value.email);
+      formData.append('phone', this.applyForm.value.phone);
+      formData.append('experience', this.applyForm.value.experience);
+      formData.append('portfolioURL', this.applyForm.value.portfolioURL || '');
+      formData.append('linkedInProfile', this.applyForm.value.linkedInProfile || '');
+      formData.append('coverLetter', this.applyForm.value.coverLetter || '');
+      formData.append('statut', this.applyForm.value.statut);
+      formData.append('cv', cvFile);              // actual file binary
+      formData.append('cvUrl', publicUrl);        // public URL from Supabase
+      formData.append('offreEmploiId', id.toString());
+
+      this.candidatureService.createCandidature(formData).subscribe(
+        response => {
+          console.log('Response from Backend:', response);
+          this._snackBar.openFromComponent(SnackBarAnnotatedComponent, {
+            duration: this.durationInSeconds * 1000,
+            horizontalPosition: 'right',
+            verticalPosition: 'top',
+          });
+          this.router.navigate(['/main']);
+        },
+        error => {
+          console.error('Error submitting candidature:', error);
+          alert('Failed to submit application.');
+        }
+      );
+    }).catch(err => {
+      console.error('Supabase CV upload error:', err);
+      alert('Failed to upload CV to storage.');
+    });
+
+  } else {
+    alert('Please fill all required fields.');
+  }
+}
+
+
 
   uploadToSupabase(file: File): void {
     this.supabaseService.uploadFile(file).then(({ data, error }) => {

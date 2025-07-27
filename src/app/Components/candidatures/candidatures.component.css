@@ -996,6 +996,9 @@
 .icon-btn.delete-btn {
   color: #ef4444;
 }
+.icon-btn.add-btn {
+  color: #0ab312;
+}
 
 .icon-btn:hover {
   background: #f0f4fa;
@@ -1484,7 +1487,7 @@
 .candidature-card-actions .btn {
   font-size: 1rem;
   font-weight: 600;
-  border-radius: 0.5rem;
+   border-radius: 20px;
   padding: 0.5rem 1.3rem;
   display: flex;
   align-items: center;
@@ -1649,14 +1652,16 @@
 }
 
 .item-actions .btn {
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1.3rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
   border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .item-actions .btn-success {
@@ -1666,6 +1671,15 @@
 
 .item-actions .btn-success:hover {
   background: #059669;
+}
+
+.item-actions .btn-entretien {
+  background: #accf11;
+  color: #fff;
+}
+
+.item-actions .btn-entretien:hover {
+  background: #8abf0e;
 }
 
 .item-actions .btn-primary {
@@ -1688,6 +1702,7 @@
     justify-content: flex-start;
   }
 }
+
 
 .mat-paginator {
   background-color: red;

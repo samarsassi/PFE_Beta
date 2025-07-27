@@ -120,9 +120,9 @@
 }
 
 .message.user .bubble {
-    background: #007bff;
-    color: #fff;
-    border-bottom-right-radius: 4px;
+    background: #e1f0ff;
+    color: #003366;
+    border-radius: 18px 18px 4px 18px; /* top-left, top-right, bottom-right, bottom-left */
 }
 
 .message.ai .bubble {
@@ -279,5 +279,22 @@
   
   .btn-consulter:hover {
     background-color: #0056b3;
+  }
+  
+  .chat-status {
+    font-size: 0.92rem;
+    color: #e0f7fa;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .status-indicator {
+    width: 10px;
+    height: 10px;
+    background-color: #28a745; /* green */
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.3);
   }
   

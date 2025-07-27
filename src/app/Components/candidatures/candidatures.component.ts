@@ -9,6 +9,7 @@ import { ChallengeService } from "src/app/Services/fn/challenge/challenge-servic
 import { CodingChallenge } from "src/app/Data/coding-challenge.model"
 import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
 import { SnackBarAnnotatedComponent } from '../user/view-offre/view-offre.component';
+import { CreateEntretienDialogComponent } from "./dialogs/create-entretien-dialog/create-entretien-dialog.component"
 
 
 @Component({
@@ -166,6 +167,21 @@ export class CandidaturesComponent {
     this.showSendChallengeModal = false
     this.selectedCandidature = null
   }
+
+  openCreateEntretienModal(candidature: Candidature) {
+  this.dialog.open(CreateEntretienDialogComponent, {
+    data: { candidatureId: candidature.id }
+  }).afterClosed().subscribe((result) => {
+    if (result) {
+      this._snackBar.open('Entretien créé avec succès.', 'Fermer', {
+        duration: 3000,
+        horizontalPosition: 'right',
+        verticalPosition: 'top',
+      });
+    }
+  });
+}
+
 
   // New method to apply filters to current page data
   applyFiltersToCurrentPage(): void {

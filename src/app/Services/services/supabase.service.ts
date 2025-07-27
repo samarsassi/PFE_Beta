@@ -20,14 +20,15 @@ export class SupabaseService {
     return data.publicUrl;
   }
 
-  async uploadCvFile(file: File): Promise<string | null> {
-    const filePath = `cvs/${Date.now()}_${file.name}`;
-    const { error } = await this.supabase.storage.from('cvs').upload(filePath, file);
-    if (error) {
-      console.error('Upload error:', error.message);
-      return null;
-    }
-    const { data } = this.supabase.storage.from('cvs').getPublicUrl(filePath);
-    return data?.publicUrl || null;
+async uploadCvFile(file: File): Promise<string | null> {
+  const filePath = `${Date.now()}_${file.name}`;
+  const { error } = await this.supabase.storage.from('cvs').upload(filePath, file);
+  if (error) {
+    console.error('Upload error:', error.message);
+    return null;
   }
+  const { data } = this.supabase.storage.from('cvs').getPublicUrl(filePath);
+  return data?.publicUrl || null;
+}
+
 }
