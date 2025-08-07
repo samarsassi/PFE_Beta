@@ -16,7 +16,7 @@
     </div>
     <div class="kpi-card kpi-interview">
       <div class="kpi-label">Entretiens</div>
-      <div class="kpi-value"> </div>
+      <div class="kpi-value"> {{entretienCount}} </div>
       <span class="kpi-icon kpi-icon-interview">🗓️</span>
     </div>
     <div class="kpi-card kpi-success">
@@ -27,6 +27,16 @@
   </div>
 
   <!-- Applications Card -->
+  <div class="filter-row">
+    <label for="candidatureStatusFilter">Filtrer par statut :</label>
+      <select id="candidatureStatusFilter" [(ngModel)]="candidatureStatusFilter">
+        <option value="all">Tous</option>
+        <option value="EN ATTENTE">En attente</option>
+        <option value="ACCEPTÉ">Acceptée</option>
+        <option value="REFUSEE">Refusée</option>
+      </select>
+  </div>
+
   <div class="applications-card">
     <h2 class="section-title">Mes candidatures</h2>
 
@@ -37,26 +47,39 @@
     </div>
 
     <div *ngIf="!loading && !selectedCandidature && candidatures.length > 0">
-      <div *ngFor="let c of candidatures" class="application-card" (click)="selectCandidature(c)">
+      <div *ngFor="let c of filteredCandidatures" class="application-card" (click)="selectCandidature(c)">
         <div class="application-header pro"
           style="display: flex; justify-content: space-between; align-items: flex-start;">
           <div>
             <div class="application-offer-title pro highlight">{{ c.offreEmploi?.titre || 'Offre inconnue' }}</div>
+            <br>
             <div class="application-company pro">{{ c.email }}</div>
           </div>
           <div class="application-status pro">
-            <span class="status-badge pro" [ngClass]="{
-                'status-inreview': c.statut === 'EN ATTENTE',
-                'status-accepted': c.statut === 'ACCEPTÉ',
-                'status-rejected': c.statut === 'REJETÉ'
-              }">
-              <ng-container [ngSwitch]="c.statut">
-                <span *ngSwitchCase="'EN ATTENTE'">En cours</span>
-                <span *ngSwitchCase="'ACCEPTÉ'">Acceptée</span>
-                <span *ngSwitchCase="'REJETÉ'">Rejetée</span>
-                <span *ngSwitchDefault>{{ c.statut }}</span>
-              </ng-container>
-            </span>
+            <!-- Status badge -->
+              <span class="status-badge pro" [ngClass]="{
+                  'status-inreview': c.statut === 'EN ATTENTE',
+                  'status-accepted': c.statut === 'ACCEPTÉ',
+                  'status-rejected': c.statut === 'REFUSEE'
+                }">
+                <ng-container [ngSwitch]="c.statut">
+                  <span *ngSwitchCase="'EN ATTENTE'">En cours</span>
+                  <span *ngSwitchCase="'ACCEPTÉ'">Acceptée</span>
+                  <span *ngSwitchCase="'REFUSEE'">Refusee</span>
+                  <span *ngSwitchDefault>{{ c.statut }}</span>
+                </ng-container>
+              </span>
+
+              <!-- Entretien icon -->
+          <span *ngIf="c.statutEntretien === 'ENVOYE' && c.statut !== 'REFUSEE'" title="Entretien prévu">
+            📅
+          </span>
+
+          <!-- Défi icon -->
+          <span *ngIf="c.statutDefi === 'ENVOYE' && c.statut !== 'REFUSEE'" title="Défi technique disponible">
+            🧠
+          </span>
+
           </div>
         </div>
 
@@ -78,24 +101,36 @@
 
   <!-- Detail View (Timeline) -->
   <div *ngIf="!loading && selectedCandidature">
-    <div class="timeline-header">
-      <button class="btn-icon" (click)="clearSelected()">
-        <mat-icon>arrow_back</mat-icon>
-        Retour
+        <div class="timeline-header">
+      <button class="btn-icon" (click)="clearSelected()"> 
+        <mat-icon>arrow_back</mat-icon> 
+        <span class="hide-on-small">
+          Retour
+        </span> 
+       
       </button>
-      <div class="candidate-info">
-        <span class="candidate-name">{{ selectedCandidature.nom }}</span>
-        <span class="status-badge" [ngClass]="{
-          'badge-pending': selectedCandidature.statut === 'EN ATTENTE',
-          'badge-accepted': selectedCandidature.statut === 'ACCEPTÉ',
-          'badge-rejected': selectedCandidature.statut === 'REJETÉ'
-        }">{{ selectedCandidature.statut }}</span>
+
+      <div class="candidate-details">
+        <div class="candidate-info">
+          <span class="candidate-name">{{ selectedCandidature.nom }}</span>
+          <span class="status-badge" [ngClass]="{
+            'badge-pending': selectedCandidature.statut === 'EN ATTENTE',
+            'badge-accepted': selectedCandidature.statut === 'ACCEPTÉ',
+            'badge-rejected': selectedCandidature.statut === 'REFUSEE'
+          }">{{ selectedCandidature.statut }}</span>
+        </div>
+        <div class="candidate-email">
+          📧 {{ selectedCandidature.email }}
+        </div>
       </div>
-      <button class="btn-danger" (click)="confirmAndDeleteCandidature(selectedCandidature.id)">
-        <mat-icon>delete</mat-icon>
-        Supprimer
+
+    <button class="btn-danger" (click)="confirmAndDeleteCandidature(selectedCandidature.id)">
+      <mat-icon>delete</mat-icon>
+      <span class="hide-on-small">Supprimer</span>
       </button>
-    </div>
+
+  </div>
+
 
     <div class="timeline-container">
       <div class="timeline-step active">
@@ -112,45 +147,77 @@
           <div class="timeline-date" *ngIf="selectedCandidature.statut === 'EN ATTENTE'">En cours</div>
         </div>
       </div>
-      <div class="timeline-step" [class.active]="selectedCandidature.defiEnvoyeLe">
-        <div class="timeline-dot"></div>
-        <div>
-          <div class="timeline-title">Défi envoyé</div>
-          <div class="timeline-date" *ngIf="selectedCandidature.defiEnvoyeLe">
-            {{ selectedCandidature.defiEnvoyeLe | date:'short' }}
-          </div>
-          <button class="btn-primary" [routerLink]="['../code-executor', selectedCandidature.id]"
-            [disabled]="selectedCandidature.statut === 'REJETÉ'"
-            matTooltip="Impossible d'accéder au défi si la candidature est rejetée">
-            Accéder au défi
-          </button>
-        </div>
-      </div>
-      <div class="timeline-step" [class.active]="selectedCandidature.defiTermineLe">
-        <div class="timeline-dot"></div>
-        <div>
-          <div class="timeline-title">Défi terminé</div>
-          <div class="timeline-date" *ngIf="selectedCandidature.defiTermineLe">
-            {{ selectedCandidature.defiTermineLe | date:'short' }}
+      <div *ngIf="selectedCandidature.defi">
+        <div class="timeline-step" [class.active]="selectedCandidature.defiEnvoyeLe">
+          <div class="timeline-dot"></div>
+          <div>
+            <div class="timeline-title" *ngIf="selectedCandidature.defi">Défi envoyé</div>
+            <div class="timeline-date" *ngIf="selectedCandidature.defiEnvoyeLe">
+              {{ selectedCandidature.defiEnvoyeLe | date:'short' }}
+            </div>
+            <button class="btn-primary" [routerLink]="['../code-executor', selectedCandidature.id]"
+              [disabled]="selectedCandidature.statut === 'REFUSEE'"
+              matTooltip="Impossible d'accéder au défi si la candidature est REFUSEEe">
+              Accéder au défi
+            </button>
           </div>
         </div>
-      </div>
-      <div class="timeline-step" [class.active]="selectedCandidature.statutDefi === 'EVALUE'">
-        <div class="timeline-dot"></div>
-        <div>
-          <div class="timeline-title">Défi évalué</div>
-          <div class="timeline-date" *ngIf="selectedCandidature.statutDefi === 'EVALUE'">Évalué</div>
+        <div class="timeline-step" [class.active]="selectedCandidature.defiTermineLe">
+          <div class="timeline-dot"></div>
+          <div>
+            <div class="timeline-title">Défi terminé</div>
+            <div class="timeline-date" *ngIf="selectedCandidature.defiTermineLe">
+              {{ selectedCandidature.defiTermineLe | date:'short' }}
+            </div>
+          </div>
+        </div>
+        <div class="timeline-step" [class.active]="selectedCandidature.statutDefi === 'EVALUE'">
+          <div class="timeline-dot"></div>
+          <div>
+            <div class="timeline-title">Défi évalué</div>
+            <div class="timeline-date" *ngIf="selectedCandidature.statutDefi === 'EVALUE'">Évalué</div>
+          </div>
         </div>
       </div>
+        <div *ngIf="selectedCandidature.entretien">
+            <div class="timeline-step active">
+              <div class="timeline-dot"></div>
+              <div>
+                <div class="timeline-title">Entretien programmé</div>
+                  <div class="timeline-date">
+                    {{ selectedCandidature.entretien.dateEntretien | date:'short' }}
+                  </div>
+
+                <!-- Show 'Terminé' text if interview is finished -->
+                <ng-container *ngIf="selectedCandidature.statutEntretien === 'TERMINE'; else joinButton">
+                  <span class="btn-disabled">Terminé</span>
+                </ng-container>
+
+                <!-- Show 'Join Interview' button otherwise -->
+                <ng-template #joinButton>
+                  <button 
+                    class="btn-primary"
+                    [disabled]="selectedCandidature.statut === 'REFUSEE'"
+                    [routerLink]="['/main/interview']"
+                    [queryParams]="{ candidatureId: selectedCandidature.id }">
+                    Rejoindre l’entretien
+                  </button>
+                </ng-template>
+              </div>
+            </div>
+        </div>
+
+    </div>
+
       <div class="timeline-step"
-        [class.active]="selectedCandidature.statut === 'ACCEPTÉ' || selectedCandidature.statut === 'REJETÉ'">
+        [class.active]="selectedCandidature.statut === 'ACCEPTÉ' || selectedCandidature.statut === 'REFUSEE'">
         <div class="timeline-dot"></div>
         <div>
           <div class="timeline-title">Décision finale</div>
           <div class="timeline-date" *ngIf="selectedCandidature.statut === 'ACCEPTÉ'">Acceptée</div>
-          <div class="timeline-date" *ngIf="selectedCandidature.statut === 'REJETÉ'">Rejetée</div>
+          <div class="timeline-date" *ngIf="selectedCandidature.statut === 'REFUSEE'">Refusee</div>
         </div>
       </div>
-    </div>
   </div>
+  
 </div>

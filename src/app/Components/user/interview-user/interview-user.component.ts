@@ -1,68 +1,108 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-
-
+import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { EntretienService } from 'src/app/Services/fn/entretien/entretien.service';
+import { CandidatureService } from 'src/app/Services/fn/candidature/candidature.service';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
-
-function randomID(len:number) {
-  let result = '';
-  if (result) return result;
-  var chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP',
-    maxPos = chars.length,
-    i;
-  len = len || 5;
-  for (i = 0; i < len; i++) {
-    result += chars.charAt(Math.floor(Math.random() * maxPos));
-  }
-  return result;
-}
-
-export function getUrlParams(
-  url = window.location.href
-) {
-  let urlStr = url.split('?')[1];
-  return new URLSearchParams(urlStr);
-}
+import { KeycloakService } from 'src/app/Services/keycloak/keycloak.service';
+import { Candidature } from 'src/app/Data/Candidature';
 
 @Component({
   selector: 'app-interview-user',
   templateUrl: './interview-user.component.html',
   styleUrls: ['./interview-user.component.css']
 })
-export class InterviewUserComponent
+export class InterviewUserComponent implements OnInit {
+  @ViewChild('root') root!: ElementRef;
+  
+  candidatureId!: string;
+  entretienLink: string = '';
+  userName: string = '';
+  public candidature!: Candidature;
+  public entretienDate!: string;
 
-{
-  @ViewChild('root')
-  root!: ElementRef;
+  constructor(
+    private route: ActivatedRoute,
+    private candidatureService: CandidatureService,
+    private keycloakService: KeycloakService
+  ) {}
 
-  ngAfterViewInit() {
-    const roomID = getUrlParams().get('roomID') || randomID(5);
+ngOnInit() {
+  if (this.keycloakService.profile) {
+            this.userName = `${this.keycloakService.profile.firstName} ${this.keycloakService.profile.lastName}`;
+          }
+  const candidatureIdStr = this.route.snapshot.queryParamMap.get('candidatureId');
+  if (!candidatureIdStr) {
+    console.error('No candidatureId provided');
+    return;
+  }
 
-    // generate Kit Token
+  // Convert to number
+  const candidatureId = Number(candidatureIdStr);
+  if (isNaN(candidatureId)) {
+    console.error('Invalid candidatureId:', candidatureIdStr);
+    return;
+  }
+
+  this.candidatureService.getCandidatureById(candidatureId).subscribe({
+    next: (candidature) => {
+      this.candidature = candidature; // ✅ assign it to a class variable
+      this.entretienLink = candidature.entretien?.lien || '';
+      this.entretienDate = candidature.entretien?.dateEntretien || '';
+      this.startInterview();
+    },
+    error: (err) => console.error('Failed to fetch candidature', err),
+  });
+
+  
+}
+ngAfterViewInit(): void {
+  if (this.entretienLink) {
+    this.startInterview();
+  }
+}
+
+
+  startInterview() {
+    if (!this.entretienLink) {
+      console.error('No entretien link found on candidature');
+      return;
+    }
+
+    // Extract roomID from entretienLink URL
+    const urlParams = new URL(this.entretienLink).searchParams;
+    const roomID = urlParams.get('roomID');
+    if (!roomID) {
+      console.error('roomID missing from entretien link');
+      return;
+    }
+
     const appID = 591667673;
-    const serverSecret = "43f6a8d22a15d8a6465dd4c1ad7a53a7";
-    const kitToken =  ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID,  randomID(5),  randomID(5));
+    const serverSecret = '43f6a8d22a15d8a6465dd4c1ad7a53a7';
+    const userID = this.randomID(5);
 
-    
-    // Create instance object from Kit Token.
+    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, this.userName);
     const zp = ZegoUIKitPrebuilt.create(kitToken);
 
- 
-    // Start a call.
     zp.joinRoom({
-        container: this.root.nativeElement,
-        sharedLinks: [
-          {
-            name: 'Personal link',
-            url:
-              window.location.protocol + '//' + 
-              window.location.host + window.location.pathname +
-              '?roomID=' +
-              roomID,
-          },
-        ],
-        scenario: {
-          mode: ZegoUIKitPrebuilt.VideoConference,
+      container: this.root.nativeElement,
+      sharedLinks: [
+        {
+          name: 'Interview link',
+          url: this.entretienLink,
         },
+      ],
+      scenario: {
+        mode: ZegoUIKitPrebuilt.VideoConference,
+      },
     });
+  }
+
+  randomID(len: number): string {
+    let result = '';
+    const chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP';
+    for (let i = 0; i < len; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
   }
 }

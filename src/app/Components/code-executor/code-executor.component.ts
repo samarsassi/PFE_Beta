@@ -274,18 +274,18 @@ export class CodeExecutorComponent implements OnInit {
     }
     if (this.candidature) {
       localStorage.removeItem(`challengeStartTime_${this.candidature.id}`);
-      if (this.candidature.statut !== 'REJETÉ') {
+      if (this.candidature.statut !== 'REFUSEE') {
         const updatedCandidature = {
           ...this.candidature,
-          statut: 'REJETÉ' as const
+          statut: 'REFUSEE' as const
         };
         this.candidatureService.updateCandidature(this.candidature.id, updatedCandidature).subscribe({
-          next: () => console.log(`✅ Candidature ${this.candidature?.id} set to REJETÉ`),
+          next: () => console.log(`✅ Candidature ${this.candidature?.id} set to REFUSEE`),
           error: (err) => console.error("❌ Failed to update candidature:", err),
         });
 
       } else {
-        console.log(`ℹ️ Candidature ${this.candidature?.id} already REJETÉ`);
+        console.log(`ℹ️ Candidature ${this.candidature?.id} already REFUSEE`);
       }
     }
     console.log('Challenge expired, UI should be blocked.');
@@ -324,7 +324,7 @@ export class CodeExecutorComponent implements OnInit {
       <h2>Annuler le défi ?</h2>
       <div>
         <p>Êtes-vous sûr de vouloir annuler ce défi ?<br>
-        <strong>Votre candidature sera immédiatement mise à REJETÉ.</strong></p>
+        <strong>Votre candidature sera immédiatement mise à REFUSEE.</strong></p>
       </div>
       <div class="annuler-modal-actions">
         <button class="cancel-btn" (click)="dialogRef.close(false)">Non</button>
@@ -332,7 +332,7 @@ export class CodeExecutorComponent implements OnInit {
       </div>
     </div>
   `,
-   styleUrls: ['./code-executor.component.css']
+  styleUrls: ['./code-executor.component.css']
 })
 export class AnnulerChallengeDialog {
   constructor(public dialogRef: MatDialogRef<AnnulerChallengeDialog>) { }

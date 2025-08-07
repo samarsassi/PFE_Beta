@@ -9,6 +9,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Entretien } from 'src/app/Data/Entretien';
+import { CandidatureService } from 'src/app/Services/fn/candidature/candidature.service';
 
 function randomID(len: number) {
   let result = '';
@@ -54,24 +55,26 @@ export class CreateEntretienDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<CreateEntretienDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { candidatureId: number },
     private fb: FormBuilder,
-    private entretienService: EntretienService
-  ) {
+    private entretienService: EntretienService,
+    private candidatureService: CandidatureService) {
     this.entretienForm = this.fb.group({
       dateEntretien: ['', Validators.required],
       commentaireRH: [''], // optional
       resultat: ['EN_ATTENTE', Validators.required],
-      lien: [{ value: '', disabled: true }]
-    });
+      lien: ['']
 
-    this.generateZegoLink();
+    });
   }
 
    ngOnInit(): void {
-     this.entretienService.getAllChallenges().subscribe({
+    this.generateZegoLink();
+     this.entretienService.getAllInterviews().subscribe({
     next: (entretiens: Entretien[]) => {
       console.log('Raw entretiens:', entretiens);
   
       const events = entretiens.map(entretien => {
+        // const candidatureId = entretien.candidature?.id;
+
         console.log('Mapping entretien:', entretien);
         return {
           title: `Entretien #${entretien.id} - ${entretien.resultat}`,
@@ -84,7 +87,7 @@ export class CreateEntretienDialogComponent implements OnInit {
         };
       });
   
-      console.log('Mapped events:', events); // 🟢 See how many events you actually generate
+      console.log('Mapped events:', events); 
   
       this.calendarOptions = {
         ...this.calendarOptions,
@@ -157,44 +160,65 @@ updateDateTime() {
     this.entretienForm.patchValue({ dateEntretien: selectedDate });
   }
 
-  onSubmit() {
-    if (this.entretienForm.valid) {
-      const entretien = {
-        ...this.entretienForm.value,
-        candidatureId: this.data.candidatureId
-      };
-      console.log('Payload sent:', entretien);
-      this.entretienService.createEntretien(entretien).subscribe(() => {
-        this.dialogRef.close(true);
-      });
-    }
+onSubmit() {
+  if (this.entretienForm.valid) {
+    const entretienPayload = {
+      ...this.entretienForm.value,
+      candidatureId: this.data.candidatureId
+    };
+
+    console.log('Payload sent:', entretienPayload);
+
+    this.entretienService.createEntretien(this.data.candidatureId, entretienPayload).subscribe({
+      next: (createdEntretien) => {
+        // Fetch full candidature first
+        this.candidatureService.getCandidatureById(this.data.candidatureId).subscribe({
+          next: (fullCandidature) => {
+            // Update necessary fields
+            const updatedCandidature = {
+              ...fullCandidature,
+              statutEntretien: "ENVOYE" as "ENVOYE" | "AUCUN" | "TERMINE" | undefined,
+              entretienId: createdEntretien.id,
+              entretienEnvoyeLe: new Date()
+            };
+
+            this.candidatureService.updateCandidature(this.data.candidatureId, updatedCandidature).subscribe({
+              next: () => this.dialogRef.close(true),
+              error: err => console.error('Error updating candidature:', err)
+            });
+          },
+          error: err => console.error('Error fetching candidature:', err)
+        });
+      },
+      error: err => console.error('Error creating entretien:', err)
+    });
   }
+}
+
 
   onCancel(): void {
     this.dialogRef.close(false);
   }
 
-  generateZegoLink() {
-    const roomID = randomID(5);
+generateZegoLink() {
+  const roomID = randomID(5);
 
-    const appID = 591667673;
-    const serverSecret = "43f6a8d22a15d8a6465dd4c1ad7a53a7";
+  const appID = 591667673;
+  const serverSecret = "43f6a8d22a15d8a6465dd4c1ad7a53a7";
 
-    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
-      appID,
-      serverSecret,
-      roomID,
-      randomID(5),
-      randomID(5)
-    );
+  const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+    appID,
+    serverSecret,
+    roomID,
+    randomID(5),
+    randomID(5)
+  );
+  const baseURL = 'https://jobportal.com/meeting'; 
+  this.zegoLink = `${baseURL}?roomID=${roomID}`;
 
-    this.zegoLink =
-      window.location.protocol + '//' +
-      window.location.host + window.location.pathname +
-      `?roomID=${roomID}`;
+  this.entretienForm.patchValue({
+    lien: this.zegoLink
+  });
+}
 
-    this.entretienForm.patchValue({
-      lien: this.zegoLink
-    });
-  }
 }

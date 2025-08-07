@@ -20,15 +20,21 @@ export class SupabaseService {
     return data.publicUrl;
   }
 
-async uploadCvFile(file: File): Promise<string | null> {
-  const filePath = `${Date.now()}_${file.name}`;
-  const { error } = await this.supabase.storage.from('cvs').upload(filePath, file);
-  if (error) {
-    console.error('Upload error:', error.message);
-    return null;
+  async uploadCvFile(file: File, candidatureTitle: string, offreTitle: string): Promise<string | null> {
+    // Sanitize titles to make them file-safe
+    const cleanCandidature = candidatureTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const cleanOffre = offreTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+
+    const filePath = `${cleanCandidature}_${cleanOffre}_${Date.now()}_${file.name}`;
+
+    const { error } = await this.supabase.storage.from('cvs').upload(filePath, file);
+    if (error) {
+      console.error('Upload error:', error.message);
+      return null;
+    }
+    const { data } = this.supabase.storage.from('cvs').getPublicUrl(filePath);
+    return data?.publicUrl || null;
   }
-  const { data } = this.supabase.storage.from('cvs').getPublicUrl(filePath);
-  return data?.publicUrl || null;
-}
+
 
 }

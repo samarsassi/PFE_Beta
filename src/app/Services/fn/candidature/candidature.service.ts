@@ -76,9 +76,6 @@ export class CandidatureService {
     return this.http.put<Candidature>(`${this.apiUrl}/${id}`, candidature);
   }
 
-  update(candidature: Candidature): Observable<Candidature> {
-    return this.http.put<Candidature>(`${this.apiUrl}`, candidature);
-  }
   
   
   // Delete a candidature

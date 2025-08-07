@@ -16,12 +16,12 @@ export interface CodingChallenge {
 
 export interface TestCase {
   id?: number
-  entree: string 
-  sortieAttendue: string 
-  estCache: boolean 
+  entree: string
+  sortieAttendue: string
+  estCache: boolean
   points: number
   creeLe?: Date
-  
+
 }
 
 // Extension de votre interface Candidature existante pour les défis
@@ -30,7 +30,7 @@ export interface TestCase {
 //   id: number
 //   nom: string
 //   email: string
-//   statut: "EN ATTENTE" | "ACCEPTÉ" | "REJETÉ"
+//   statut: "EN ATTENTE" | "ACCEPTÉ" | "REFUSEE"
 //   cv: string
 //   coverLetter: string
 //   telephone: string

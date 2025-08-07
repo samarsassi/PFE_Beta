@@ -12,20 +12,21 @@ export class EntretienService {
   private baseUrl = 'http://localhost:8089/entretiens'; // Adjust to your actual API endpoint
  
    constructor(private http: HttpClient) {}
-   getAllChallenges(): Observable<Entretien[]> {
+   getAllInterviews(): Observable<Entretien[]> {
      return this.http.get<Entretien[]>(this.baseUrl);
    }
  
-   createEntretien(Entretien: Partial<Entretien>): Observable<Entretien> {
-     console.log("Sending test case to backend:", Entretien);
-     return this.http.post<Entretien>(this.baseUrl, Entretien);
-   }
+createEntretien(candidatureId: number, entretien: Partial<Entretien>): Observable<Entretien> {
+  console.log("Sending test case to backend:", entretien);
+  return this.http.post<Entretien>(`${this.baseUrl}/${candidatureId}/create`, entretien);
+}
+
  
-   updateEntretien(EntretienId: number, updates: Partial<Entretien>): Observable<Entretien> {
-     return this.http.put<Entretien>(`${this.baseUrl}/${EntretienId}`, updates);
-   }
- 
-   deleteEntretien(EntretienId: number): Observable<void> {
+updateEntretien(id: number, entretien: Entretien): Observable<Entretien> {
+  return this.http.put<Entretien>(`${this.baseUrl}/${id}`, entretien);
+}
+
+deleteEntretien(EntretienId: number): Observable<void> {
      return this.http.delete<void>(`${this.baseUrl}/${EntretienId}`);
-   }
+}
 }

@@ -170,7 +170,7 @@ export class CvAnalyzerComponent implements OnInit {
   }
 
   isStatsRequest(message: string): boolean {
-    const statsKeywords = ['stats', 'statistics', 'offers', 'candidatures', 'challenges'];
+    const statsKeywords = ['stats', 'statistics', 'offers', 'candidatures', 'challenges','statistiques'];
     const lower = message.toLowerCase();
     return statsKeywords.some(keyword => lower.includes(keyword));
   }

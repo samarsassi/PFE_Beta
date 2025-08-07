@@ -74,7 +74,7 @@ export class ViewOffreComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
       cv: ['', Validators.required],
-      cvUrl: [null], // Accepts File or null
+      cvUrl: [''], // Accepts File or null
       experience: ['', [Validators.required, Validators.min(0)]],
       portfolioURL: [''],
       linkedInProfile: [''],
@@ -217,8 +217,7 @@ onChange(event: Event): void {
   }
 }
 
-
- submitApplication(): void {
+submitApplication(): void {
   const selectedId = this.route.snapshot.paramMap.get('id');
   const id = selectedId ? +selectedId : null;
 
@@ -230,17 +229,18 @@ onChange(event: Event): void {
       return;
     }
 
-    // Upload CV file to Supabase storage first
-    this.supabaseService.uploadCvFile(cvFile).then((publicUrl) => {
+    const candidatureTitle = this.applyForm.value.nom;
+    const offreTitle = this.selectedOffre?.titre || 'offre';
+
+    this.supabaseService.uploadCvFile(cvFile, candidatureTitle, offreTitle).then((publicUrl) => {
       if (!publicUrl) {
         alert('CV upload failed.');
         return;
       }
 
-      // Optional: patch cvUrl in form if needed
+      // Optionally patch the cvUrl in form if you want
       this.applyForm.patchValue({ cvUrl: publicUrl });
 
-      // Prepare FormData for backend submission
       const formData = new FormData();
       formData.append('nom', this.applyForm.value.nom);
       formData.append('email', this.applyForm.value.email);
@@ -250,12 +250,12 @@ onChange(event: Event): void {
       formData.append('linkedInProfile', this.applyForm.value.linkedInProfile || '');
       formData.append('coverLetter', this.applyForm.value.coverLetter || '');
       formData.append('statut', this.applyForm.value.statut);
-      formData.append('cv', cvFile);              // actual file binary
-      formData.append('cvUrl', publicUrl);        // public URL from Supabase
+      formData.append('cv', cvFile);              // Actual file binary
+      formData.append('cvUrl', publicUrl);        // Public URL from Supabase
       formData.append('offreEmploiId', id.toString());
 
-      this.candidatureService.createCandidature(formData).subscribe(
-        response => {
+      this.candidatureService.createCandidature(formData).subscribe({
+        next: (response) => {
           console.log('Response from Backend:', response);
           this._snackBar.openFromComponent(SnackBarAnnotatedComponent, {
             duration: this.durationInSeconds * 1000,
@@ -264,16 +264,15 @@ onChange(event: Event): void {
           });
           this.router.navigate(['/main']);
         },
-        error => {
+        error: (error) => {
           console.error('Error submitting candidature:', error);
           alert('Failed to submit application.');
         }
-      );
+      });
     }).catch(err => {
       console.error('Supabase CV upload error:', err);
       alert('Failed to upload CV to storage.');
     });
-
   } else {
     alert('Please fill all required fields.');
   }
@@ -291,21 +290,22 @@ onChange(event: Event): void {
     });
   }
 
-  uploadCvFile(file: File): void {
-    const filePath = `CVs/${this.applyForm.value.nom}_${Date.now()}.${file.name.split('.').pop()}`;
+  uploadCvFile(file: File, candidatureTitle: string, offreTitle: string): Promise<string | null> {
+    // Generate file path inside bucket, e.g., cvs/JohnDoe_123456.pdf
+    const filePath = `cvs/${candidatureTitle}_${Date.now()}.${file.name.split('.').pop()}`;
 
-    const storageRef = ref(this.storage, `cvs/${filePath}`);
+    const storageRef = ref(this.storage, filePath);
 
-    uploadBytes(storageRef, file).then((snapshot) => {
-      console.log('Uploaded a file!', snapshot);
-
-      // Optional: get download URL
-      getDownloadURL(storageRef).then((url) => {
+    return uploadBytes(storageRef, file)
+      .then(() => getDownloadURL(storageRef))
+      .then((url) => {
         console.log('File available at', url);
+        return url; // Return the public URL for use by caller
+      })
+      .catch(error => {
+        console.error('Upload failed:', error);
+        return null;
       });
-    }).catch(error => {
-      console.error('Upload failed:', error);
-    });
   }
 
   closeModal() {

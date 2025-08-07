@@ -169,18 +169,26 @@ export class CandidaturesComponent {
   }
 
   openCreateEntretienModal(candidature: Candidature) {
-  this.dialog.open(CreateEntretienDialogComponent, {
-    data: { candidatureId: candidature.id }
-  }).afterClosed().subscribe((result) => {
-    if (result) {
-      this._snackBar.open('Entretien créé avec succès.', 'Fermer', {
-        duration: 3000,
-        horizontalPosition: 'right',
-        verticalPosition: 'top',
-      });
-    }
-  });
-}
+    this.dialog.open(CreateEntretienDialogComponent, {
+      data: { candidatureId: candidature.id }
+    }).afterClosed().subscribe((result) => {
+      if (result) {
+        this._snackBar.open('Entretien créé avec succès.', 'Fermer', {
+          duration: 3000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+        });
+        // You need to refresh candidatures here to reflect changes!
+        this.getAllCandidatures();
+
+        // Optionally, if you want to "go back to table view" or close other modals,
+        // you can also set showModal = false or viewMode = 'table' here, for example:
+        this.showModal = false;
+        this.viewMode = 'table';
+        this.selectedCandidature = null;
+      }
+    });
+  }
 
 
   // New method to apply filters to current page data
@@ -298,6 +306,7 @@ export class CandidaturesComponent {
     this.showModal = false
     this.selectedCandidature = null
     this.isModalOpen = false
+    this.getAllCandidatures();
   }
 
   onDelete(id: number, cancelCallback: () => any = () => { }): void {
@@ -331,14 +340,14 @@ export class CandidaturesComponent {
         return "#ffc107"
       case "ACCEPTÉ":
         return "#4caf50"
-      case "REJETÉ":
+      case "REFUSEE":
         return "#f44336"
       default:
         return "#9e9e9e"
     }
   }
 
-  changeStatus(candidature: Candidature, newStatus: "EN ATTENTE" | "ACCEPTÉ" | "REJETÉ"): void {
+  changeStatus(candidature: Candidature, newStatus: "EN ATTENTE" | "ACCEPTÉ" | "REFUSEE"): void {
     const selectedId = this.route.snapshot.paramMap.get("id")
     const id = selectedId ? +selectedId : null
     const updatedCandidature = { ...candidature, statut: newStatus }
@@ -397,7 +406,7 @@ export class CandidaturesComponent {
         return "card-pending"
       case "ACCEPTÉ":
         return "card-accepted"
-      case "REJETÉ":
+      case "REFUSEE":
         return "card-rejected"
       default:
         return ""
@@ -406,9 +415,9 @@ export class CandidaturesComponent {
 
   getScoreBadgeClass(score: number | undefined): string {
     if (score === undefined) return ""
-    if (score >= 81) return "badge-success"
-    if (score >= 61) return "badge-info"
-    if (score >= 31) return "badge-warning"
+    if (score >= 8) return "badge-success"
+    if (score >= 6) return "badge-info"
+    if (score >= 3) return "badge-warning"
     return "badge-danger"
   }
 
@@ -418,7 +427,7 @@ export class CandidaturesComponent {
         return "chip-pending"
       case "ACCEPTÉ":
         return "chip-accepted"
-      case "REJETÉ":
+      case "REFUSEE":
         return "chip-rejected"
       default:
         return ""

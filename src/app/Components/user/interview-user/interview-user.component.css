@@ -1,8 +1,19 @@
 :host {
-    display: block;
-  }
-  #myRoot {
-    width: 80vw;
-    height:70vh;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.entretien-info {
+  margin-bottom: 1rem;
+  font-weight: 500;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+#myRoot {
+  width: 80vw;
+  height: 70vh;
+}

@@ -1,16 +1,18 @@
+import { Candidature } from "./Candidature";
 
-  export interface Entretien {
-    id?: number;
-    dateEntretien: string;  
-    commentaireRH: string;
-    resultat: ResultatEntretien;
-    lien: string; 
-    candidatureId?: number;     
-  }
-  
-export enum ResultatEntretien {
-    ACCEPTE = 'ACCEPTE',
-    REJETE = 'REJETE',
-    EN_ATTENTE = 'EN_ATTENTE',
-  }
-  
+    export interface Entretien {
+      id?: number;
+      dateEntretien: string;  
+      commentaireRH: string | null;  
+      resultat: ResultatEntretien;
+      lien: string; 
+      candidatureId?: number;     
+      candidature?: Candidature;
+    }
+    
+  export enum ResultatEntretien {
+      ACCEPTE = 'ACCEPTE',
+      REFUSEE = 'REFUSEE',
+      EN_ATTENTE = 'EN_ATTENTE',
+    }
+    

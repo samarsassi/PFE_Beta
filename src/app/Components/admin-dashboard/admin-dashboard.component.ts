@@ -235,7 +235,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     switch (statut) {
       case "ACCEPTÉ":
         return "chip-success"
-      case "REJETÉ":
+      case "REFUSEE":
         return "chip-danger"
       case "EN ATTENTE":
       default:
@@ -258,7 +258,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   getCardStatusClass(app: Candidature): string {
-    if (app.statut === "REJETÉ") return "card-rejected"
+    if (app.statut === "REFUSEE") return "card-rejected"
     if (app.statut === "ACCEPTÉ") return "card-accepted"
     if (app.statut === "EN ATTENTE") return "card-pending"
     if (app.statutDefi === "ENVOYE") return "card-challenge-envoye"
@@ -466,7 +466,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     const colors: { [key: string]: string } = {
       "EN ATTENTE": "status-pending",
       ACCEPTÉ: "status-accepted",
-      REJETÉ: "status-rejected",
+      REFUSEE: "status-rejected",
       AUCUN: "status-none",
       ENVOYE: "status-sent",
       TERMINE: "status-completed",

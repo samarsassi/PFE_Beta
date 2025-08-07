@@ -7,7 +7,7 @@
     </div>
 
     <div class="modal-body">
-      <button *ngIf="data.cv" mat-raised-button color="accent" style="width: 100%; justify-content: center"
+      <button mat-raised-button color="accent" style="width: 100%; justify-content: center"
         (click)="downloadCandidature()">
         Télécharger la candidature
         <mat-icon>download</mat-icon>
@@ -17,6 +17,7 @@
       <div class="dialog-row"><strong>Email:</strong> <span>{{ data.email }}</span></div>
       <div class="dialog-row"><strong>Phone:</strong> <span>{{ data.telephone }}</span></div>
       <div class="dialog-row"><strong>Cover Letter:</strong> <span>{{ data.coverLetter }}</span></div>
+      
       <!-- Défi info as chips -->
       <div class="dialog-row" *ngIf="defiTitre || defiStatut">
         <strong>Défi:</strong>
@@ -28,31 +29,81 @@
           {{ defiStatut }}
         </mat-chip>
       </div>
-      <div *ngIf="!settings; else elseBlock" class="dialog-row status-view">
+
+      <div *ngIf="data.statutEntretien && data.statutEntretien !== 'AUCUN'">
+        <!-- ENTREVUE SECTION -->
+        <div *ngIf="entretienEdit" class="entretien-edit-container">
+          <!-- Floating ❌ cancel button -->
+          <button class="btn-cancel-top" (click)="cancelEditEntretien()" aria-label="Annuler">&times;</button>
+
+          <div class="dialog-row">
+            <strong>Date entretien:</strong>
+            <input type="datetime-local" [(ngModel)]="entretienDateString" />
+          </div>
+
+          <div class="dialog-row">
+            <strong>Lien entretien:</strong>
+            <input *ngIf="entretienEdit && data.entretien" type="text" [(ngModel)]="data.entretien.lien" placeholder="Lien d'entretien" />
+
+
+          </div>
+
+          <div class="dialog-row entretien-buttons">
+            <button class="btn-save" (click)="saveEntretien()">Enregistrer</button>
+            <button class="btn-delete" (click)="deleteEntretien()">Supprimer</button>
+          </div>
+        </div>
+
+        <!-- VIEW MODE ONLY -->
+        <div *ngIf="!entretienEdit">
+          <div class="dialog-row">
+            <strong>Date entretien:</strong>
+            <span>
+              {{ data.entretien?.dateEntretien | date:'dd/MM/yyyy, HH:mm' }}
+            </span>
+          </div>
+
+          <div class="dialog-row">
+            <strong>Lien entretien:</strong>
+            <span *ngIf="data.entretien?.lien">
+              <a [href]="data.entretien!.lien" target="_blank">{{ data.entretien!.lien }}</a>
+            </span>
+            <span *ngIf="!data.entretien?.lien">—</span>
+          </div>
+
+          <div class="dialog-row entretien-buttons">
+            <button class="btn-edit" (click)="startEditEntretien()">Modifier entretien</button>
+          </div>
+        </div>
+      </div>
+      <div class="dialog-row"><strong>Commentaire CV:</strong> <span>{{ data.scoringComment }}</span></div>
+
+      <!-- VIEW MODE -->
+      <div *ngIf="!settings" class="dialog-row status-view">
         <strong>Status:</strong>
-        <mat-chip style="cursor: pointer;" [ngStyle]="{
-                        'background-color': getStatusColor(data.statut),
-                        'color': 'white'}">
+        <mat-chip [ngStyle]="{'background-color': getStatusColor(data.statut), 'color': 'white'}">
           {{ data.statut }}
         </mat-chip>
-        <button mat-icon-button class="settings-btn" (click)="enableSettings()">
+        <button mat-icon-button (click)="enableSettings()">
           <mat-icon>settings</mat-icon>
         </button>
       </div>
 
-      <ng-template #elseBlock>
-        <div class="dialog-row status-edit">
-          <strong>Status:</strong>
-          <mat-form-field appearance="fill" class="status-field">
-            <mat-label>Statut</mat-label>
-            <mat-select [(value)]="selectedStatus">
-              <mat-option value="EN ATTENTE">EN ATTENTE</mat-option>
-              <mat-option value="ACCEPTÉ">ACCEPTÉ</mat-option>
-              <mat-option value="REJETÉ">REJETÉ</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </ng-template>
+      <!-- EDIT MODE -->
+    <div *ngIf="settings" class="dialog-row status-edit">
+      <strong>Status:</strong>
+      <select [(ngModel)]="data.statut" (change)="onStatusChange($event)">
+        <option *ngFor="let status of statusOptions" [value]="status">
+          {{ status }}
+        </option>
+      </select>
+
+      <button class="close-btn" (click)="cancelEdit()">
+        ✖
+      </button>
+    </div>
+
+
 
       <div class="dialog-row"><strong>CV:</strong>
 

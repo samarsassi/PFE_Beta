@@ -17,6 +17,7 @@ import { AdminDashboardComponent } from './Components/admin-dashboard/admin-dash
 import { MesCandidaturesComponent } from './Components/user/mes-candidatures/mes-candidatures.component';
 import { CvAnalyzerComponent } from './Components/cv-analyzer/cv-analyzer.component';
 import { InterviewComponent } from './Components/interview/interview.component';
+import { InterviewUserComponent } from './Components/user/interview-user/interview-user.component';
 
 const routes: Routes = [
 
@@ -28,7 +29,9 @@ const routes: Routes = [
       { path: 'TechnicalTest', component: CodeExecutorComponent },
       { path: 'offre/:id', component: ViewOffreComponent },
       { path: 'mes-candidatures', component: MesCandidaturesComponent },
-      {path: 'code-executor/:id', component: CodeExecutorComponent}
+      {path: 'code-executor/:id', component: CodeExecutorComponent},
+      { path: 'interview', component: InterviewUserComponent }
+
     ]
   },
   {

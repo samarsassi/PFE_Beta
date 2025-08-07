@@ -36,38 +36,41 @@ export class OffreEmploiService {
   return this.http.get<Candidature[]>(`${this.apiUrl}/${id}/candidatures`);
 }
 
-  // Create a new job offer
-  createOffre(offre: OffreEmploi): Observable<OffreEmploi> {
-    const token = this.keycloakService.keycloak.token;
-  
+ private getAuthHeaders(): HttpHeaders {
+    const token = this.keycloakService.keycloak?.token;
     if (!token) {
-      console.error("User is not authenticated!");
-      return throwError(() => new Error("User is not authenticated!"));
+      throw new Error('User is not authenticated!');
     }
-  
-    const headers = {
-      Authorization: `Bearer ${token}`
-    };
-    console.log("Token:", this.keycloakService.keycloak.token);
-
-  
-    return this.http.post<OffreEmploi>(this.apiUrl, offre, { headers });
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
   }
-  
+      
+    createOffre(offre: OffreEmploi): Observable<OffreEmploi> {
+      const token = this.keycloakService.token;
+      if (!token) {
+        // handle unauthenticated state
+        throw new Error("User not authenticated");
+      }
 
-  updateOffre(id: number, offre: OffreEmploi): Observable<OffreEmploi> {
-    const token = this.keycloakService.keycloak.token;
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',   // MUST be application/json
+        'Authorization': `Bearer ${token}`
+      });
 
-    if (!token) {
-      console.error("User is not authenticated!")
-      return throwError(() => new Error("User is not authenticated!"));
+      return this.http.post<OffreEmploi>(this.apiUrl, offre, { headers });
     }
 
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
+
+
+
+  // Update existing OffreEmploi by ID
+  updateOffre(id: number, offre: OffreEmploi): Observable<OffreEmploi> {
+    const headers = this.getAuthHeaders();
     return this.http.put<OffreEmploi>(`${this.apiUrl}/${id}`, offre, { headers });
   }
-
 
   // Delete a job offer
   deleteOffre(id: number): Observable<void> {

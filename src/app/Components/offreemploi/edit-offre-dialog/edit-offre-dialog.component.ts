@@ -14,6 +14,8 @@ export class EditOffreDialogComponent {
   offresEmploi: any[] = [];
   filteredOffres: any[] = [];
   showArchived: boolean = false;
+  experienceLevels: string[] = ['Junior', 'Confirmé', 'Senior'];
+
 
   constructor(
     private fb: FormBuilder,
@@ -25,6 +27,7 @@ export class EditOffreDialogComponent {
       titre: [data.offre.titre, Validators.required],
       localisation: [data.offre.localisation, Validators.required],
       description: [data.offre.description, Validators.required],
+      niveauExperience: [data.offre.niveauExperience, Validators.required],
       salaire: [data.offre.salaire, Validators.required],
       dateDebut: [data.offre.dateDebut, Validators.required],
       archive: [data.offre.archive]
@@ -51,23 +54,28 @@ export class EditOffreDialogComponent {
   }
   
   onSave() {
-    if (this.editForm.valid) {
-      const updatedOffre = { ...this.data.offre, ...this.editForm.value };
-          this.offreService.updateOffre(updatedOffre.id, updatedOffre).subscribe({
+  if (this.editForm.valid) {
+    const formValue = this.editForm.value;
+    const updatedOffre = {
+      ...this.data.offre,
+      ...formValue,
+      dateDebut: formValue.dateDebut ? 
+                 (typeof formValue.dateDebut === 'string' ? formValue.dateDebut : formValue.dateDebut.toISOString().substring(0,10)) 
+                 : null
+    };
+    this.offreService.updateOffre(updatedOffre.id, updatedOffre).subscribe({
       next: (res) => {
         console.log('Updated successfully', res);
         this.loadJobOffers();
-        this.dialogRef.close(updatedOffre); // Return the updated offer
-
+        this.dialogRef.close(updatedOffre);
       },
       error: (err) => {
         console.error('Update failed', err);
-        // handle error (show message, etc)
       }
     });
-
-    }
   }
+}
+
 
 
   onCancel() {

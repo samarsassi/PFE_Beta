@@ -6,8 +6,12 @@
   max-width: 900px;
   margin: 2rem auto;
   padding: 2.5rem 2rem 2rem 2rem;
-  animation: fadeIn 0.5s ease-out;
+
+  /* Apply scale and opacity statically */
+  transform: scale(0.97);
+  opacity: 0.96;
 }
+
 
 .section-title {
   font-size: 2rem;
@@ -45,6 +49,7 @@
   font-weight: 600;
   color: var(--text-secondary, #374151);
   margin-bottom: 0.25rem;
+  font-size: 1.1rem; 
 }
 
 .form-input,
@@ -211,6 +216,7 @@
   margin-bottom: 0;
   font-weight: 500;
   cursor: pointer;
+  font-size: 1.1rem; 
 }
 
 .error-message {

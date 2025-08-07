@@ -6,29 +6,23 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { HttpClient } from '@angular/common/http';
 import { EntretienService } from 'src/app/Services/fn/entretien/entretien.service';
-import { Entretien } from 'src/app/Data/Entretien';
+import { KeycloakService } from 'src/app/Services/keycloak/keycloak.service';
+import { Entretien, ResultatEntretien } from 'src/app/Data/Entretien';
 
-
-function randomID(len:number) {
+function randomID(len: number) {
   let result = '';
-  if (result) return result;
-  var chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP',
-    maxPos = chars.length,
-    i;
-  len = len || 5;
-  for (i = 0; i < len; i++) {
+  const chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP';
+  const maxPos = chars.length;
+  for (let i = 0; i < len; i++) {
     result += chars.charAt(Math.floor(Math.random() * maxPos));
   }
   return result;
 }
 
-export function getUrlParams(
-  url = window.location.href
-) {
-  let urlStr = url.split('?')[1];
+export function getUrlParams(url = window.location.href) {
+  const urlStr = url.split('?')[1];
   return new URLSearchParams(urlStr);
 }
-
 
 @Component({
   selector: 'app-interview',
@@ -38,83 +32,110 @@ export function getUrlParams(
 export class InterviewComponent implements OnInit {
   @ViewChild('root') root!: ElementRef;
 
-    calendarOptions: CalendarOptions = {
+  calendarOptions: CalendarOptions = {
     initialView: 'dayGridMonth',
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],  // <-- plugins here
-    events: [], // will be populated later
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    events: [],
     eventClick: this.handleEventClick.bind(this)
   };
 
-  constructor(private http: HttpClient, private entretienService: EntretienService) {}
- ngOnInit(): void {
-   this.entretienService.getAllChallenges().subscribe({
-  next: (entretiens: Entretien[]) => {
-    console.log('Raw entretiens:', entretiens);
+  userName: string = '';
+  dialogVisible = false;
+  dialogData: any = null;
+  public nextEntretien?: Entretien;
 
-    const events = entretiens.map(entretien => {
-      console.log('Mapping entretien:', entretien);
-      return {
-        title: `Entretien #${entretien.id} - ${entretien.resultat}`,
-        date: entretien.dateEntretien,
-        extendedProps: {
-          commentaireRH: entretien.commentaireRH,
-          candidatureId: entretien.candidatureId,
-          resultat: entretien.resultat,
+  feedbackDialogVisible = false;
+  feedbackForm = {
+    commentaireRH: '',
+    resultat: ''
+  };
+
+  constructor(
+    private http: HttpClient,
+    private entretienService: EntretienService,
+    private keycloakService: KeycloakService
+  ) {}
+
+  ngOnInit(): void {
+    if (this.keycloakService.profile) {
+      this.userName = `${this.keycloakService.profile.firstName} ${this.keycloakService.profile.lastName}`;
+    }
+
+    this.loadEntretiens();
+  }
+
+  loadEntretiens() {
+    this.entretienService.getAllInterviews().subscribe({
+      next: (entretiens: Entretien[]) => {
+        const now = new Date();
+
+        const futureEntretiens = entretiens
+          .filter(e => new Date(e.dateEntretien) > now)
+          .sort((a, b) => new Date(a.dateEntretien).getTime() - new Date(b.dateEntretien).getTime());
+
+        this.nextEntretien = futureEntretiens[0];
+
+        if (this.nextEntretien?.lien) {
+          this.startMeeting();
         }
-      };
+
+        this.calendarOptions = {
+          ...this.calendarOptions,
+          events: entretiens.map(entretien => ({
+            title: `Entretien #${entretien.id} - ${entretien.resultat ?? 'N/A'}`,
+            date: entretien.dateEntretien,
+            extendedProps: {
+              id: entretien.id,
+              commentaireRH: entretien.commentaireRH,
+              candidatureId: entretien.candidatureId,
+              dateEntretien: entretien.dateEntretien,
+              lien: entretien.lien,
+              resultat: entretien.resultat,
+            }
+          }))
+        };
+      },
+      error: (err) => console.error('Error loading entretiens:', err)
     });
-
-    console.log('Mapped events:', events); // 🟢 See how many events you actually generate
-
-    this.calendarOptions = {
-      ...this.calendarOptions,
-      events: events,
-    };
-  },
-  error: (err) => console.error('Error loading entretiens:', err)
-});
-
   }
 
   handleEventClick(info: any) {
-    const { commentaireRH, resultat, candidatureId } = info.event.extendedProps;
-    alert(
-      `Entretien details:\n` +
-      `Candidature ID: ${candidatureId}\n` +
-      `Resultat: ${resultat}\n` +
-      `Commentaire RH: ${commentaireRH}`
-    );
+    this.dialogData = info.event.extendedProps;
+    this.dialogVisible = true;
   }
 
-  ngAfterViewInit() {
-    const roomID = getUrlParams().get('roomID') || randomID(5);
+  closeDialog() {
+    this.dialogVisible = false;
+    this.dialogData = null;
+  }
 
-    // generate Kit Token
+  startMeeting() {
+    const lien = this.nextEntretien?.lien;
+    if (!lien) return console.error('Entretien link is not set!');
+
+    const urlParams = new URL(lien).searchParams;
+    const roomID = urlParams.get('roomID');
+    if (!roomID) return console.error('roomID missing from entretien link');
+
     const appID = 591667673;
-    const serverSecret = "43f6a8d22a15d8a6465dd4c1ad7a53a7";
-    const kitToken =  ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID,  randomID(5),  randomID(5));
+    const serverSecret = '43f6a8d22a15d8a6465dd4c1ad7a53a7';
+    const userID = randomID(8);
+    const userName = this.userName || 'Invité';
 
-    
-    // Create instance object from Kit Token.
+    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName);
     const zp = ZegoUIKitPrebuilt.create(kitToken);
 
- 
-    // Start a call.
     zp.joinRoom({
-        container: this.root.nativeElement,
-        sharedLinks: [
-          {
-            name: 'Personal link',
-            url:
-              window.location.protocol + '//' + 
-              window.location.host + window.location.pathname +
-              '?roomID=' +
-              roomID,
-          },
-        ],
-        scenario: {
-          mode: ZegoUIKitPrebuilt.VideoConference,
-        },
+      container: this.root.nativeElement,
+      sharedLinks: [{ name: 'Personal link', url: lien }],
+      scenario: { mode: ZegoUIKitPrebuilt.VideoConference },
     });
   }
+
+  joinInterview() {
+    this.root?.nativeElement?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  now = new Date();
+
 }

@@ -58,10 +58,7 @@
             <span>&#10003; Champ valide</span>
           </div>
         </div>
-      </div>
-      <!-- RIGHT COLUMN -->
-      <div class="form-column">
-        <div class="form-group">
+         <div class="form-group">
           <label class="form-label">Catégories<span class="text-danger">*</span></label>
           <div class="checkbox-group">
             <label *ngFor="let cat of categoriesList" class="checkbox-label">
@@ -81,6 +78,10 @@
             <span>&#10003; Champ valide</span>
           </div>
         </div>
+      </div>
+      <!-- RIGHT COLUMN -->
+      <div class="form-column">
+       
         <div class="form-group">
           <label for="niveauExperience" class="form-label">Niveau d'expérience<span class="text-danger">*</span></label>
           <select id="niveauExperience" formControlName="niveauExperience" class="form-select">
@@ -97,6 +98,23 @@
             <span>&#10003; Champ valide</span>
           </div>
         </div>
+
+        <div class="form-group">
+          <label for="anneesExperience" class="form-label">Annees d'experience<span class="text-danger">*</span></label>
+          <input id="anneesExperience" type="number" formControlName="anneesExperience" class="form-input" />
+          <div
+            *ngIf="offreForm.get('anneesExperience')?.errors && (offreForm.get('anneesExperience')?.touched || offreForm.get('anneesExperience')?.dirty)"
+            class="error-message">
+            <span *ngIf="offreForm.get('anneesExperience')?.errors?.['required']">Le anneesExperience est requis.</span>
+            <span *ngIf="offreForm.get('anneesExperience')?.errors?.['notNumber']">Le salaire doit être un nombre.</span>
+          </div>
+          <div
+            *ngIf="offreForm.get('anneesExperience')?.valid && (offreForm.get('anneesExperience')?.touched || offreForm.get('anneesExperience')?.dirty)"
+            class="success-message">
+            <span>&#10003; Champ valide</span>
+          </div>
+        </div>
+
         <div class="form-group">
           <label for="salaire" class="form-label">Salaire<span class="text-danger">*</span></label>
           <input id="salaire" type="number" formControlName="salaire" class="form-input" />

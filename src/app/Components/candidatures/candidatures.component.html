@@ -44,7 +44,7 @@
     <div class="chip-filter-bar-full-content">
       <div class="chip-group">
         <span class="chip-group-label">Statut de candidature</span>
-        <ng-container *ngFor="let stat of ['all', 'EN ATTENTE', 'ACCEPTÉ', 'REJETÉ']">
+        <ng-container *ngFor="let stat of ['all', 'EN ATTENTE', 'ACCEPTÉ', 'REFUSEE']">
           <button type="button" class="chip-alt" [class.chip-alt-active]="candidatureFilters.applicationStatus === stat"
             (click)="setCandidatureFilter('applicationStatus', stat)">
             {{ stat === 'all' ? 'Tous' : stat }}
@@ -62,7 +62,7 @@
       </div>
       <div class="chip-group">
         <span class="chip-group-label">Score CV</span>
-        <ng-container *ngFor="let range of ['all', '0-30', '31-60', '61-80', '81-100']">
+        <ng-container *ngFor="let range of ['all', '0-3', '3-6', '6-8', '8-10']">
           <button type="button" class="chip-alt" [class.chip-alt-active]="candidatureFilters.scoreRange === range"
             (click)="setCandidatureFilter('scoreRange', range)">
             {{ range === 'all' ? 'Tous' : range }}
@@ -114,7 +114,8 @@
             (click)="openSendChallengeModal(c)" title="Envoyer un défi">
             <i class="fas fa-paper-plane"></i>
           </button>
-          <button class="icon-btn add-btn" (click)="openCreateEntretienModal(c)" title="Créer un entretien">
+          <button *ngIf="!c.statutEntretien || c.statutEntretien === 'AUCUN'" class="icon-btn add-btn"
+            (click)="openCreateEntretienModal(c)" title="Créer un entretien">
             <i class="fas fa-calendar-plus"></i>
           </button>
         </td>
@@ -122,12 +123,12 @@
           <span class="status-badge" [ngClass]="{
             'status-badge--pending': c.statut === 'EN ATTENTE',
             'status-badge--accepted': c.statut === 'ACCEPTÉ',
-            'status-badge--rejected': c.statut === 'REJETÉ'
+            'status-badge--rejected': c.statut === 'REFUSEE'
           }">
             <i class="fas" [ngClass]="{
               'fa-hourglass-half': c.statut === 'EN ATTENTE',
               'fa-check-circle': c.statut === 'ACCEPTÉ',
-              'fa-times-circle': c.statut === 'REJETÉ'
+              'fa-times-circle': c.statut === 'REFUSEE'
             }"></i>
             {{ c.statut || 'N/A' }}
           </span>
@@ -147,7 +148,7 @@
           <p class="item-description">{{ c.email || 'N/A' }}</p>
           <div class="item-tags">
             <span class="badge" [ngClass]="getScoreBadgeClass(c.scoreCV)">
-              Score CV: {{ c.scoreCV || 0 }}/100
+              Score CV: {{ c.scoreCV || 0 }}/10
             </span>
             <span class="chip-label"><i class="fas fa-id-badge"></i> Statut Candidature:</span>
             <span class="chip" [ngClass]="getStatutClass(c.statut)">{{ c.statut || 'N/A' }}</span>
@@ -165,14 +166,12 @@
             class="btn btn-success">
             📤
           </button>
-            <button 
-          class="icon-btn add-btn" 
-          (click)="openCreateEntretienModal(c)" 
-          title="Créer un entretien"
-          [disabled]="c.entretien != null"
-        >
-          <i class="btn btn-entretien"></i>
-        </button>
+          <button *ngIf="!c.statutEntretien || c.statutEntretien === 'AUCUN'" class="icon-btn add-btn"
+            (click)="openCreateEntretienModal(c)" title="Créer un entretien">
+            <i class="fas fa-calendar-plus"></i> <!-- or fa-briefcase -->
+          </button>
+
+
 
           <button class="btn btn-primary" (click)="onView(c)"><i class="fas fa-eye"></i></button>
         </div>
@@ -258,7 +257,8 @@
 </div>
 
 <!-- Custom Modal -->
-<app-on-view-dialog *ngIf="selectedCandidature" [data]="selectedCandidature" [show]="showModal"
-  (close)="closeModal()"></app-on-view-dialog>
+<app-on-view-dialog *ngIf="selectedCandidature" [data]="selectedCandidature" [show]="showModal" (close)="closeModal()"
+  (entretienDeleted)="selectedCandidature.entretien = undefined"></app-on-view-dialog>
+
 
 <app-scroll-top></app-scroll-top>

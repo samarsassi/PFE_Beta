@@ -62,6 +62,7 @@ import { InterviewComponent } from './Components/interview/interview.component';
 import { InterviewUserComponent } from './Components/user/interview-user/interview-user.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CreateEntretienDialogComponent } from './Components/candidatures/dialogs/create-entretien-dialog/create-entretien-dialog.component';
+import { DetailComponent } from './Components/interview/dialog/detail/detail.component';
 
 
 export function kcFactory(kcService: KeycloakService) {
@@ -97,7 +98,8 @@ export function kcFactory(kcService: KeycloakService) {
     CvAnalyzerComponent,
     InterviewComponent,
     InterviewUserComponent,
-    CreateEntretienDialogComponent
+    CreateEntretienDialogComponent,
+    DetailComponent
   ],
   imports: [
     BrowserModule,

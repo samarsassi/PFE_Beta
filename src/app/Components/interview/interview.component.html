@@ -1,5 +1,20 @@
+
+<div *ngIf="nextEntretien" class="next-interview-banner">
+  📅 Prochain entretien prévu le :
+  <strong>{{ nextEntretien.dateEntretien | date: 'fullDate' }} à {{ nextEntretien.dateEntretien | date: 'shortTime' }}</strong>
+
+  <button (click)="joinInterview()" class="btn-join-interview">
+    Rejoindre l’entretien
+  </button>
+
+</div>
+
+
 <full-calendar [options]="calendarOptions"></full-calendar>
 
-
+<app-detail [visible]="dialogVisible" [data]="dialogData" (close)="closeDialog()">
+</app-detail>
 
 <div #root id="myRoot"></div>
+
+

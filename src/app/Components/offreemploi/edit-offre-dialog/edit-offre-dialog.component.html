@@ -18,6 +18,18 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Niveau d'expérience</mat-label>
+      <mat-select formControlName="niveauExperience">
+        <mat-option *ngFor="let level of experienceLevels" [value]="level">{{ level }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Années d'experience</mat-label>
+      <input matInput formControlName="anneesExperience" type="number" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Salaire</mat-label>
       <input matInput formControlName="salaire" type="number" />
     </mat-form-field>

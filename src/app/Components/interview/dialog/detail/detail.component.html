@@ -1,0 +1,27 @@
+<div class="overlay" *ngIf="visible">
+  <div class="dialog">
+    <h2>Entretien Details</h2>
+    <p><strong>Candidature ID:</strong> {{ data?.candidatureId }}</p>
+    <p><strong>Lien:</strong> {{ data?.lien }}</p>
+    <p><strong>Date Entretien:</strong> {{ data?.dateEntretien | date: 'fullDate' }} {{ data?.dateEntretien | date: 'shortTime' }}</p>
+    <p><strong>Resultat:</strong> {{ data?.resultat }}</p>
+    <p><strong>Commentaire RH:</strong> {{ data?.commentaireRH || 'N/A' }}</p>
+
+    <!-- Show feedback form only if entretien date is past -->
+    <div *ngIf="canAddFeedback()">
+      <h3>Ajouter un retour</h3>
+      <textarea [(ngModel)]="feedbackForm.commentaireRH" rows="3" placeholder="Votre commentaire..."></textarea>
+
+      <select [(ngModel)]="feedbackForm.resultat">
+        <option value="" disabled>Sélectionnez le résultat</option>
+        <option value="EN_ATTENTE">En attente</option>
+        <option value="ACCEPTE">Accepté</option>
+        <option value="REFUSEE">Refusé</option>
+      </select>
+
+      <button (click)="submitFeedback()">Envoyer feedback</button>
+    </div>
+
+    <button (click)="onClose()">Fermer</button>
+  </div>
+</div>

@@ -32,20 +32,49 @@ export class MesCandidaturesComponent implements OnInit {
     this.loadCandidatures();
   }
 
-  loadCandidatures() {
-    this.candidatureService.getAllCandidaturesList().subscribe((cands) => {
-      if (this.userId) {
-        this.candidatures = cands.filter(c => c.creePar === this.userId);
-      } else {
-        this.candidatures = [];
-      }
-      this.loading = false;
-    });
-  }
+loadCandidatures() {
+  this.candidatureService.getAllCandidaturesList().subscribe((cands) => {
+    const now = new Date();
+
+    if (this.userId) {
+      this.candidatures = cands.filter(c => c.creePar === this.userId);
+
+      this.candidatures.forEach(c => {
+        if (
+          c.entretien && 
+          c.entretien.dateEntretien && 
+          new Date(c.entretien.dateEntretien) < now &&
+          c.statutEntretien !== 'TERMINE'
+        ) {
+          c.statutEntretien = 'TERMINE';
+
+          // Update it in backend
+          this.candidatureService.updateCandidature(c.id, c).subscribe({
+            next: () => {
+              console.log(`Candidature ${c.id} updated to TERMINE`);
+            },
+            error: err => {
+              console.error(`Error updating candidature ${c.id}:`, err);
+            }
+          });
+        }
+      });
+    } else {
+      this.candidatures = [];
+    }
+
+    this.loading = false;
+  });
+}
 
   selectCandidature(c: Candidature): void {
     this.selectedCandidature = c;
   }
+  extractRoomID(lien: string): string | null {
+  const match = lien.match(/roomID=([^&]+)/);
+  return match ? match[1] : null;
+}
+
 
   clearSelected(): void {
     this.selectedCandidature = null;
@@ -63,6 +92,7 @@ export class MesCandidaturesComponent implements OnInit {
         this.candidatureService.deleteCandidature(id).subscribe({
           next: () => {
             console.log(`candidature with id ${id} deleted successfully.`);
+            this.selectedCandidature = null;
             this.loadCandidatures();
           },
           error: (err) => {
@@ -77,6 +107,9 @@ export class MesCandidaturesComponent implements OnInit {
 
   get enAttenteCount(): number {
     return this.candidatures.filter((c) => c.statut === 'EN ATTENTE').length;
+  }
+  get entretienCount(): number {
+    return this.candidatures.filter((c) => c.statutEntretien === 'ENVOYE').length;
   }
 
   get defiEnvoyeOuTermineCount(): number {
@@ -100,6 +133,15 @@ export class MesCandidaturesComponent implements OnInit {
   get candidaturesEnAttente(): Candidature[] {
     return this.candidatures.filter((c) => c.statut === 'EN ATTENTE');
   }
+  candidatureStatusFilter = 'all';
+
+get filteredCandidatures() {
+  if (this.candidatureStatusFilter === 'all') {
+    return this.candidatures;
+  }
+  return this.candidatures.filter(c => c.statut === this.candidatureStatusFilter);
+}
+
 }
 
 export interface DialogData {

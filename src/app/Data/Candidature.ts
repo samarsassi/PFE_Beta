@@ -5,7 +5,7 @@ export interface Candidature {
     id: number;
     nom: string;
     email: string;
-    statut: 'EN ATTENTE' | 'ACCEPTÉ' | 'REJETÉ';
+    statut: 'EN ATTENTE' | 'ACCEPTÉ' | 'REFUSEE';
     cv: string;
     cvUrl: string; //lien l supabase
     coverLetter: string;
@@ -16,7 +16,13 @@ export interface Candidature {
     remarquesRH: string;
     decisionFinale: string;
     creePar: string;
+    scoringComment: string;
+    //entretien
     entretien?: Entretien | null;
+    statutEntretien?: "AUCUN" | "ENVOYE" | "TERMINE"
+    entretienId?: number
+    entretienEnvoyeLe?: Date
+    entretienTermineLe?: Date
 
     // Nouvelles propriétés pour les défis de code
     defiId?: number
