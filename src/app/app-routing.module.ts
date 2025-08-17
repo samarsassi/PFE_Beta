@@ -13,11 +13,12 @@ import { MaincontentComponent } from './Components/user/maincontent/maincontent.
 import { UnauthorizedComponent } from './Components/user/unauthorized/unauthorized.component';
 import { CandidaturesComponent } from './Components/candidatures/candidatures.component';
 import { CodeExecutorComponent } from './Components/code-executor/code-executor.component';
-import { AdminDashboardComponent } from './Components/admin-dashboard/admin-dashboard.component';
 import { MesCandidaturesComponent } from './Components/user/mes-candidatures/mes-candidatures.component';
 import { CvAnalyzerComponent } from './Components/cv-analyzer/cv-analyzer.component';
 import { InterviewComponent } from './Components/interview/interview.component';
 import { InterviewUserComponent } from './Components/user/interview-user/interview-user.component';
+import { BpmnEditorComponent } from './Components/bpmn-editor/bpmn-editor.component';
+import { ChallengesDashboardComponent } from './Components/challenges-dashboard/challenges-dashboard.component';
 
 const routes: Routes = [
 
@@ -29,7 +30,7 @@ const routes: Routes = [
       { path: 'TechnicalTest', component: CodeExecutorComponent },
       { path: 'offre/:id', component: ViewOffreComponent },
       { path: 'mes-candidatures', component: MesCandidaturesComponent },
-      {path: 'code-executor/:id', component: CodeExecutorComponent},
+      { path: 'code-executor/:id', component: CodeExecutorComponent },
       { path: 'interview', component: InterviewUserComponent }
 
     ]
@@ -44,9 +45,10 @@ const routes: Routes = [
       { path: 'addoffre', component: AddoffreComponent },
       { path: 'offreEmploi/offres', component: OffreemploiComponent },
       { path: 'candidatures', component: CandidaturesComponent },
-      { path: 'challenge', component: AdminDashboardComponent },
+      { path: 'challenge', component: ChallengesDashboardComponent },
       { path: 'cv-analyzer', component: CvAnalyzerComponent },
-      {path: 'interview', component: InterviewComponent},
+      { path: 'interview', component: InterviewComponent },
+      { path: 'bpmn', component: BpmnEditorComponent },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   },

@@ -1,0 +1,29 @@
+<div class="bpmn-editor-wrapper">
+  <!-- Toolbar -->
+  <div class="bpmn-toolbar">
+    <button class="download-btn" (click)="downloadDiagram()">
+      <span class="download-icon">⬇</span>
+      Download BPMN
+    </button>
+    <button class="deploy-btn" (click)="deployDiagramToBackend()">
+      <i class="fas fa-rocket"></i> Deploy BPMN
+    </button>
+  </div>
+
+  <!-- Delegate class dropdown -->
+  <div *ngIf="selectedElement?.type === 'bpmn:ServiceTask'" class="delegate-selector">
+    <label for="delegateSelect">Delegate Class:</label>
+    <select id="delegateSelect" (change)="onDelegateChange($event)">
+      <option *ngFor="let key of objectKeys(delegateClasses)" [value]="key">
+        {{ delegateClasses[key] }}
+      </option>
+    </select>
+  </div>
+
+  <!-- BPMN Container -->
+  <div class="bpmn-container">
+    <div class="palette" #palette></div>
+    <div class="canvas" #canvas></div>
+    <div class="properties-panel" #properties></div>
+  </div>
+</div>

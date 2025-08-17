@@ -9,11 +9,11 @@ import { ChallengeService } from "src/app/Services/fn/challenge/challenge-servic
 import { TestCaseService } from "src/app/Services/fn/testCase/test-case.service"
 
 @Component({
-  selector: "app-admin-dashboard",
-  templateUrl: "./admin-dashboard.component.html",
-  styleUrls: ["./admin-dashboard.component.css"],
+  selector: "app-challenges-dashboard",
+  templateUrl: "./challenges-dashboard.component.html",
+  styleUrls: ["./challenges-dashboard.component.css"],
 })
-export class AdminDashboardComponent implements OnInit, OnDestroy {
+export class ChallengesDashboardComponent implements OnInit, OnDestroy {
   activeTab: "challenges" | "ajouter" = "challenges"
 
   // Gestion des défis

@@ -53,16 +53,16 @@ import { EditOffreDialogComponent } from './Components/offreemploi/edit-offre-di
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { CodeExecutorComponent } from './Components/code-executor/code-executor.component';
 import { KeycloakBypassInterceptor } from './Services/interceptor/keycloak-bypass.interceptor';
-import { AdminDashboardComponent } from './Components/admin-dashboard/admin-dashboard.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MesCandidaturesComponent } from './Components/user/mes-candidatures/mes-candidatures.component';
-import { AdminSnackBarComponent } from './Components/admin-dashboard/admin-dashboard.component';
 import { CvAnalyzerComponent } from './Components/cv-analyzer/cv-analyzer.component';
 import { InterviewComponent } from './Components/interview/interview.component';
 import { InterviewUserComponent } from './Components/user/interview-user/interview-user.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CreateEntretienDialogComponent } from './Components/candidatures/dialogs/create-entretien-dialog/create-entretien-dialog.component';
 import { DetailComponent } from './Components/interview/dialog/detail/detail.component';
+import { BpmnEditorComponent } from './Components/bpmn-editor/bpmn-editor.component';
+import { AdminSnackBarComponent, ChallengesDashboardComponent } from './Components/challenges-dashboard/challenges-dashboard.component';
 
 
 export function kcFactory(kcService: KeycloakService) {
@@ -91,7 +91,7 @@ export function kcFactory(kcService: KeycloakService) {
     SnackBarAnnotatedComponent,
     EditOffreDialogComponent,
     CodeExecutorComponent,
-    AdminDashboardComponent,
+    ChallengesDashboardComponent,
     MesCandidaturesComponent,
     AdminSnackBarComponent,
     SnackBarComponent,
@@ -99,7 +99,8 @@ export function kcFactory(kcService: KeycloakService) {
     InterviewComponent,
     InterviewUserComponent,
     CreateEntretienDialogComponent,
-    DetailComponent
+    DetailComponent,
+    BpmnEditorComponent
   ],
   imports: [
     BrowserModule,

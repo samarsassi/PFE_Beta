@@ -27,7 +27,10 @@
             "styles": [
               "node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
               "./node_modules/leaflet/dist/leaflet.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/bpmn-js/dist/assets/diagram-js.css",
+              "node_modules/bpmn-js/dist/assets/bpmn-font/css/bpmn.css",
+              "src/app/Components/bpmn-editor/bpmn-editor.component.css"
             ],
             "scripts": [ "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
           },
