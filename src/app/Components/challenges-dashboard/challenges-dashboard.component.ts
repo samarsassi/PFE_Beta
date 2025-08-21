@@ -59,11 +59,18 @@ export class ChallengesDashboardComponent implements OnInit, OnDestroy {
   editNewTestCase: Partial<TestCase> = { entree: '', sortieAttendue: '', estCache: false, points: 10 };
 
   startEditChallenge(challenge: CodingChallenge) {
-    this.editingChallenge = challenge;
-    // Deep copy to avoid mutating the original before save
-    this.editChallengeForm = JSON.parse(JSON.stringify(challenge));
-    this.editNewTestCase = { entree: '', sortieAttendue: '', estCache: false, points: 10 };
-  }
+  this.editingChallenge = challenge;
+  this.editChallengeForm = JSON.parse(JSON.stringify(challenge));
+  this.editNewTestCase = { entree: '', sortieAttendue: '', estCache: false, points: 10 };
+
+  setTimeout(() => {
+    const editForm = document.getElementById('edit-form');
+    if (editForm) {
+      editForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, 0);
+
+}
 
   cancelEditChallenge() {
     this.editingChallenge = null;

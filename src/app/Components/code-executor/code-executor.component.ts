@@ -29,11 +29,13 @@ export class CodeExecutorComponent implements OnInit {
   challengeStartTime: number | null = null;
   tempsLimite = 0; // in minutes
   challengeTestCases: any[] = [];
+  allTestCases: any[] = [];
   defiEnvoyeLe: Date | null = null;
   expiry48hTimeout: any = null;
   expiryReason: string | null = null;
 
   isExecuting = false;
+  isSubmitting = false;
   executionResult: any = null;
   error: string | null = null;
   showStdin = false;
@@ -94,6 +96,7 @@ export class CodeExecutorComponent implements OnInit {
             this.sourceCode = challenge.codeDepart || '';
             this.selectedLanguageId = challenge.languageId || 71;
             this.tempsLimite = challenge.tempslimite || 0;
+            this.allTestCases = (challenge.testCases || []);
             this.challengeTestCases = (challenge.testCases || []).filter(tc => !tc.estCache);
 
             const storedStart = localStorage.getItem('challengeStartTime_' + this.candidatureId);
@@ -315,6 +318,122 @@ export class CodeExecutorComponent implements OnInit {
         this.expireChallenge();
       }
     });
+  }
+
+  canSubmit(): boolean {
+    return !this.challengeExpired && !this.isExecuting && !this.isSubmitting && !!this.sourceCode.trim();
+  }
+
+  private normalizeOutput(text: string | null | undefined): string {
+    if (!text) return "";
+    return text.replace(/\r/g, "").trim().replace(/[\t ]+/g, " ").replace(/\n+$/g, "");
+  }
+
+  private outputsMatch(expected: string, actual: string): boolean {
+    const exp = this.normalizeOutput(expected);
+    const act = this.normalizeOutput(actual);
+    if (exp === act) return true;
+    // Line-by-line compare
+    const expLines = exp.split(/\n+/).map(l => l.trim());
+    const actLines = act.split(/\n+/).map(l => l.trim());
+    if (expLines.length === actLines.length && expLines.every((l, i) => l === actLines[i])) return true;
+    // Numeric compare (tolerate whitespace)
+    const expNum = Number(exp);
+    const actNum = Number(act);
+    if (!Number.isNaN(expNum) && !Number.isNaN(actNum)) return Math.abs(expNum - actNum) < 1e-9;
+    return false;
+  }
+
+  async submitSolution() {
+    if (this.challengeExpired || !this.challengeStarted || !this.candidature) {
+      this.error = this.challengeExpired
+        ? "Challenge expired. Submission not allowed."
+        : !this.challengeStarted
+          ? "Please start the challenge first."
+          : "Invalid candidature context.";
+      return;
+    }
+
+    if (!this.sourceCode.trim()) {
+      this.error = "Please enter some code before submitting";
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.error = null;
+
+    try {
+      // Evaluate against all test cases (visible + hidden)
+      let totalPoints = 0;
+      let earnedPoints = 0;
+      const results: any[] = [];
+
+      for (const tc of this.allTestCases) {
+        totalPoints += Number(tc.points || 0);
+        const submission: SubmissionRequest = {
+          source_code: this.sourceCode,
+          language_id: this.selectedLanguageId,
+          stdin: tc.entree || undefined,
+        };
+        try {
+          const result = await this.judge0Service.submitAndWaitForResult(submission);
+          const stdout = this.normalizeOutput(result.stdout || '');
+          const expected = this.normalizeOutput(String(tc.sortieAttendue || ''));
+          const passed = result.status?.id === 3 && this.outputsMatch(expected, stdout);
+          if (passed) {
+            earnedPoints += Number(tc.points || 0);
+          }
+          results.push({
+            testCaseId: tc.id,
+            input: tc.entree,
+            expected,
+            stdout,
+            status: result.status,
+            time: result.time,
+            memory: result.memory,
+            passed,
+            points: tc.points,
+          });
+        } catch (e: any) {
+          results.push({
+            testCaseId: tc.id,
+            input: tc.entree,
+            expected: this.normalizeOutput(String(tc.sortieAttendue || '')),
+            error: e?.message || 'Execution error',
+            passed: false,
+            points: 0,
+          });
+        }
+      }
+
+      const score = totalPoints > 0 ? (earnedPoints / totalPoints) * 100 : 0;
+
+      // Submit to backend
+      const payload = {
+        code: this.sourceCode,
+        langage: this.languages.find(l => l.id === this.selectedLanguageId)?.name || String(this.selectedLanguageId),
+        resultatsExecution: JSON.stringify({ results, earnedPoints, totalPoints }),
+        score,
+        pointsTotal: totalPoints,
+      };
+
+      await this.candidatureService.submitChallenge(this.candidature.id, payload).toPromise();
+
+      // Stop timer and mark as done in UI
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+      }
+      this.challengeStarted = false;
+      this.challengeExpired = false;
+      this.remainingTime = 0;
+
+      alert("✅ Solution submitted successfully. Your score has been recorded.");
+    } catch (err: any) {
+      this.error = "Failed to submit solution: " + (err?.error || err?.message || 'Unknown error');
+    } finally {
+      this.isSubmitting = false;
+    }
   }
 }
 

@@ -9,11 +9,11 @@ import { CodingChallenge } from 'src/app/Data/coding-challenge.model';
   providedIn: 'root'
 })
 export class CandidatureService {
- private apiUrl = 'http://localhost:8089/candidatures'; 
- 
+  private apiUrl = 'http://localhost:8089/candidatures';
+
   private candidaturesSubject = new BehaviorSubject<Candidature[]>([]);
   public candidatures$ = this.candidaturesSubject.asObservable();
-  constructor(private http: HttpClient, private keycloakService: KeycloakService) {}
+  constructor(private http: HttpClient, private keycloakService: KeycloakService) { }
 
 
   getAllCandidatures(page = 0, size = 10, sortBy = "id", sortDir = "asc"): Observable<any> {
@@ -31,14 +31,14 @@ export class CandidatureService {
   // Get all candidatures
   getAllCandidaturesList(): Observable<Candidature[]> {
     const token = this.keycloakService.keycloak.token; // Get Keycloak token
-    
+
     if (!token) {
       console.error("User is not authenticated!");
       throw new Error("User is not authenticated!");
     }
-    
+
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
+
     return this.http.get<Candidature[]>(`${this.apiUrl}/ListCandidature`, { headers });
   }
 
@@ -57,34 +57,36 @@ export class CandidatureService {
   // Create a new candidature
   createCandidature(formData: FormData): Observable<Candidature> {
     const token = this.keycloakService.keycloak.token;
-  
+
     if (!token) {
       console.error("User is not authenticated!");
       return throwError(() => new Error("User is not authenticated!"));
     }
-  
+
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
       // Don't set Content-Type manually for FormData
     });
-  
+
     return this.http.post<Candidature>(this.apiUrl, formData, { headers });
   }
-  
+
   // Update an existing candidature
   updateCandidature(id: number, candidature: Candidature): Observable<Candidature> {
     return this.http.put<Candidature>(`${this.apiUrl}/${id}`, candidature);
   }
 
-  
-  
+  submitChallenge(candidatureId: number, payload: { code: string; langage: string; resultatsExecution: string; score: number; pointsTotal: number; }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${candidatureId}/submit-challenge`, payload);
+  }
+
   // Delete a candidature
-    deleteCandidature(id: number): Observable<String> {
-      return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
-    }
+  deleteCandidature(id: number): Observable<String> {
+    return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
+  }
 
 
-   // method to get current candidatures value safely (optional)
+  // method to get current candidatures value safely (optional)
   get candidaturesValue(): Candidature[] {
     return this.candidaturesSubject.getValue();
   }

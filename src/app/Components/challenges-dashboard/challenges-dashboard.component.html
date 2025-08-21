@@ -96,7 +96,7 @@
         </div>
       </div>
     </div>
-    <ng-template #editFormOnly>
+    <div *ngIf="editingChallenge" id="edit-form">
       <div class="edit-form-only">
         <button class="close-edit-btn" (click)="cancelEditChallenge()" title="Close">&times;</button>
         <form (ngSubmit)="submitEditChallenge()" class="form-spacing">
@@ -209,7 +209,7 @@
           </div>
         </form>
       </div>
-    </ng-template>
+    </div>
   </div>
 
   <!-- Create Challenge Tab -->

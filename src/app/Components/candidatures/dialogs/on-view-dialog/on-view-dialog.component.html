@@ -16,8 +16,11 @@
       <div class="dialog-row"><strong>Name:</strong> <span>{{ data.nom }}</span></div>
       <div class="dialog-row"><strong>Email:</strong> <span>{{ data.email }}</span></div>
       <div class="dialog-row"><strong>Phone:</strong> <span>{{ data.telephone }}</span></div>
+      <div class="dialog-row" *ngIf="isAdmin()"><strong>Score CV:</strong> <span>{{ data.scoreCV !== null &&
+          data.scoreCV !== undefined ?
+          (data.scoreCV | number:'1.1-1') : 'N/A' }}/10</span></div>
       <div class="dialog-row"><strong>Cover Letter:</strong> <span>{{ data.coverLetter }}</span></div>
-      
+
       <!-- Défi info as chips -->
       <div class="dialog-row" *ngIf="defiTitre || defiStatut">
         <strong>Défi:</strong>
@@ -28,6 +31,10 @@
           [ngStyle]="{'background-color': getChallengeStatutColor(defiStatut), 'color': 'white'}">
           {{ defiStatut }}
         </mat-chip>
+      </div>
+      <div class="dialog-row" *ngIf="isAdmin() && data.defi"><strong>Score Défi:</strong>
+        <span>{{ (data.scoreDefi === null || data.scoreDefi === undefined) ? 'N/A' : (data.scoreDefi | number:'1.0-1')
+          }}%</span>
       </div>
 
       <div *ngIf="data.statutEntretien && data.statutEntretien !== 'AUCUN'">
@@ -43,7 +50,8 @@
 
           <div class="dialog-row">
             <strong>Lien entretien:</strong>
-            <input *ngIf="entretienEdit && data.entretien" type="text" [(ngModel)]="data.entretien.lien" placeholder="Lien d'entretien" />
+            <input *ngIf="entretienEdit && data.entretien" type="text" [(ngModel)]="data.entretien.lien"
+              placeholder="Lien d'entretien" />
 
 
           </div>
@@ -90,18 +98,18 @@
       </div>
 
       <!-- EDIT MODE -->
-    <div *ngIf="settings" class="dialog-row status-edit">
-      <strong>Status:</strong>
-      <select [(ngModel)]="data.statut" (change)="onStatusChange($event)">
-        <option *ngFor="let status of statusOptions" [value]="status">
-          {{ status }}
-        </option>
-      </select>
+      <div *ngIf="settings" class="dialog-row status-edit">
+        <strong>Status:</strong>
+        <select [(ngModel)]="data.statut" (change)="onStatusChange($event)">
+          <option *ngFor="let status of statusOptions" [value]="status">
+            {{ status }}
+          </option>
+        </select>
 
-      <button class="close-btn" (click)="cancelEdit()">
-        ✖
-      </button>
-    </div>
+        <button class="close-btn" (click)="cancelEdit()">
+          ✖
+        </button>
+      </div>
 
 
 
@@ -121,6 +129,10 @@
           </div>
         </div>
 
+      </div>
+      <div class="dialog-row" *ngIf="isAdmin() && data.defi"><strong>Score Défi:</strong>
+        <span>{{ (data.scoreDefi === null || data.scoreDefi === undefined) ? 'N/A' : (data.scoreDefi | number:'1.0-1')
+          }}%</span>
       </div>
     </div>
 

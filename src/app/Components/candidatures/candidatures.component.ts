@@ -10,6 +10,7 @@ import { CodingChallenge } from "src/app/Data/coding-challenge.model"
 import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
 import { SnackBarAnnotatedComponent } from '../user/view-offre/view-offre.component';
 import { CreateEntretienDialogComponent } from "./dialogs/create-entretien-dialog/create-entretien-dialog.component"
+import { KeycloakService } from 'src/app/Services/keycloak/keycloak.service'
 
 
 @Component({
@@ -68,8 +69,13 @@ export class CandidaturesComponent {
     public route: ActivatedRoute,
     private dialog: MatDialog,
     private challengeService: ChallengeService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private keycloakService: KeycloakService
   ) { }
+
+  isAdmin(): boolean {
+    return this.keycloakService.keycloak?.tokenParsed?.resource_access?.['PFE']?.roles?.includes('admin') ?? false;
+  }
 
   ngOnInit(): void {
     this.getAllCandidatures()

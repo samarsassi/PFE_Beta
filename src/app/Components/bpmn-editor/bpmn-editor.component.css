@@ -1,6 +1,4 @@
-/* Essential BPMN.js styles - inline version to avoid import issues */
 
-/* Added wrapper and toolbar styling for download button */
 .bpmn-editor-wrapper {
   height: 100vh;
   width: 100%;
@@ -40,14 +38,56 @@
   font-size: 16px;
 }
 
+.deploy-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.deploy-btn:hover {
+  background-color: #218838;
+}
+
+.deploy-btn i {
+  font-size: 16px;
+}
+
+.delegate-selector {
+  padding: 8px 16px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.delegate-selector label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.delegate-selector select {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 200px;
+}
+
 .bpmn-container {
   display: flex;
-  flex: 1; /* Changed from height: 100vh to flex: 1 to work with toolbar */
+  flex: 1;
   width: 100%;
   font-family: Arial, sans-serif;
 }
 
-/* Added palette container styling */
 .palette {
   width: 120px;
   background-color: #ffffff;
@@ -69,14 +109,12 @@
   overflow-y: auto;
 }
 
-/* BPMN.js core styles */
 .djs-container {
   background-color: #ffffff;
   position: relative;
   overflow: hidden;
 }
 
-/* Updated palette styling to work with dedicated container */
 .djs-palette {
   position: relative !important;
   left: 0 !important;
@@ -115,7 +153,6 @@
   border-color: #ccc;
 }
 
-/* BPMN font icons - basic fallback */
 .bpmn-icon-start-event-none:before {
   content: "○";
   font-size: 20px;
@@ -137,13 +174,11 @@
   color: #f39c12;
 }
 
-/* Canvas styling */
 .djs-canvas {
   width: 100%;
   height: 100%;
 }
 
-/* Properties panel basic styling */
 .bio-properties-panel {
   background-color: #f8f8f8;
   border-left: 1px solid #ccc;
@@ -156,24 +191,4 @@
   border-bottom: 1px solid #ccc;
   padding: 10px;
   font-weight: bold;
-}
-.deploy-btn {
-  background-color: #28a745; /* green for action */
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.deploy-btn:hover {
-  background-color: #218838;
-}
-
-.deploy-btn i {
-  font-size: 16px;
 }

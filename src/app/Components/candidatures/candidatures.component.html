@@ -94,6 +94,8 @@
         <th><i class="fas fa-user"></i> Nom du candidat</th>
         <th><i class="fas fa-envelope"></i> Email</th>
         <th><i class="fas fa-briefcase"></i> Titre de l'offre</th>
+        <th *ngIf="isAdmin()"><i class="fas fa-percentage"></i> Score CV</th>
+        <th *ngIf="isAdmin()"><i class="fas fa-code"></i> Score Défi</th>
         <th><i class="fas fa-cogs"></i> Actions</th>
         <th><i class="fas fa-info-circle"></i> Statut</th>
       </tr>
@@ -103,6 +105,10 @@
         <td>{{ c.nom || 'N/A' }}</td>
         <td><a href="mailto:{{ c.email }}" class="email-link">{{ c.email || 'N/A' }}</a></td>
         <td>{{ c.offreEmploi?.titre || 'N/A' }}</td>
+        <td *ngIf="isAdmin()">{{ (c.scoreCV === null || c.scoreCV === undefined) ? 'N/A' : (c.scoreCV | number:'1.1-1')
+          }}/10</td>
+        <td *ngIf="isAdmin()">{{ c.defi ? ((c.scoreDefi === null || c.scoreDefi === undefined) ? 'N/A' : (c.scoreDefi |
+          number:'1.0-1')) + '%' : '—' }}</td>
         <td>
           <button class="icon-btn view-btn" (click)="onView(c)" title="Voir les détails">
             <i class="fas fa-eye"></i>
@@ -121,15 +127,15 @@
         </td>
         <td>
           <span class="status-badge" [ngClass]="{
-            'status-badge--pending': c.statut === 'EN ATTENTE',
-            'status-badge--accepted': c.statut === 'ACCEPTÉ',
-            'status-badge--rejected': c.statut === 'REFUSEE'
-          }">
+             'status-badge--pending': c.statut === 'EN ATTENTE',
+             'status-badge--accepted': c.statut === 'ACCEPTÉ',
+             'status-badge--rejected': c.statut === 'REFUSEE'
+           }">
             <i class="fas" [ngClass]="{
-              'fa-hourglass-half': c.statut === 'EN ATTENTE',
-              'fa-check-circle': c.statut === 'ACCEPTÉ',
-              'fa-times-circle': c.statut === 'REFUSEE'
-            }"></i>
+               'fa-hourglass-half': c.statut === 'EN ATTENTE',
+               'fa-check-circle': c.statut === 'ACCEPTÉ',
+               'fa-times-circle': c.statut === 'REFUSEE'
+             }"></i>
             {{ c.statut || 'N/A' }}
           </span>
         </td>
@@ -148,7 +154,11 @@
           <p class="item-description">{{ c.email || 'N/A' }}</p>
           <div class="item-tags">
             <span class="badge" [ngClass]="getScoreBadgeClass(c.scoreCV)">
-              Score CV: {{ c.scoreCV || 0 }}/10
+              Score CV: {{ (c.scoreCV === null || c.scoreCV === undefined) ? 'N/A' : (c.scoreCV | number:'1.1-1') }}/10
+            </span>
+            <span *ngIf="isAdmin() && c.defi" class="badge">
+              Score Défi: {{ (c.scoreDefi === null || c.scoreDefi === undefined) ? 'N/A' : (c.scoreDefi |
+              number:'1.0-1') }}%
             </span>
             <span class="chip-label"><i class="fas fa-id-badge"></i> Statut Candidature:</span>
             <span class="chip" [ngClass]="getStatutClass(c.statut)">{{ c.statut || 'N/A' }}</span>

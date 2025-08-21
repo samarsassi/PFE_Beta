@@ -86,12 +86,16 @@
 
     <!-- Action Buttons -->
     <div class="action-buttons">
-      <button (click)="executeCode()" [disabled]="isExecuting" class="btn run">
+      <button (click)="executeCode()" [disabled]="isExecuting || isSubmitting" class="btn run">
         <span *ngIf="isExecuting" class="loading-icon">⟳</span>
         {{ isExecuting ? 'Executing...' : 'Run Code' }}
       </button>
-      <button (click)="clearOutput()" class="btn clear">Clear Output</button>
+      <button (click)="clearOutput()" [disabled]="isExecuting || isSubmitting" class="btn clear">Clear Output</button>
       <button (click)="runQuickTest()" class="btn test" *ngIf="isAdmin()">🧪 Quick Test</button>
+              <button (click)="submitSolution()" [disabled]="!canSubmit()" class="btn submit">
+          <span *ngIf="isSubmitting" class="loading-icon">⟳</span>
+          {{ isSubmitting ? 'Submitting...' : 'Submit Solution' }}
+        </button>
     </div>
 
     <!-- Error Display -->

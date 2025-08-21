@@ -8,6 +8,7 @@ import { ChallengeService } from 'src/app/Services/fn/challenge/challenge-servic
 import { CandidatureService } from 'src/app/Services/fn/candidature/candidature.service';
 import { ResultatEntretien } from 'src/app/Data/Entretien';
 import { EntretienService } from 'src/app/Services/fn/entretien/entretien.service';
+import { KeycloakService } from 'src/app/Services/keycloak/keycloak.service';
 
 @Component({
   selector: 'app-on-view-dialog',
@@ -33,7 +34,12 @@ export class OnViewDialogComponent implements OnInit, OnChanges {
     private http: HttpClient,
     private challengeService: ChallengeService,
     private candidatureService: CandidatureService,
-    private entretienService: EntretienService) { }
+    private entretienService: EntretienService,
+    private keycloakService: KeycloakService) { }
+
+  isAdmin(): boolean {
+    return this.keycloakService.keycloak?.tokenParsed?.resource_access?.['PFE']?.roles?.includes('admin') ?? false;
+  }
 
   ngOnInit() {
     // No logic here that depends on @Input() data
