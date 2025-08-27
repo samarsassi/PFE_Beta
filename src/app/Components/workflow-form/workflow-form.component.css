@@ -1,0 +1,34 @@
+.workflow-editor {
+  text-align: center;
+  margin: 50px;
+}
+
+.gateway {
+  display: inline-block;
+  padding: 15px;
+  margin: 10px;
+  background-color: #e0e0e0;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.gateway:hover {
+  background-color: #d0d0d0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

@@ -1,4 +1,3 @@
-
 {
   "name": "Flowable",
   "uri": "http://flowable.org/bpmn",
@@ -15,21 +14,27 @@
       "name": "ServiceTask",
       "extends": ["bpmn:ServiceTask"],
       "properties": [
+        { "name": "class", "isAttr": true, "type": "String" },
+        { "name": "expression", "isAttr": true, "type": "String" },
+        { "name": "delegateExpression", "isAttr": true, "type": "String" }
+      ]
+    },
+    {
+      "name": "SequenceFlow",
+      "extends": ["bpmn:SequenceFlow"],
+      "properties": [
         {
-          "name": "class",
-          "isAttr": true,
-          "type": "String"
-        },
-        {
-          "name": "expression",
-          "isAttr": true,
-          "type": "String"
-        },
-        {
-          "name": "delegateExpression",
-          "isAttr": true,
-          "type": "String"
+          "name": "flowableConditionExpression", 
+          "type": "Expression",
+          "isAttr": false,
+          "isOptional": true
         }
+      ]
+    },
+    {
+      "name": "Expression",
+      "properties": [
+        { "name": "body", "isBody": true, "type": "String" }
       ]
     }
   ]

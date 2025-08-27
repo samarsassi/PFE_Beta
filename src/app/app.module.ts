@@ -63,6 +63,9 @@ import { CreateEntretienDialogComponent } from './Components/candidatures/dialog
 import { DetailComponent } from './Components/interview/dialog/detail/detail.component';
 import { BpmnEditorComponent } from './Components/bpmn-editor/bpmn-editor.component';
 import { AdminSnackBarComponent, ChallengesDashboardComponent } from './Components/challenges-dashboard/challenges-dashboard.component';
+import { WorkflowConditionsComponent } from './Components/workflow-conditions/workflow-conditions.component';
+import { WorkflowFormComponent } from './Components/workflow-form/workflow-form.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 export function kcFactory(kcService: KeycloakService) {
@@ -100,7 +103,9 @@ export function kcFactory(kcService: KeycloakService) {
     InterviewUserComponent,
     CreateEntretienDialogComponent,
     DetailComponent,
-    BpmnEditorComponent
+    BpmnEditorComponent,
+    WorkflowConditionsComponent,
+    WorkflowFormComponent
   ],
   imports: [
     BrowserModule,
@@ -143,7 +148,8 @@ export function kcFactory(kcService: KeycloakService) {
     MatCardModule,
     NgxChartsModule,
     NgxDatatableModule,
-    FullCalendarModule
+    FullCalendarModule,
+    NgbModule
   ],
   providers: [
     HttpClient,

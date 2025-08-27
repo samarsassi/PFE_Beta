@@ -2,6 +2,11 @@
 @use '@nebular/theme/styles/globals' as *;
 @import "~leaflet/dist/leaflet.css";
 
+/* BPMN.js CSS imports */
+@import "bpmn-js/dist/assets/diagram-js.css";
+@import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
+@import "@bpmn-io/properties-panel/dist/assets/properties-panel.css";
+
 /* Modern Design System */
 :root {
     /* Color Palette */
@@ -486,3 +491,6 @@ select:focus {
   border-radius: 15px !important;
   padding: 20px !important;
 }
+
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';

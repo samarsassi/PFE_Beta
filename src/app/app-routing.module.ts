@@ -19,6 +19,7 @@ import { InterviewComponent } from './Components/interview/interview.component';
 import { InterviewUserComponent } from './Components/user/interview-user/interview-user.component';
 import { BpmnEditorComponent } from './Components/bpmn-editor/bpmn-editor.component';
 import { ChallengesDashboardComponent } from './Components/challenges-dashboard/challenges-dashboard.component';
+import { WorkflowConditionsComponent } from './Components/workflow-conditions/workflow-conditions.component';
 
 const routes: Routes = [
 
@@ -49,6 +50,7 @@ const routes: Routes = [
       { path: 'cv-analyzer', component: CvAnalyzerComponent },
       { path: 'interview', component: InterviewComponent },
       { path: 'bpmn', component: BpmnEditorComponent },
+      { path: 'workflow-conditions', component: WorkflowConditionsComponent },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   },

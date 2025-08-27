@@ -1,0 +1,66 @@
+
+
+
+<div class="workflow-editor">
+  <h2>Workflow Editor</h2>
+  <div class="gateway" (click)="openModal('CV_Score_Decision')">Click Gateway: CV_Score_Decision</div>
+  <div class="gateway" (click)="openModal('Interview_Decision')">Click Gateway: Interview_Decision</div>
+</div>
+
+
+<!-- Modal -->
+<ng-template #conditionModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Add Workflow Condition</h4>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body"><!-- Add this just above the <form> in workflow-form.component.html -->
+<div *ngIf="existingConditions.length > 0" class="mb-3">
+  <h5>Existing Conditions</h5>
+  <ul class="list-group">
+    <li *ngFor="let cond of existingConditions" class="list-group-item d-flex justify-content-between align-items-center">
+      {{ cond.conditionName }} (Flow: {{ cond.flowId }}, Expr: {{ cond.conditionExpression }})
+      <span>
+        <button class="btn btn-sm btn-primary me-2" (click)="editCondition(cond)">Edit</button>
+        <button class="btn btn-sm btn-danger" (click)="deleteCondition(cond.id!)">Delete</button>
+      </span>
+    </li>
+  </ul>
+</div>
+<div *ngIf="existingConditions.length === 0" class="mb-3">
+  <p>No existing conditions for this gateway.</p>
+</div>
+    <form [formGroup]="conditionForm" (ngSubmit)="saveCondition()">
+      <div class="form-group">
+        <label for="gatewayId">Gateway ID</label>
+        <input type="text" id="gatewayId" formControlName="gatewayId" class="form-control" readonly>
+      </div>
+
+      <div class="form-group">
+        <label for="flowId">Flow ID *</label>
+        <select id="flowId" formControlName="flowId" class="form-control" required>
+          <option value="">Select Flow</option>
+          <option *ngFor="let flow of flows" [value]="flow">{{ flow }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="conditionExpression">Condition Expression *</label>
+        <input type="text" id="conditionExpression" formControlName="conditionExpression" class="form-control"
+               placeholder="e.g., ${cvScore >= 3}">
+        <small class="form-text text-muted">Flowable expression using process variables</small>
+      </div>
+
+      <div class="form-group">
+        <label for="conditionName">Condition Name *</label>
+        <input type="text" id="conditionName" formControlName="conditionName" class="form-control"
+               placeholder="e.g., High Score - Send Challenge">
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel')">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!conditionForm.valid">Create Condition</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

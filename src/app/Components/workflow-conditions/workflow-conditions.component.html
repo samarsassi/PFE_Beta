@@ -1,0 +1,125 @@
+<div class="workflow-conditions-container">
+  <div class="header">
+    <h2>Workflow Conditions Management</h2>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="showAddForm()">
+        Add Condition
+      </button>
+      <button class="btn btn-secondary" (click)="initializeDefaults()">
+        Initialize Defaults
+      </button>
+    </div>
+  </div>
+
+  <div class="conditions-list" *ngIf="!isFormVisible">
+    <div class="condition-card" *ngFor="let condition of conditions">
+      <div class="condition-header">
+        <h4>{{ condition.conditionName }}</h4>
+        <div class="condition-actions">
+          <button class="btn btn-sm btn-outline-primary" (click)="showEditForm(condition)">
+            Edit
+          </button>
+          <button class="btn btn-sm btn-outline-danger" (click)="deleteCondition(condition.id!)">
+            Delete
+          </button>
+        </div>
+      </div>
+      
+      <div class="condition-details">
+        <div class="detail-row">
+          <strong>Gateway:</strong> {{ condition.gatewayId }}
+        </div>
+        <div class="detail-row">
+          <strong>Flow:</strong> {{ condition.flowId }}
+        </div>
+        <div class="detail-row">
+          <strong>Expression:</strong> 
+          <code class="condition-expression">{{ condition.conditionExpression }}</code>
+        </div>
+        <div class="detail-row" *ngIf="condition.description && condition.description.length > 0">
+          <strong>Description:</strong> {{ condition.description }}
+        </div>
+        <div class="detail-row">
+          <strong>Status:</strong> 
+          <span class="badge" [class.badge-success]="condition.isActive" [class.badge-secondary]="!condition.isActive">
+            {{ condition.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="no-conditions" *ngIf="conditions.length === 0">
+      <p>No conditions configured yet. Click "Initialize Defaults" to create default conditions.</p>
+    </div>
+  </div>
+
+  <div class="condition-form" *ngIf="isFormVisible">
+    <div class="form-header">
+      <h3>{{ editingCondition ? 'Edit' : 'Add' }} Workflow Condition</h3>
+      <button class="btn btn-sm btn-outline-secondary" (click)="hideForm()">
+        Close
+      </button>
+    </div>
+    
+    <form [formGroup]="conditionForm" (ngSubmit)="saveCondition()">
+      <div class="form-group">
+        <label for="gatewayId">Gateway ID *</label>
+        <select id="gatewayId" formControlName="gatewayId" class="form-control">
+          <option value="">Select Gateway</option>
+          <option value="CV_Score_Decision">CV Score Decision</option>
+          <option *ngFor="let gateway of gateways" [value]="gateway">{{ gateway }}</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="flowId">Flow ID *</label>
+        <input type="text" id="flowId" formControlName="flowId" class="form-control" 
+               placeholder="e.g., Flow_3, Flow_4">
+        <small class="form-text text-muted">The ID of the sequence flow this condition applies to</small>
+      </div>
+      
+      <div class="form-group">
+        <label for="conditionExpression">Condition Expression *</label>
+        <input type="text" id="conditionExpression" formControlName="conditionExpression" class="form-control"
+               placeholder="e.g., ${cvScore >= 3}">
+        <small class="form-text text-muted">Flowable expression using process variables</small>
+      </div>
+      
+      <div class="form-group">
+        <label for="conditionName">Condition Name *</label>
+        <input type="text" id="conditionName" formControlName="conditionName" class="form-control"
+               placeholder="e.g., High Score - Send Challenge">
+      </div>
+      
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" class="form-control" rows="3"
+                  placeholder="Optional description of what this condition does"></textarea>
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="hideForm()">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!conditionForm.valid">
+          {{ editingCondition ? 'Update' : 'Create' }} Condition
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="help-section">
+    <h4>How to Use</h4>
+    <div class="help-content">
+      <p><strong>Gateway ID:</strong> The ID of the exclusive gateway in your BPMN workflow</p>
+      <p><strong>Flow ID:</strong> The ID of the sequence flow leaving the gateway</p>
+      <p><strong>Condition Expression:</strong> A Flowable expression that evaluates to true/false</p>
+      <p><strong>Examples:</strong></p>
+     <ul>
+        <li><code>{{ '{' }}$cvScore >= 3{{ '}' }}</code> - CV score is 3 or higher</li>
+        <li><code>{{ '{' }}$cvScore < 3{{ '}' }}</code> - CV score is less than 3</li>
+        <li><code>{{ '{' }}$experience >= 5{{ '}' }}</code> - Experience is 5 years or more</li>
+        <li><code>{{ '{' }}$status == 'APPROVED'{{ '}' }}</code> - Status equals 'APPROVED'</li>
+     </ul>
+
+    </div>
+  </div>
+</div>

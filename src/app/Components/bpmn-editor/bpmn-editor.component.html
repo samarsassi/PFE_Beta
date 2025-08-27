@@ -7,18 +7,20 @@
     <button class="deploy-btn" (click)="deployDiagramToBackend()">
       🚀 Deploy BPMN
     </button>
+    <button class="extract-conditions-btn" (click)="extractAndSaveConditions()">
+      🔧 Extract Conditions
+    </button>
   </div>
 
   <!-- Delegate dropdown -->
   <div *ngIf="selectedElement?.type === 'bpmn:ServiceTask'" class="delegate-selector">
     <label for="delegateSelect">Delegate Class:</label>
     <select id="delegateSelect" (change)="onDelegateChange($event)" [value]="selectedDelegate">
-  <option value="" disabled>Select a delegate</option>
-  <option *ngFor="let delegate of delegateClasses" [value]="delegate.beanName">
-    {{ delegate.description }} ({{ delegate.beanName }})
-  </option>
-</select>
-
+      <option value="" disabled>Select a delegate</option>
+      <option *ngFor="let delegate of delegateClasses" [value]="delegate.beanName">
+        {{ delegate.description }} ({{ delegate.beanName }})
+      </option>
+    </select>
   </div>
 
   <!-- BPMN Container -->
@@ -28,3 +30,6 @@
     <div class="properties-panel" #properties></div>
   </div>
 </div>
+
+<!-- Hook to WorkflowFormComponent -->
+<app-workflow-form #workflowForm></app-workflow-form>
