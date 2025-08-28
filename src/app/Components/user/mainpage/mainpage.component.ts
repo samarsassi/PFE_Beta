@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { OffreEmploiService } from 'src/app/Services/fn/offreemploi/OffreEmploiService';
 import { KeycloakService } from 'src/app/Services/keycloak/keycloak.service';
 import { CandidatureService } from 'src/app/Services/fn/candidature/candidature.service';
@@ -10,7 +10,6 @@ import { Candidature } from 'src/app/Data/Candidature';
   styleUrls: ['./mainpage.component.css']
 })
 export class MainpageComponent implements OnInit {
-
   offresEmploi: any[] = [];
   isLoggedIn: boolean = false;
   userName: string = '';
@@ -19,11 +18,16 @@ export class MainpageComponent implements OnInit {
   hasCandidatures: boolean = false;
   userCandidatures: Candidature[] = [];
 
-  constructor(public jobService: OffreEmploiService, private keycloakService: KeycloakService, private candidatureService: CandidatureService) { }
+  constructor(
+    public jobService: OffreEmploiService,
+    private keycloakService: KeycloakService,
+    private candidatureService: CandidatureService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
   ngOnInit(): void {
     console.log('User profile:', this.keycloakService.profile);
-    this.candidatureService.getAllCandidaturesList().subscribe((cands) => {
-    });
+    this.candidatureService.getAllCandidaturesList().subscribe((cands) => {});
     if (this.keycloakService.profile) {
       this.isLoggedIn = true;
       this.userName = `${this.keycloakService.profile.firstName} ${this.keycloakService.profile.lastName}`;
@@ -39,7 +43,7 @@ export class MainpageComponent implements OnInit {
     }
     this.candidatureService.getAllCandidaturesList().subscribe((cands) => {
       if (userId) {
-        this.userCandidatures = cands.filter((c: { creePar: string; }) => c.creePar === userId);
+        this.userCandidatures = cands.filter((c: { creePar: string }) => c.creePar === userId);
         this.hasCandidatures = this.userCandidatures.length > 0;
       } else {
         this.userCandidatures = [];
@@ -50,42 +54,42 @@ export class MainpageComponent implements OnInit {
 
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
+    console.log('Dropdown toggled, dropdownOpen:', this.dropdownOpen);
+    this.cdr.detectChanges();
   }
 
   async logout() {
     await this.keycloakService.logout();
   }
+
   async ViewProfile() {
     await this.keycloakService.ViewProfile();
   }
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
+    if (!this.menuOpen) {
+      this.dropdownOpen = false; // Close dropdown when menu closes
+    }
+    console.log('Menu toggled, menuOpen:', this.menuOpen, 'dropdownOpen:', this.dropdownOpen);
+    this.cdr.detectChanges();
   }
 
   hasAdminRole(): boolean {
     const userRoles = this.keycloakService.keycloak?.tokenParsed?.resource_access?.['PFE']?.roles || [];
     return userRoles.includes('admin');
-
   }
-  // loadJobOffers() {
-  //   this.jobService.getAllOffres().subscribe(
-  //     (data) => {
-  //       // Filter out archived offers (assuming each offer has an "archive" property which is truthy when archived)
-  //       this.offresEmploi = data.filter(offre => !offre.archive);
-  //       console.log(this.offresEmploi);
-  //     },
-  //     (error) => {
-  //       console.error('Error loading job offers', error);
-  //     }
-  //   );
-  // }
 
   showScrollTop = false;
 
+  closeMenu() {
+  this.menuOpen = false;
+  this.dropdownOpen = false;
+  this.cdr.detectChanges();
+}
+
   @HostListener('window:scroll', [])
   onWindowScroll() {
-
     this.showScrollTop = window.pageYOffset > 300;
   }
 
@@ -95,13 +99,25 @@ export class MainpageComponent implements OnInit {
 
   @ViewChild('dropdownRef', { static: false }) dropdownRef!: ElementRef;
 
-  @HostListener('document:click', ['$event'])
+@HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     if (this.dropdownOpen) {
       const target = event.target as HTMLElement;
-      // Check if the click is inside the dropdown or trigger
-      if (this.dropdownRef && !this.dropdownRef.nativeElement.contains(target)) {
+      if (
+        this.dropdownRef &&
+        !this.dropdownRef.nativeElement.contains(target) &&
+        !target.closest('.user-dropdown')
+      ) {
         this.dropdownOpen = false;
+        this.cdr.detectChanges();
+      }
+    }
+    if (this.menuOpen) {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.nav-panel') && !target.closest('.menu-toggle')) {
+        this.menuOpen = false;
+        this.dropdownOpen = false;
+        this.cdr.detectChanges();
       }
     }
   }

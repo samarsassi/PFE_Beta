@@ -1,16 +1,18 @@
 <div class="bpmn-editor-wrapper">
   <!-- Toolbar -->
-  <div class="bpmn-toolbar">
-    <button class="download-btn" (click)="downloadDiagram()">
-      ⬇ Download BPMN
-    </button>
-    <button class="deploy-btn" (click)="deployDiagramToBackend()">
-      🚀 Deploy BPMN
-    </button>
-    <button class="extract-conditions-btn" (click)="extractAndSaveConditions()">
-      🔧 Extract Conditions
-    </button>
+<div class="bpmn-toolbar">
+  <button class="download-btn" (click)="downloadDiagram()">⬇ Download BPMN</button>
+  <button class="deploy-btn" (click)="deployDiagramToBackend()">🚀 Deploy BPMN</button>
+  <div class="load-group">
+    <select [(ngModel)]="selectedHistoryVersion">
+      <option *ngFor="let version of HistoryVersions" [value]="version">
+        {{ version }}
+      </option>
+    </select>
+    <button class="deploylatest-btn" (click)="loadSelectedHistory()">🕑 Load Previous</button>
   </div>
+  <!-- <button class="extract-conditions-btn" (click)="extractAndSaveConditions()">🔧 Extract Conditions</button> -->
+</div>
 
   <!-- Delegate dropdown -->
   <div *ngIf="selectedElement?.type === 'bpmn:ServiceTask'" class="delegate-selector">

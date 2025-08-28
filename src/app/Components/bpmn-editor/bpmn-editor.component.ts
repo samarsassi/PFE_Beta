@@ -8,6 +8,7 @@ import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule } from 'bpmn-js
 import flowableModdleDescriptor from 'src/app/Components/bpmn-editor/flowable-moddle.json';
 import { WorkflowFormComponent } from '../workflow-form/workflow-form.component';
 import { WorkflowConditionService } from 'src/app/Services/workflow/workflow-condition.service';
+import { WorkflowService } from 'src/app/Services/fn/workflow/workflow.service';
 
 interface DelegateInfo {
   beanName: string;
@@ -37,11 +38,18 @@ export class BpmnEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   delegateClasses: DelegateInfo[] = [];
   selectedElement: BpmnElement | null = null;
   selectedDelegate: string | null = null;
+  HistoryVersions: string[] = [];
+  selectedHistoryVersion: string = '';
 
-  constructor(private http: HttpClient, private conditionService: WorkflowConditionService) {}
+
+  constructor(private http: HttpClient, 
+    private conditionService: WorkflowConditionService,
+    private workflowService: WorkflowService
+  ) {}
 
   ngOnInit() {
     this.fetchDelegateClasses();
+    this.getHistoryVersions();
   }
 
   ngAfterViewInit() {
@@ -145,15 +153,59 @@ export class BpmnEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private async loadDiagram(xml: string) {
-    try {
-      await this.modeler.importXML(xml);
-      const canvas: any = this.modeler.get('canvas');
-      if (canvas?.zoom) canvas.zoom('fit-viewport');
-    } catch (err) {
-      console.error('Error loading diagram', err);
+private async loadDiagram(xml: string) {
+  if (!this.modeler) return;
+
+  try {
+    // Import XML directly (bpmn-js handles clearing the previous diagram internally)
+    const { warnings } = await this.modeler.importXML(xml);
+
+    if (warnings && warnings.length) {
+      console.warn('BPMN import warnings:', warnings);
     }
+
+    // Zoom to fit viewport
+    const canvas: any = this.modeler.get('canvas');
+    if (canvas.zoom) canvas.zoom('fit-viewport');
+
+    console.log('Diagram loaded successfully');
+  } catch (err) {
+    console.error('Error loading diagram:', err);
+    alert('Failed to load BPMN diagram. Check console for details.');
   }
+}
+
+
+
+private getHistoryVersions(): void {
+  this.workflowService.getHistoryVersions().subscribe({
+    next: (versions: string[]) => {
+      this.HistoryVersions = versions;
+      console.log('Loaded history versions:', this.HistoryVersions);
+    },
+    error: (err) => {
+      console.error('Failed to load history versions:', err);
+    }
+  });
+}
+loadSelectedHistory(): void {
+  if (!this.selectedHistoryVersion) {
+    alert('Please select a history version to load');
+    return;
+  }
+
+  this.workflowService.getHistoryVersionXml(this.selectedHistoryVersion).subscribe({
+    next: async (xml: string) => {
+      console.log('Loaded history XML:', xml.substring(0, 200) + '...');
+      await this.loadDiagram(xml); // load into modeler
+      alert(`Loaded history version: ${this.selectedHistoryVersion}`);
+    },
+    error: (err) => {
+      console.error('Failed to load history version:', err);
+      alert('Failed to load history version: ' + err.message);
+    }
+  });
+}
 
   private getEmptyDiagram(): string {
     return `<?xml version="1.0" encoding="UTF-8"?>
@@ -198,20 +250,26 @@ export class BpmnEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async deployDiagramToBackend() {
-    try {
-      const { xml } = await this.modeler.saveXML({ format: true });
-      if (xml!)
-      {const modifiedXml = await this.conditionService.applyConditionsToBpmn(xml).toPromise();
-      console.log('Sending XML:', modifiedXml);
-      alert('Deploying diagram...');
-      await this.http.post('http://localhost:8089/api/workflows/deploy', { xml: modifiedXml }).toPromise();
-      alert('Diagram deployed successfully!');
-    }
-    } catch (err) {
-      console.error('Error deploying diagram:', err);
-      alert('Failed to deploy diagram.');
-    }
+  try {
+    // Always get current modeler XML
+    const { xml } = await this.modeler.saveXML({ format: true });
+    if (!xml) throw new Error('No BPMN XML available');
+
+    const modifiedXml = await this.conditionService.applyConditionsToBpmn(xml).toPromise();
+    console.log('Deploying XML:', modifiedXml);
+
+    await this.http.post('http://localhost:8089/api/workflows/deploy', 
+      { xml: modifiedXml },
+      { responseType: 'text' }
+    ).toPromise();
+
+    alert('Diagram deployed successfully!');
+  } catch (err) {
+    console.error('Error deploying diagram:', err);
+    alert('Failed to deploy diagram.');
   }
+}
+
 
   async extractAndSaveConditions() {
     try {

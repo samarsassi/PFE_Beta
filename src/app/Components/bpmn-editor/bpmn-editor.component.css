@@ -1,82 +1,124 @@
 
 .bpmn-editor-wrapper {
-  height: 100vh;
+  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
 }
-
 .bpmn-toolbar {
-  background-color: #ffffff;
-  border-bottom: 1px solid #ccc;
-  padding: 8px 16px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 8px 15px;
   display: flex;
-  justify-content: flex-end;
   align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
   min-height: 48px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.bpmn-toolbar button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  height: 32px; /* Fixed height for consistency */
 }
 
 .download-btn {
   background-color: #3498db;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: background-color 0.2s ease;
+  color: #fff;
 }
 
 .download-btn:hover {
-  background-color: #2980b9;
-}
-
-.download-icon {
-  font-size: 16px;
+  background-color: #2c81ba;
+  transform: translateY(-1px);
 }
 
 .deploy-btn {
   background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  color: #fff;
 }
 
 .deploy-btn:hover {
   background-color: #218838;
+  transform: translateY(-1px);
 }
 
-.deploy-btn i {
-  font-size: 16px;
+.deploylatest-btn {
+  background-color: #d39e00;
+  color: #fff;
 }
 
-.extract-conditions-btn {
-  background-color: #ffc107;
-  color: #212529;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
+.deploylatest-btn:hover {
+  background-color: #b48908;
+  transform: translateY(-1px);
+}
+
+/* Group the load previous and select together */
+.load-group {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-left: 8px;
+  gap: 8px;
 }
 
-.extract-conditions-btn:hover {
-  background-color: #e0a800;
+/* Dropdown styling */
+.bpmn-toolbar select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+  min-width: 150px;
+  max-width: 150px; /* Ensure it doesn't stretch */
+  height: 32px; /* Match button height */
+  background-color: #fff;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.bpmn-toolbar select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 4px rgba(52, 152, 219, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .bpmn-toolbar {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .bpmn-toolbar button {
+    padding: 5px 10px;
+    font-size: 12px;
+    height: 28px;
+  }
+
+  .bpmn-toolbar select {
+    min-width: 120px;
+    max-width: 120px;
+    padding: 5px 8px;
+    height: 28px;
+  }
+
+  .load-group {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
 .delegate-selector {
   padding: 8px 16px;
   background-color: #ffffff;

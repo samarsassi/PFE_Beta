@@ -15,4 +15,17 @@ export class WorkflowService {
   deploy(xml: string) {
     return this.http.post('http://localhost:8089/api/workflows/deploy', xml, { headers: { 'Content-Type': 'application/xml' } });
   }
+getHistoryVersions(): Observable<string[]> {
+  return this.http.get<string[]>(`${this.apiUrl}/history`);
+}
+
+getHistoryVersionXml(filename: string): Observable<string> {
+  return this.http.get(`${this.apiUrl}/history/${filename}`, { responseType: 'text' });
+}
+
+
+
+deployHistoryVersion(fileName: string): Observable<string> {
+  return this.http.post('http://localhost:8089/api/workflows/history/deploy', { fileName }, { responseType: 'text' });
+}
 }
