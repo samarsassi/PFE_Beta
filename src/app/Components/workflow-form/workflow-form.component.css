@@ -1,25 +1,31 @@
+/* Workflow Editor Container */
 .workflow-editor {
   text-align: center;
   margin: 50px;
 }
 
+/* Gateway Blocks */
 .gateway {
   display: inline-block;
   padding: 15px;
   margin: 10px;
   background-color: #e0e0e0;
   border: 1px solid #ccc;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .gateway:hover {
   background-color: #d0d0d0;
 }
 
+/* Form Groups */
 .form-group {
   margin-bottom: 15px;
 }
 
+/* Inputs and Selects */
 .form-control {
   width: 100%;
   padding: 8px;
@@ -27,8 +33,58 @@
   border-radius: 4px;
 }
 
+/* Disabled inputs styling */
+.form-control[disabled] {
+  background-color: #e9ecef;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Form text hints */
+.form-text {
+  margin-top: 3px;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+/* Modal Footer */
 .modal-footer {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+/* Default Flow Badge */
+.badge.bg-info {
+  background-color: #17a2b8 !important; /* Info color */
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.25em 0.5em;
+  border-radius: 0.25rem;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+/* Existing Conditions List */
+.list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-group-item span {
+  display: flex;
+  gap: 5px;
+}
+
+/* Checkbox Label Styling */
+.form-check-label {
+  margin-left: 5px;
+  font-weight: 500;
+}
+
+/* Optional: Slight hover effect on list items */
+.list-group-item:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.2s;
 }

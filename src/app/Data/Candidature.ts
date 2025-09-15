@@ -29,7 +29,7 @@ export interface Candidature {
     defiEnvoyeLe?: Date
     defiTermineLe?: Date
     scoreDefi?: number
-    statutDefi?: "AUCUN" | "ENVOYE" | "TERMINE" | "EVALUE"
+    statutDefi: "AUCUN" | "ENVOYE" | "TERMINE" | "EVALUE" | "EXPIRE"
 
     dateCreation?: Date;
     dateModification?: Date;

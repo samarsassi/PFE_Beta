@@ -156,7 +156,7 @@
               {{ selectedCandidature.defiEnvoyeLe | date:'short' }}
             </div>
             <button class="btn-primary" [routerLink]="['../code-executor', selectedCandidature.id]"
-              [disabled]="selectedCandidature.statut === 'REFUSEE'"
+              [disabled]="selectedCandidature.statut === 'REFUSEE' || selectedCandidature.statutDefi === 'TERMINE'|| selectedCandidature.statutDefi === 'EXPIRE'"
               matTooltip="Impossible d'accéder au défi si la candidature est REFUSEEe">
               Accéder au défi
             </button>
@@ -169,13 +169,6 @@
             <div class="timeline-date" *ngIf="selectedCandidature.defiTermineLe">
               {{ selectedCandidature.defiTermineLe | date:'short' }}
             </div>
-          </div>
-        </div>
-        <div class="timeline-step" [class.active]="selectedCandidature.statutDefi === 'EVALUE'">
-          <div class="timeline-dot"></div>
-          <div>
-            <div class="timeline-title">Défi évalué</div>
-            <div class="timeline-date" *ngIf="selectedCandidature.statutDefi === 'EVALUE'">Évalué</div>
           </div>
         </div>
       </div>

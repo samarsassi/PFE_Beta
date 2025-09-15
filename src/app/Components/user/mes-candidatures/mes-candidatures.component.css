@@ -459,49 +459,76 @@ h2 {
 .filter-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  flex-wrap: wrap; /* Wrap on small screens */
+  gap: 16px; /* Slightly increased for better spacing */
+  margin-bottom: 24px; /* Adjusted for better rhythm */
+  flex-wrap: wrap; /* Maintains wrap for small screens */
+  padding: 12px; /* Adds subtle padding for a contained feel */
+  background-color: #f1f5f9; /* Light gray background for contrast */
+  border-radius: 12px; /* Softer, more modern radius */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
 }
 
 .filter-row label {
   font-weight: 600;
   font-size: 1rem;
-  color: #334155; /* nice dark slate */
+  color: #1e293b; /* Darker slate for better readability */
   white-space: nowrap;
+  padding: 4px 8px; /* Slight padding for label comfort */
 }
 
 .filter-row select {
-  padding: 8px 14px;
+  padding: 10px 16px; /* Increased padding for better touch targets */
   font-size: 1rem;
-  border: 1.5px solid #cbd5e1; /* subtle border */
-  border-radius: 6px;
-  background-color: #f8fafc; /* very light background */
-  color: #1e293b; /* dark text */
+  border: 1.5px solid #e2e8f0; /* Lighter, more neutral border */
+  border-radius: 8px; /* Slightly larger radius for consistency */
+  background-color: #ffffff; /* Pure white for a crisp look */
+  color: #0f172a; /* Deeper navy for text, improving contrast */
   cursor: pointer;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
-  min-width: 160px;
+  transition: all 0.3s ease; /* Smoother transitions */
+  min-width: 180px; /* Slightly wider for better usability */
+  appearance: none; /* Removes default arrow in some browsers */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%231e293b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.filter-row select:hover {
+  border-color: #94a3b8; /* Lighter gray on hover for feedback */
+  background-color: #f9fafb; /* Very light hover background */
 }
 
 .filter-row select:focus {
   outline: none;
-  border-color: #2563eb; /* blue focus */
-  box-shadow: 0 0 6px rgba(37, 99, 235, 0.6);
+  border-color: #3b82f6; /* Softer blue focus for accessibility */
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); /* Enhanced focus shadow */
+  background-color: #ffffff; /* Reset background on focus */
 }
 
-/* Responsive: full width on very small screens */
-@media (max-width: 400px) {
+.filter-row select:disabled {
+  background-color: #f1f5f9; /* Light gray for disabled state */
+  color: #94a3b8; /* Muted text for disabled */
+  cursor: not-allowed;
+  border-color: #e2e8f0;
+}
+
+/* Responsive: full width on small screens with better stacking */
+@media (max-width: 480px) { /* Adjusted breakpoint for better mobile experience */
   .filter-row {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    padding: 8px;
   }
-  
+
+  .filter-row label {
+    margin-bottom: 8px; /* Space between label and select */
+  }
+
   .filter-row select {
     width: 100%;
     min-width: unset;
+    background-position: right 10px center; /* Adjust arrow position */
   }
 }
-
 
 
 .btn-disabled {

@@ -21,7 +21,7 @@
     </ng-template>
     <!-- Timer at the bottom -->
     <div class="timer-section left-timer">
-      <div *ngIf="!challengeStarted && !challengeExpired">
+      <div *ngIf="!challengeStarted && !challengeExpired && candidature?.statutDefi !== 'TERMINE'">
         <button (click)="startChallenge()" class="btn start">Démarrer le défi</button>
       </div>
       <div *ngIf="challengeStarted && !challengeExpired">

@@ -19,6 +19,25 @@
       <div class="dialog-row" *ngIf="isAdmin()"><strong>Score CV:</strong> <span>{{ data.scoreCV !== null &&
           data.scoreCV !== undefined ?
           (data.scoreCV | number:'1.1-1') : 'N/A' }}/10</span></div>
+               
+
+              <div class="dialog-row" *ngIf="isAdmin()">
+                <button class="btn btn-warning"
+                        [disabled]="reanalyzing"
+                        (click)="onReanalyzeCV('scoreOnly')">
+                  <span *ngIf="!reanalyzing">🔄 Re-score CV</span>
+                  <span *ngIf="reanalyzing">⏳ Re-scoring...</span>
+                </button>
+
+                <button class="btn btn-danger"
+                        [disabled]="reanalyzing"
+                        (click)="onReanalyzeCV('fullProcess')">
+                  <span *ngIf="!reanalyzing">🚀 Restart Full Process</span>
+                  <span *ngIf="reanalyzing">⏳ Processing...</span>
+                </button>
+              </div>
+
+
       <div class="dialog-row"><strong>Cover Letter:</strong> <span>{{ data.coverLetter }}</span></div>
 
       <!-- Défi info as chips -->

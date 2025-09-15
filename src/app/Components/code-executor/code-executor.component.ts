@@ -1,6 +1,6 @@
 import { Component, type OnInit } from "@angular/core";
 import { Judge0SimpleService, Language, SubmissionRequest } from "src/app/Services/fn/Judge0Service/judge0-direct.service";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CandidatureService } from 'src/app/Services/fn/candidature/candidature.service';
 import { CodingChallenge } from 'src/app/Data/coding-challenge.model';
 import { KeycloakService } from 'src/app/Services/keycloak/keycloak.service';
@@ -62,7 +62,8 @@ export class CodeExecutorComponent implements OnInit {
     private candidatureService: CandidatureService,
     private keycloakService: KeycloakService,
     private location: Location,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -282,10 +283,12 @@ export class CodeExecutorComponent implements OnInit {
           ...this.candidature,
           statut: 'REFUSEE' as const
         };
-        this.candidatureService.updateCandidature(this.candidature.id, updatedCandidature).subscribe({
-          next: () => console.log(`✅ Candidature ${this.candidature?.id} set to REFUSEE`),
-          error: (err) => console.error("❌ Failed to update candidature:", err),
-        });
+
+        
+        // this.candidatureService.updateCandidature(this.candidature.id, updatedCandidature).subscribe({
+        //   next: () => console.log(`✅ Candidature ${this.candidature?.id} set to REFUSEE`),
+        //   error: (err) => console.error("❌ Failed to update candidature:", err),
+        // });
 
       } else {
         console.log(`ℹ️ Candidature ${this.candidature?.id} already REFUSEE`);
@@ -333,14 +336,21 @@ export class CodeExecutorComponent implements OnInit {
     const exp = this.normalizeOutput(expected);
     const act = this.normalizeOutput(actual);
     if (exp === act) return true;
-    // Line-by-line compare
+
+    // Line-by-line compare with tolerance for extra whitespace
     const expLines = exp.split(/\n+/).map(l => l.trim());
     const actLines = act.split(/\n+/).map(l => l.trim());
-    if (expLines.length === actLines.length && expLines.every((l, i) => l === actLines[i])) return true;
-    // Numeric compare (tolerate whitespace)
+    if (expLines.length === actLines.length) {
+      return expLines.every((l, i) => l === actLines[i]);
+    }
+
+    // Numeric compare with small tolerance
     const expNum = Number(exp);
     const actNum = Number(act);
-    if (!Number.isNaN(expNum) && !Number.isNaN(actNum)) return Math.abs(expNum - actNum) < 1e-9;
+    if (!Number.isNaN(expNum) && !Number.isNaN(actNum)) {
+      return Math.abs(expNum - actNum) < 1e-9;
+    }
+
     return false;
   }
 
@@ -368,8 +378,13 @@ export class CodeExecutorComponent implements OnInit {
       let earnedPoints = 0;
       const results: any[] = [];
 
+      console.log('All Test Cases:', this.allTestCases); // Debug: Check test cases
+
       for (const tc of this.allTestCases) {
-        totalPoints += Number(tc.points || 0);
+        const points = Number(tc.points || 0);
+        totalPoints += points;
+        console.log(`Test Case ${tc.id}: points=${points}, entree=${tc.entree}, expected=${tc.sortieAttendue}`); // Debug each test case
+
         const submission: SubmissionRequest = {
           source_code: this.sourceCode,
           language_id: this.selectedLanguageId,
@@ -380,8 +395,10 @@ export class CodeExecutorComponent implements OnInit {
           const stdout = this.normalizeOutput(result.stdout || '');
           const expected = this.normalizeOutput(String(tc.sortieAttendue || ''));
           const passed = result.status?.id === 3 && this.outputsMatch(expected, stdout);
+          console.log(`Test Case ${tc.id}: stdout=${stdout}, expected=${expected}, passed=${passed}`); // Debug output matching
+
           if (passed) {
-            earnedPoints += Number(tc.points || 0);
+            earnedPoints += points;
           }
           results.push({
             testCaseId: tc.id,
@@ -395,6 +412,7 @@ export class CodeExecutorComponent implements OnInit {
             points: tc.points,
           });
         } catch (e: any) {
+          console.error(`Test Case ${tc.id} failed:`, e);
           results.push({
             testCaseId: tc.id,
             input: tc.entree,
@@ -407,6 +425,7 @@ export class CodeExecutorComponent implements OnInit {
       }
 
       const score = totalPoints > 0 ? (earnedPoints / totalPoints) * 100 : 0;
+      console.log(`Total Points: ${totalPoints}, Earned Points: ${earnedPoints}, Calculated Score: ${score}%`); // Debug score
 
       // Submit to backend
       const payload = {
@@ -419,6 +438,18 @@ export class CodeExecutorComponent implements OnInit {
 
       await this.candidatureService.submitChallenge(this.candidature.id, payload).toPromise();
 
+      // Update challenge-related status
+      if (this.candidature) {
+        const updatedCandidature = {
+          ...this.candidature,
+          statutDefi: 'TERMINE' as const,
+          defiTermineLe: new Date(),
+          scoreDefi: score, // Store the calculated score
+        };
+        await this.candidatureService.updateCandidature(this.candidature.id, updatedCandidature).toPromise();
+        console.log('Updated Candidature with scoreDefi:', score); // Debug update
+      }
+
       // Stop timer and mark as done in UI
       if (this.timerInterval) {
         clearInterval(this.timerInterval);
@@ -429,12 +460,15 @@ export class CodeExecutorComponent implements OnInit {
       this.remainingTime = 0;
 
       alert("✅ Solution submitted successfully. Your score has been recorded.");
+      this.router.navigate(['/main/mes-candidatures']);
     } catch (err: any) {
       this.error = "Failed to submit solution: " + (err?.error || err?.message || 'Unknown error');
+      console.error('Submission error:', err);
     } finally {
       this.isSubmitting = false;
     }
   }
+
 }
 
 @Component({

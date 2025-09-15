@@ -9,6 +9,7 @@ import flowableModdleDescriptor from 'src/app/Components/bpmn-editor/flowable-mo
 import { WorkflowFormComponent } from '../workflow-form/workflow-form.component';
 import { WorkflowConditionService } from 'src/app/Services/workflow/workflow-condition.service';
 import { WorkflowService } from 'src/app/Services/fn/workflow/workflow.service';
+import { lastValueFrom } from 'rxjs';
 
 interface DelegateInfo {
   beanName: string;
@@ -40,8 +41,10 @@ export class BpmnEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedDelegate: string | null = null;
   HistoryVersions: string[] = [];
   selectedHistoryVersion: string = '';
+  isLoading = false;
+  isSuccess = false;
 
-
+  
   constructor(private http: HttpClient, 
     private conditionService: WorkflowConditionService,
     private workflowService: WorkflowService
@@ -249,26 +252,37 @@ loadSelectedHistory(): void {
     window.URL.revokeObjectURL(url);
   }
 
-  async deployDiagramToBackend() {
+async deployDiagramToBackend() {
   try {
-    // Always get current modeler XML
+    this.isLoading = true;
+
     const { xml } = await this.modeler.saveXML({ format: true });
     if (!xml) throw new Error('No BPMN XML available');
 
-    const modifiedXml = await this.conditionService.applyConditionsToBpmn(xml).toPromise();
-    console.log('Deploying XML:', modifiedXml);
+    // Get current conditions from the service or form
+    const conditions = this.workflowForm.existingConditions; // Or fetch from backend
 
-    await this.http.post('http://localhost:8089/api/workflows/deploy', 
+    // Apply conditions
+    const modifiedXml = await this.conditionService.applyConditionsToBpmn(xml, conditions);
+
+    // Deploy to backend
+    await this.http.post(
+      'http://localhost:8089/api/workflows/deploy',
       { xml: modifiedXml },
       { responseType: 'text' }
     ).toPromise();
 
-    alert('Diagram deployed successfully!');
+    this.isLoading = false;
+    this.isSuccess = true;
+    setTimeout(() => (this.isSuccess = false), 1500);
+
   } catch (err) {
+    this.isLoading = false;
     console.error('Error deploying diagram:', err);
     alert('Failed to deploy diagram.');
   }
 }
+
 
 
   async extractAndSaveConditions() {

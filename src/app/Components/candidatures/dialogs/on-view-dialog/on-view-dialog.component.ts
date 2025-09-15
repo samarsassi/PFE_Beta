@@ -259,4 +259,35 @@ export class OnViewDialogComponent implements OnInit, OnChanges {
   get defiStatut(): string | null {
     return this.data && this.data.statutDefi ? this.data.statutDefi : null;
   }
+
+
+  reanalyzing = false; // for spinner/disable state
+
+onReanalyzeCV(mode: 'scoreOnly' | 'fullProcess') {
+  if (!this.data?.id) return;
+
+  this.reanalyzing = true;
+
+  this.candidatureService.reanalyzeCandidature(this.data.id, mode).subscribe({
+    next: (updated) => {
+      this.data = updated;
+      this.reanalyzing = false;
+
+      if (mode === 'scoreOnly') {
+        alert(`✅ Re-score complete. New CV Score: ${updated.scoreCV}`);
+      } else {
+        alert(`🚀 Full process restarted!`);
+      }
+    },
+    error: (err) => {
+      console.error('Error during re-analysis:', err);
+      this.reanalyzing = false;
+      alert('❌ Operation failed. Please try again.');
+    }
+  });
 }
+
+
+}
+
+

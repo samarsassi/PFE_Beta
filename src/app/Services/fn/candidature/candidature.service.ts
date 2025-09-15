@@ -95,4 +95,9 @@ export class CandidatureService {
   updateCandidatures(candidatures: Candidature[]) {
     this.candidaturesSubject.next(candidatures);
   }
+reanalyzeCandidature(id: number, mode: 'scoreOnly' | 'fullProcess' = 'scoreOnly'): Observable<Candidature> {
+  return this.http.post<Candidature>(`${this.apiUrl}/${id}/reanalyze`, {}, { params: { mode } });
+}
+
+
 }

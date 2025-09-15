@@ -1,31 +1,44 @@
 <div class="bpmn-editor-wrapper">
-  <!-- Toolbar -->
-<div class="bpmn-toolbar">
-  <button class="download-btn" (click)="downloadDiagram()">⬇ Download BPMN</button>
-  <button class="deploy-btn" (click)="deployDiagramToBackend()">🚀 Deploy BPMN</button>
-  <div class="load-group">
-    <select [(ngModel)]="selectedHistoryVersion">
-      <option *ngFor="let version of HistoryVersions" [value]="version">
-        {{ version }}
-      </option>
-    </select>
-    <button class="deploylatest-btn" (click)="loadSelectedHistory()">🕑 Load Previous</button>
-  </div>
-  <!-- <button class="extract-conditions-btn" (click)="extractAndSaveConditions()">🔧 Extract Conditions</button> -->
-</div>
+  <!-- Barre d’outils -->
+  <div class="bpmn-toolbar">
+    <button class="download-btn" (click)="downloadDiagram()">⬇ Télécharger BPMN</button>
+    <button class="deploy-btn" (click)="deployDiagramToBackend()">🚀 Déployer BPMN</button>
 
-  <!-- Delegate dropdown -->
+    <!-- Superposition du chargeur -->
+    <div class="loader-overlay" *ngIf="isLoading">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Superposition de succès -->
+    <div class="success-overlay" *ngIf="isSuccess">
+      <div class="success-box">
+        ✅ Diagramme déployé avec succès !
+      </div>
+    </div>
+
+    <div class="load-group">
+      <select [(ngModel)]="selectedHistoryVersion">
+        <option *ngFor="let version of HistoryVersions" [value]="version">
+          {{ version }}
+        </option>
+      </select>
+      <button class="deploylatest-btn" (click)="loadSelectedHistory()">🕑 Charger une version précédente</button>
+    </div>
+    <!-- <button class="extract-conditions-btn" (click)="extractAndSaveConditions()">🔧 Extraire les conditions</button> -->
+  </div>
+
+  <!-- Sélecteur de délégué -->
   <div *ngIf="selectedElement?.type === 'bpmn:ServiceTask'" class="delegate-selector">
-    <label for="delegateSelect">Delegate Class:</label>
+    <label for="delegateSelect">Classe déléguée :</label>
     <select id="delegateSelect" (change)="onDelegateChange($event)" [value]="selectedDelegate">
-      <option value="" disabled>Select a delegate</option>
+      <option value="" disabled>Sélectionner un délégué</option>
       <option *ngFor="let delegate of delegateClasses" [value]="delegate.beanName">
         {{ delegate.description }} ({{ delegate.beanName }})
       </option>
     </select>
   </div>
 
-  <!-- BPMN Container -->
+  <!-- Conteneur BPMN -->
   <div class="bpmn-container">
     <div class="palette" #palette></div>
     <div class="canvas" #canvas></div>
@@ -33,5 +46,5 @@
   </div>
 </div>
 
-<!-- Hook to WorkflowFormComponent -->
+<!-- Lien vers WorkflowFormComponent -->
 <app-workflow-form #workflowForm></app-workflow-form>

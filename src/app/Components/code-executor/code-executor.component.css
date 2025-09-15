@@ -111,11 +111,11 @@
 }
 
 .btn.test {
-  background-color: #059669;
+  background-color: #b4b430;
 }
 
 .btn.test:hover {
-  background-color: #047857;
+  background-color: #898925;
 }
 
 .loading-icon {
@@ -431,4 +431,27 @@
 
 .annuler-modal-actions .confirm-btn:hover {
   background: #b71c1c;
+}
+
+.btn.submit {
+  background-color: #4CAF50; /* A vibrant green for a positive action */
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+}
+
+.btn.submit:hover {
+  background-color: #45a049; /* Slightly darker green for hover effect */
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4);
+}
+
+.btn.submit:disabled {
+  background-color: #a0d6a1; /* Lighter green for disabled state */
+  cursor: not-allowed;
+  box-shadow: none;
 }

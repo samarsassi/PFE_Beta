@@ -76,8 +76,8 @@ ngAfterViewInit(): void {
       return;
     }
 
-    const appID = 591667673;
-    const serverSecret = '43f6a8d22a15d8a6465dd4c1ad7a53a7';
+    const appID = 1281385188;
+    const serverSecret = 'bc38fa0eaac3667e149cf1ff21d4454d';
     const userID = this.randomID(5);
 
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, this.userName);
