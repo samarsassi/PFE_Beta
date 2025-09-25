@@ -1,0 +1,10 @@
+node_modules
+.git
+.gitignore
+.tmp
+npm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+**/*.iml
+.idea
+.vscode

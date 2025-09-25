@@ -4,12 +4,13 @@ import { Observable, throwError } from 'rxjs';
 import { OffreEmploi } from 'src/app/Data/OffreEmploi';
 import { KeycloakService } from '../../keycloak/keycloak.service';
 import { Candidature } from 'src/app/Data/Candidature';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OffreEmploiService {
-  private apiUrl = 'http://localhost:8089/offres-emploi'; 
+  private apiUrl = `${environment.apiUrl}/offres-emploi`; 
 
   constructor(private http: HttpClient, private keycloakService: KeycloakService) {}
 

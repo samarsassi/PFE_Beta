@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class WorkflowService {
-  private apiUrl = 'http://localhost:8089/api/workflows';
+  private apiUrl = `${environment.apiUrl}/api/workflows`;
   constructor(private http: HttpClient) {}
 
 
@@ -13,7 +14,7 @@ export class WorkflowService {
   }
   
   deploy(xml: string) {
-    return this.http.post('http://localhost:8089/api/workflows/deploy', xml, { headers: { 'Content-Type': 'application/xml' } });
+    return this.http.post('${this.apiUrl}/deploy', xml, { headers: { 'Content-Type': 'application/xml' } });
   }
 getHistoryVersions(): Observable<string[]> {
   return this.http.get<string[]>(`${this.apiUrl}/history`);
@@ -26,6 +27,6 @@ getHistoryVersionXml(filename: string): Observable<string> {
 
 
 deployHistoryVersion(fileName: string): Observable<string> {
-  return this.http.post('http://localhost:8089/api/workflows/history/deploy', { fileName }, { responseType: 'text' });
+  return this.http.post('${this.apiUrl}/history/deploy', { fileName }, { responseType: 'text' });
 }
 }

@@ -11,6 +11,7 @@ import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
 import { SnackBarAnnotatedComponent } from '../user/view-offre/view-offre.component';
 import { CreateEntretienDialogComponent } from "./dialogs/create-entretien-dialog/create-entretien-dialog.component"
 import { KeycloakService } from 'src/app/Services/keycloak/keycloak.service'
+import { environment } from 'src/environments/environment'
 
 
 @Component({
@@ -378,7 +379,7 @@ export class CandidaturesComponent {
       Téléphone: c.telephone,
       Lettre_de_motivation: c.coverLetter,
       Statut: c.statut,
-      CV: `http://localhost:8089/uploads/${c.cv}`,
+      CV: `${environment.apiUrl}/uploads/${c.cv}`,
     }))
 
     const options = {

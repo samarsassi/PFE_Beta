@@ -1,51 +1,52 @@
-<h2 mat-dialog-title>Edit Offer</h2>
+<h2>Edit Offer</h2>
 
 <form [formGroup]="editForm" (ngSubmit)="onSave()">
-  <mat-dialog-content>
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Titre</mat-label>
-      <input matInput formControlName="titre" />
-    </mat-form-field>
+  <div>
+    <label for="titre">Titre</label>
+    <input id="titre" type="text" formControlName="titre" />
+  </div>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Localisation</mat-label>
-      <input matInput formControlName="localisation" />
-    </mat-form-field>
+  <div>
+    <label for="localisation">Localisation</label>
+    <input id="localisation" type="text" formControlName="localisation" />
+  </div>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description"></textarea>
-    </mat-form-field>
+  <div>
+    <label for="description">Description</label>
+    <textarea id="description" formControlName="description"></textarea>
+  </div>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Niveau d'expérience</mat-label>
-      <mat-select formControlName="niveauExperience">
-        <mat-option *ngFor="let level of experienceLevels" [value]="level">{{ level }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+  <div>
+    <label for="niveauExperience">Niveau d'expérience</label>
+    <select id="niveauExperience" formControlName="niveauExperience">
+      <option *ngFor="let level of experienceLevels" [value]="level">{{ level }}</option>
+    </select>
+  </div>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Années d'experience</mat-label>
-      <input matInput formControlName="anneesExperience" type="number" />
-    </mat-form-field>
+  <div>
+    <label for="anneesExperience">Années d'expérience</label>
+    <input id="anneesExperience" type="number" formControlName="anneesExperience" />
+  </div>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Salaire</mat-label>
-      <input matInput formControlName="salaire" type="number" />
-    </mat-form-field>
+  <div>
+    <label for="salaire">Salaire</label>
+    <input id="salaire" type="number" formControlName="salaire" />
+  </div>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Date de début</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="dateDebut" />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+  <div>
+    <label for="dateDebut">Date de début</label>
+    <input id="dateDebut" type="date" formControlName="dateDebut" />
+  </div>
 
-    <mat-checkbox formControlName="archive">Archivée</mat-checkbox>
-  </mat-dialog-content>
+  <div>
+    <label>
+      <input type="checkbox" formControlName="archive" />
+      Archivée
+    </label>
+  </div>
 
-  <mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="onCancel()">Cancel</button>
-    <button mat-flat-button color="primary" type="submit" [disabled]="editForm.invalid">Save</button>
-  </mat-dialog-actions>
+  <div class="actions">
+    <button type="button" (click)="onCancel()">Cancel</button>
+    <button type="submit" [disabled]="editForm.invalid">Save</button>
+  </div>
 </form>

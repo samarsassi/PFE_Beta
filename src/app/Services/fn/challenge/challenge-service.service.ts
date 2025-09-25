@@ -4,13 +4,14 @@ import { Observable, tap } from 'rxjs';
 import { CodingChallenge } from 'src/app/Data/coding-challenge.model';
 import { CandidatureService } from '../candidature/candidature.service';
 import { Candidature } from 'src/app/Data/Candidature';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChallengeService {
 
-  private baseUrl = 'http://localhost:8089/challenges';
+  private baseUrl = `${environment.apiUrl}/challenges`;
 
   constructor(private http: HttpClient, private candidatureService: CandidatureService) { }
 
@@ -51,7 +52,7 @@ export class ChallengeService {
 
 envoyerDefiAuCandidat(candidatureId: number, defiId: number): Observable<string> {
   return this.http.post<string>(
-    `http://localhost:8089/challenges/${candidatureId}/send-challenge/${defiId}`, 
+    `${this.baseUrl}/${candidatureId}/send-challenge/${defiId}`, 
     {}
   ).pipe(
     tap(() => {

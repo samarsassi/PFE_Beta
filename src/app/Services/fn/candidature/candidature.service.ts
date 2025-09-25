@@ -4,12 +4,13 @@ import { BehaviorSubject, Observable, tap, throwError } from 'rxjs';
 import { Candidature } from 'src/app/Data/Candidature';
 import { KeycloakService } from '../../keycloak/keycloak.service';
 import { CodingChallenge } from 'src/app/Data/coding-challenge.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CandidatureService {
-  private apiUrl = 'http://localhost:8089/candidatures';
+  private apiUrl = `${environment.apiUrl}/candidatures`;
 
   private candidaturesSubject = new BehaviorSubject<Candidature[]>([]);
   public candidatures$ = this.candidaturesSubject.asObservable();

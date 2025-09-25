@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import Keycloak from 'keycloak-js';
 import { firstValueFrom } from 'rxjs';
 import { User } from 'src/app/Data/User';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +17,9 @@ export class KeycloakService {
   get keycloak() {
     if (!this._keycloak) {
       this._keycloak = new Keycloak({
-        url: 'http://localhost:9092',
-        realm: 'PFE',
-        clientId: 'PFE'
+        url: environment.keycloak.url,
+        realm: environment.keycloak.realm,
+        clientId: environment.keycloak.clientId
       });
     }
     return this._keycloak;
@@ -33,7 +34,7 @@ export class KeycloakService {
     });
 
     const realm = 'PFE';
-    const url = `http://localhost:9092/admin/realms/${realm}/users`;
+    const url = `http://localhost:9002/admin/realms/${realm}/users`;
 
     return await firstValueFrom(this.http.get<any[]>(url, { headers }));
   }
@@ -42,7 +43,7 @@ export class KeycloakService {
     const token = this.token;
     if (!token) return [];
     const clientId = await this.getClientUUID(); // your existing method
-    const response = await fetch(`http://localhost:9092/admin/realms/PFE/clients/${clientId}/user-sessions`, {
+    const response = await fetch(`http://localhost:9002/admin/realms/PFE/clients/${clientId}/user-sessions`, {
       headers: {
         Authorization: `Bearer ${token}`,
       }
@@ -54,7 +55,7 @@ export class KeycloakService {
 
   async getClientUUID(): Promise<string | null> {
     const token = this.token;
-    const response = await fetch(`http://localhost:9092/admin/realms/PFE/clients`, {
+    const response = await fetch(`http://localhost:9002/admin/realms/PFE/clients`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -75,7 +76,7 @@ export class KeycloakService {
       return [];
     }
 
-    const response = await fetch(`http://localhost:9092/admin/realms/PFE/users/${userId}/role-mappings/clients/${clientUUID}`, {
+    const response = await fetch(`http://localhost:9002/admin/realms/PFE/users/${userId}/role-mappings/clients/${clientUUID}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -95,7 +96,7 @@ export class KeycloakService {
       return [];
     }
 
-    const response = await fetch(`http://localhost:9092/admin/realms/PFE/clients/${clientUUID}/roles`, {
+    const response = await fetch(`http://localhost:9002/admin/realms/PFE/clients/${clientUUID}/roles`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -112,7 +113,7 @@ export class KeycloakService {
     const realm = 'PFE';
     const today = new Date().toISOString().slice(0, 10);
 
-    const response = await fetch(`http://localhost:9092/admin/realms/${realm}/events?type=LOGIN`, {
+    const response = await fetch(`http://localhost:9002/admin/realms/${realm}/events?type=LOGIN`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -139,7 +140,7 @@ export class KeycloakService {
   const realm = 'PFE';
   const today = new Date().toISOString().slice(0, 10);
 
-  const response = await fetch(`http://localhost:9092/admin/realms/${realm}/events?type=LOGIN`, {
+  const response = await fetch(`http://localhost:9002/admin/realms/${realm}/events?type=LOGIN`, {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -168,15 +169,15 @@ export class KeycloakService {
 
   async assignClientRoleToUser(userId: string, role: any): Promise<void> {
     const token = this.token;
-    const clientUUID = await this.getClientUUID(); // Make sure you have this helper method
+    const clientUUID = await this.getClientUUID(); 
 
-    await fetch(`http://localhost:9092/admin/realms/PFE/users/${userId}/role-mappings/clients/${clientUUID}`, {
+    await fetch(`http://localhost:9002/admin/realms/PFE/users/${userId}/role-mappings/clients/${clientUUID}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify([role])  // Must include the full role object with id, name, etc.
+      body: JSON.stringify([role])  // Must include the full role object with id, name, .......
     });
   }
 
@@ -185,7 +186,7 @@ export class KeycloakService {
     const token = this.token;
     const clientUUID = await this.getClientUUID();
 
-    await fetch(`http://localhost:9092/admin/realms/PFE/users/${userId}/role-mappings/clients/${clientUUID}`, {
+    await fetch(`http://localhost:9002/admin/realms/PFE/users/${userId}/role-mappings/clients/${clientUUID}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`,

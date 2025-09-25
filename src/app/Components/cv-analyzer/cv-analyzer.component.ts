@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { OffreEmploiService } from 'src/app/Services/fn/offreemploi/OffreEmploiService';
 import { StatsService } from 'src/app/Services/fn/stats/stats.service';
 import { KeycloakService } from 'src/app/Services/keycloak/keycloak.service';
+import { environment } from 'src/environments/environment';
 
 interface ChatMessage {
   sender: 'user' | 'ai';
@@ -141,7 +142,7 @@ export class CvAnalyzerComponent implements OnInit {
       // your existing code for offers and AI chat...
       const offers = await this.handleUserInput(userMessage);
 
-      this.http.post('http://localhost:8089/api/ai/chat', userMessage, { responseType: 'text' })
+      this.http.post(`${environment.apiUrl}/api/ai/chat`, userMessage, { responseType: 'text' })
         .subscribe({
           next: res => {
             if (offers && offers.length > 0) {

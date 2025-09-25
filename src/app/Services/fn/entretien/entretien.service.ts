@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Entretien } from 'src/app/Data/Entretien';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Entretien } from 'src/app/Data/Entretien';
 export class EntretienService {
 
  
-  private baseUrl = 'http://localhost:8089/entretiens'; // Adjust to your actual API endpoint
+  private baseUrl = `${environment.apiUrl}/entretiens`;
  
    constructor(private http: HttpClient) {}
    getAllInterviews(): Observable<Entretien[]> {

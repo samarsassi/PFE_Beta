@@ -50,7 +50,7 @@ export class WorkflowConditionsComponent implements OnInit {
     this.loadConditions();
 
     // When a gateway is selected in the BPMN editor, open the form and preselect it
-    this.workflowConditionService.gatewaySelected$.subscribe((gatewayId) => {
+    this.workflowConditionService.gatewaySelected$.subscribe((gatewayId: string) => {
       this.editingCondition = null;
       this.isFormVisible = true;
       this.conditionForm.reset();

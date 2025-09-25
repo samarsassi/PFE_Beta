@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TestCase } from 'src/app/Data/coding-challenge.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TestCaseService {
 
- private baseUrl = 'http://localhost:8089/testcases'; // Adjust to your actual API endpoint
+ private baseUrl = `${environment.apiUrl}/testcases`;
 
   constructor(private http: HttpClient) {}
 

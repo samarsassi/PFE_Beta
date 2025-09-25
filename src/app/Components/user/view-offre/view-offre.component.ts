@@ -51,8 +51,6 @@ export class ViewOffreComponent implements OnInit {
   private _snackBar = inject(MatSnackBar);
   durationInSeconds = 5;
 
-  firebaseApp = initializeApp(environment.firebaseConfig);
-  storage = getStorage(this.firebaseApp);
 
   constructor(private http: HttpClient, public jobService: OffreEmploiService, public candidatureService: CandidatureService, private route: ActivatedRoute, private router: Router, private fb: FormBuilder, private supabaseService: SupabaseService) { }
 
@@ -290,23 +288,6 @@ submitApplication(): void {
     });
   }
 
-  uploadCvFile(file: File, candidatureTitle: string, offreTitle: string): Promise<string | null> {
-    // Generate file path inside bucket, e.g., cvs/JohnDoe_123456.pdf
-    const filePath = `cvs/${candidatureTitle}_${Date.now()}.${file.name.split('.').pop()}`;
-
-    const storageRef = ref(this.storage, filePath);
-
-    return uploadBytes(storageRef, file)
-      .then(() => getDownloadURL(storageRef))
-      .then((url) => {
-        console.log('File available at', url);
-        return url; // Return the public URL for use by caller
-      })
-      .catch(error => {
-        console.error('Upload failed:', error);
-        return null;
-      });
-  }
 
   closeModal() {
     this.isModalOpen = false;

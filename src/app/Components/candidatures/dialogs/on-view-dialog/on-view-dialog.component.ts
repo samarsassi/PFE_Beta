@@ -9,6 +9,7 @@ import { CandidatureService } from 'src/app/Services/fn/candidature/candidature.
 import { ResultatEntretien } from 'src/app/Data/Entretien';
 import { EntretienService } from 'src/app/Services/fn/entretien/entretien.service';
 import { KeycloakService } from 'src/app/Services/keycloak/keycloak.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-on-view-dialog',
@@ -150,7 +151,7 @@ export class OnViewDialogComponent implements OnInit, OnChanges {
 
   loadCV(filename: string): void {
     this.http
-      .get(`http://localhost:8089/uploads/${encodeURIComponent(filename)}`, {
+      .get(`${environment.apiUrl}/uploads/${encodeURIComponent(filename)}`, {
         responseType: 'blob',
         withCredentials: true, // If cookies or session are needed
       })
@@ -167,7 +168,7 @@ export class OnViewDialogComponent implements OnInit, OnChanges {
   onOpen(candidature: Candidature) {
     if (candidature.cv) {
       const encodedFileName = encodeURIComponent(candidature.cv);
-      const fullUrl = `http://localhost:8089/uploads/${encodedFileName}`;
+      const fullUrl = `${environment.apiUrl}/uploads/${encodedFileName}`;
       window.open(fullUrl, '_blank');
     } else {
       console.warn('No CV available');
@@ -239,7 +240,7 @@ export class OnViewDialogComponent implements OnInit, OnChanges {
       Statut: this.data.statut,
       DefiId: this.data.defiId,
       Datedefi: this.data.defiEnvoyeLe,
-      CV: `http://localhost:8089/uploads/${this.data.cv}`
+      CV: `${environment.apiUrl}/uploads/${this.data.cv}`
     }];
 
     const options = {

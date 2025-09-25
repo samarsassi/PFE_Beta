@@ -1,305 +1,29 @@
+/* RESET */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/*switch archive */
-
+/* ================================
+   TOGGLE (Archive Switch)
+   ================================ */
 .toggle-container {
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-  /* Space between icon and switch */
-  margin-bottom: 10px;
-}
-
-/* Adjust icon size */
-.lock-icon {
-  font-size: 20px;
-}
-
-/* Ensure the toggle container has the correct layout */
-.full-width {
-  width: 100%;
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
-  margin-bottom: 10px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #37e121;
-  transition: 0.4s;
-  border-radius: 24px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 4px;
-  bottom: 3px;
-  background-color: #302d2d;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-input:checked+.slider {
-  background-color: #e12121;
-}
-
-input:checked+.slider:before {
-  background-color: white;
-  transform: translateX(24px);
-}
-
-.icon-btn {
-  background: none;
-  border: none;
-  color: #007bff;
-  font-size: 18px;
-  margin-left: 10px;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.icon-btn:hover {
-  color: #0056b3;
-}
-
-
-
-#map-container {
-  background-color: #666;
-  height: 305px;
-  /* Ensure the container has height */
-  width: 100%;
-  /* Ensure it takes full width of the parent */
-}
-
-#map {
-  height: 400px;
-  width: 100%;
-}
-
-button[nbButton] {
-  align-self: flex-end;
-  padding: 10px 20px;
-  font-weight: 600;
-  border-radius: 8px;
-}
-
-/* Cancel button styling */
-.cancelbutton {
-  background-color: transparent;
-  border: none;
-  font-size: 1.5rem;
-  float: right;
-  color: #dc3545;
-  /* Red color for the cancel button */
-  cursor: pointer;
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-
-/* Change color on hover */
-.cancelbutton:hover {
-  color: #c82333;
-  /* Darker red when hovered */
-  transform: scale(1.1);
-  /* Slight zoom effect on hover */
-}
-
-/* Position the button at the top right corner */
-.cancelbutton[style] {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 0;
-}
-
-
-
-
-/* Card styling */
-
-.row {
-  display: block;
-  flex-wrap: wrap;
-  gap: 20px;
-  /* Spacing between columns */
-  justify-content: center;
-  align-items: stretch;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.offer-card {
-  background-color: white;
-  border-radius: 12px;
-  margin-bottom: 15px;
-  padding: 15px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
-}
-
-.offer-card:hover {
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-}
-
-mat-card-title {
-  font-weight: 700;
-  color: #222;
-}
-
-mat-card-subtitle {
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 0.75rem;
-}
-
-mat-card-content p {
-  color: #444;
-  font-size: 0.95rem;
-  line-height: 1.4;
-  margin-bottom: 0.5rem;
-}
-
-mat-card-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-top: 1px solid #eee;
-}
-
-mat-card-actions button {
-  font-weight: 600;
-  text-transform: none;
-}
-
-/* Button colors: use mat-button color scheme or override if needed */
-button[color="primary"] {
-  color: #1976d2;
-}
-
-button[color="warn"] {
-  color: #d32f2f;
-}
-
-/* badge date */
-.badge {
-  min-width: 80px;
-  max-width: 150px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.95rem;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 10px;
-  color: white;
-  margin: 0 4px;
-  /* horizontal margin only */
-  vertical-align: baseline;
-  line-height: 1.2;
-}
-
-.badge i {
-  margin-right: 6px;
-}
-
-.ended-badge {
-  background-color: #d9534f;
-  /* red */
-}
-
-.delayed-badge {
-  background-color: #72cf2b;
-  /* orange */
-}
-
-.offer-card.ended {
-  opacity: 0.6;
-}
-
-/* archive button */
-
-.icon-archive {
-  color: #d9534f;
-}
-
-.icon-unarchive {
-  color: #5cb85c;
-}
-
-/* Modern Offre Emploi Design */
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: var(--spacing-xl);
-  animation: fadeIn 0.5s ease-out;
-}
-
-/* Enhanced Section Title */
-.row.justify-content-center.mb-4 {
-  margin-bottom: var(--spacing-2xl) !important;
-}
-
-.row.justify-content-center.mb-4 h2 {
-  color: var(--text-primary);
-  font-size: 2.25rem;
-  font-weight: 700;
-  text-align: center;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: var(--spacing-lg);
-}
-
-/* Enhanced Toggle Switch */
-.toggle-container {
-  display: flex;
-  justify-content: flex-end;
   align-items: center;
   gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-  padding: var(--spacing-lg);
   background: var(--bg-primary);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--gray-200);
-}
-
-.toggle-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  margin-left: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
 }
 
 .lock-icon {
   font-size: 1.25rem;
   color: var(--text-secondary);
+  margin-right: 4px;
   transition: color var(--transition-normal);
 }
 
@@ -307,12 +31,19 @@ button[color="warn"] {
   color: var(--primary-color);
 }
 
+.toggle-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-left: var(--spacing-sm);
+}
+
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 30px;
-  margin: 0;
+  width: 48px;
+  height: 28px;
+  margin: 0 8px;
 }
 
 .switch input {
@@ -328,40 +59,101 @@ button[color="warn"] {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, var(--success-color), #059669);
-  transition: all var(--transition-normal);
-  border-radius: 30px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: var(--gray-200);
+  transition: background 0.3s;
+  border-radius: 28px;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 24px;
-  width: 24px;
-  left: 3px;
-  bottom: 3px;
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
   background: white;
-  transition: all var(--transition-normal);
+  transition: 0.3s;
   border-radius: 50%;
   box-shadow: var(--shadow-sm);
 }
 
-input:checked+.slider {
-  background: linear-gradient(135deg, var(--error-color), #dc2626);
+input:checked + .slider {
+  background: var(--primary-color);
 }
 
-input:checked+.slider:before {
-  transform: translateX(30px);
+input:checked + .slider:before {
+  transform: translateX(20px);
 }
 
-/* Enhanced Offer Cards */
-.row {
+/* ================================
+   MAP
+   ================================ */
+#map-container {
+  background-color: #666;
+  height: 305px;
+  width: 100%;
+}
+
+#map {
+  height: 400px;
+  width: 100%;
+}
+
+/* ================================
+   BUTTONS
+   ================================ */
+button[nbButton] {
+  align-self: flex-end;
+  padding: 10px 20px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.cancelbutton {
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  float: right;
+  color: #dc3545;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.cancelbutton:hover {
+  color: #c82333;
+  transform: scale(1.1);
+}
+
+.cancelbutton[style] {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0;
+}
+
+/* ================================
+   OFFER CARDS
+   ================================ */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.offers-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   gap: var(--spacing-lg);
   margin: 0;
   padding: 0;
+}
+
+/* Ensure grid children don't inherit Bootstrap column widths */
+.offers-grid > * {
+  width: auto !important;
+  margin: 0 !important;
+  min-width: 0; /* allow content to wrap inside grid items */
 }
 
 .offer-card {
@@ -373,9 +165,12 @@ input:checked+.slider:before {
   transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
-  height: 100%;
+  width: auto;
+  max-width: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  animation: slideInUp 0.3s ease-out;
 }
 
 .offer-card::before {
@@ -398,21 +193,21 @@ input:checked+.slider:before {
   height: 6px;
 }
 
-/* Card Header */
-.card-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: var(--spacing-lg);
-  gap: var(--spacing-md);
+.offer-card.ended {
+  opacity: 0.6;
 }
 
-.offer-card>div:first-child {
+/* ================================
+   CARD HEADER
+   ================================ */
+.card-header,
+.offer-card > div:first-child {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   margin-bottom: var(--spacing-lg);
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
+  min-height: 2.5rem;
 }
 
 mat-card-title {
@@ -422,9 +217,14 @@ mat-card-title {
   margin: 0 !important;
   line-height: 1.3;
   flex: 1;
+  padding-right: var(--spacing-sm);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-/* Enhanced Status Badges */
+/* ================================
+   BADGES
+   ================================ */
 .badge {
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-md);
@@ -434,21 +234,27 @@ mat-card-title {
   letter-spacing: 0.5px;
   white-space: nowrap;
   flex-shrink: 0;
+  margin-left: var(--spacing-sm);
+  align-self: flex-start;
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.badge i {
+  margin-right: 6px;
 }
 
 .ended-badge {
   background: linear-gradient(135deg, var(--error-color), #dc2626);
-  color: white;
-  box-shadow: var(--shadow-sm);
 }
 
 .delayed-badge {
   background: linear-gradient(135deg, var(--success-color), #059669);
-  color: white;
-  box-shadow: var(--shadow-sm);
 }
 
-/* Card Content */
+/* ================================
+   CARD CONTENT
+   ================================ */
 .offer-card p {
   color: var(--text-secondary);
   font-size: 0.9rem;
@@ -491,7 +297,9 @@ mat-card-content p {
   flex: 1;
 }
 
-/* Enhanced Card Actions */
+/* ================================
+   CARD ACTIONS
+   ================================ */
 mat-card-actions {
   display: flex;
   justify-content: flex-end;
@@ -506,15 +314,21 @@ mat-card-actions button {
   min-width: 44px;
   height: 44px;
   border-radius: var(--radius-md);
-  transition: all var(--transition-normal);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 
 mat-card-actions button:hover {
+  filter: brightness(1.1);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+}
+
+mat-card-actions button:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
 }
 
 /* Button Variants */
@@ -554,18 +368,20 @@ button[color="warn"]:hover {
   background: #059669 !important;
 }
 
-/* Icon Styling */
-.icon-archive {
-  color: var(--warning-color) !important;
-}
-
+.icon-archive,
 .icon-unarchive {
-  color: var(--success-color) !important;
+  font-size: 1.25rem !important;
+  margin-left: 2px;
+  margin-right: 2px;
+  vertical-align: middle;
+  color: var(--primary-color) !important;
 }
 
-/* Responsive Design */
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
 @media (max-width: 1200px) {
-  .row {
+  .offers-grid {
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   }
 }
@@ -575,11 +391,7 @@ button[color="warn"]:hover {
     padding: var(--spacing-lg);
   }
 
-  .row.justify-content-center.mb-4 h2 {
-    font-size: 1.875rem;
-  }
-
-  .row {
+  .offers-grid {
     grid-template-columns: 1fr;
     gap: var(--spacing-md);
   }
@@ -604,17 +416,22 @@ button[color="warn"]:hover {
     padding: var(--spacing-md);
   }
 
-  .row.justify-content-center.mb-4 h2 {
-    font-size: 1.5rem;
-  }
-
-  .offer-card>div:first-child {
+  .offer-card > div:first-child,
+  .card-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: var(--spacing-sm);
   }
 
   .badge {
     align-self: flex-start;
+    margin-left: 0;
+    margin-top: var(--spacing-xs);
+  }
+
+  mat-card-title {
+    padding-right: 0;
+    margin-bottom: var(--spacing-xs);
   }
 
   mat-card-actions {
@@ -628,7 +445,9 @@ button[color="warn"]:hover {
   }
 }
 
-/* Loading States */
+/* ================================
+   STATES & ANIMATIONS
+   ================================ */
 .loading-offers {
   display: flex;
   justify-content: center;
@@ -636,7 +455,6 @@ button[color="warn"]:hover {
   height: 200px;
 }
 
-/* Empty State */
 .empty-state {
   text-align: center;
   padding: var(--spacing-2xl);
@@ -654,181 +472,24 @@ button[color="warn"]:hover {
   margin-bottom: var(--spacing-md);
 }
 
-/* Animations */
-.offer-card {
-  animation: slideInUp 0.3s ease-out;
-}
-
-.offer-card:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.offer-card:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.offer-card:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-.offer-card:nth-child(4) {
-  animation-delay: 0.4s;
-}
-
-.offer-card:nth-child(5) {
-  animation-delay: 0.5s;
-}
-
-.offer-card:nth-child(6) {
-  animation-delay: 0.6s;
-}
-
 @keyframes slideInUp {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-/* Hover Effects */
 .offer-card:hover mat-card-title {
   color: var(--primary-color) !important;
 }
 
-/* Focus States */
-mat-card-actions button:focus {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
-}
-
-/* Accessibility */
-@media (prefers-reduced-motion: reduce) {
-
-  .offer-card,
-  mat-card-actions button,
-  .slider,
-  .slider:before {
-    transition: none;
-  }
-}
-
-.section-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-2xl);
-}
-
-.section-title {
-  font-size: 2.25rem;
-  font-weight: 700;
-  color: var(--primary-color);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  margin: 0;
-}
-
-.toggle-container {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  background: var(--bg-primary);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--gray-200);
-  padding: var(--spacing-sm) var(--spacing-lg);
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 48px;
-  height: 28px;
-  margin: 0 8px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--gray-200);
-  transition: background 0.3s;
-  border-radius: 28px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  left: 4px;
-  bottom: 4px;
-  background: white;
-  transition: 0.3s;
-  border-radius: 50%;
-  box-shadow: var(--shadow-sm);
-}
-
-input:checked+.slider {
-  background: var(--primary-color);
-}
-
-input:checked+.slider:before {
-  transform: translateX(20px);
-}
-
-.toggle-label {
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  margin-left: var(--spacing-sm);
-}
-
-.lock-icon {
-  font-size: 1.25rem;
-  color: var(--text-secondary);
-  margin-right: 4px;
-}
-
-mat-card-actions button {
-  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
-}
-
-mat-card-actions button:focus {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
-}
-
-mat-card-actions button:hover {
-  filter: brightness(1.1);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.icon-archive,
-.icon-unarchive {
-  font-size: 1.25rem !important;
-  margin-left: 2px;
-  margin-right: 2px;
-  vertical-align: middle;
-  color: var(--primary-color) !important;
-}
-
+/* ================================
+   BREADCRUMB
+   ================================ */
 .breadcrumb-container {
   margin-bottom: 1.5rem;
   background: transparent;
