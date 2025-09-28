@@ -23,9 +23,7 @@ module.exports = function (config) {
       ]
     },
     reporters: ['progress', 'kjhtml'],
-    exclude: [
-      'src/app/**/*.spec.ts'
-    ],
+    
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
