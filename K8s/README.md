@@ -35,3 +35,10 @@ After deployment, the frontend will be accessible at:
 1. **Environment Configuration**: Make sure your Angular build uses the correct environment file for Kubernetes
 2. **CORS**: The backend needs to allow requests from the frontend service
 3. **Service Discovery**: All services use Kubernetes DNS for communication
+
+
+
+
+
+
+
